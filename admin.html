@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>店家位置後台｜逐路船騎 日月潭</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<style>
+:root{--green:#1a6b4a;--green-d:#134f37;--gold:#d4a843;--gold-d:#c29a3a;--ink:#1a1a2e;
+  --text:#333;--muted:#777;--line:#e3e3e3;--bg:#f5f6f4;--card:#fff;
+  --ok:#1a6b4a;--warn:#c2703a;--area:#9a9a9a;}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Noto Sans TC","PingFang TC",system-ui,sans-serif;color:var(--text);
+  background:var(--bg);font-size:14px;line-height:1.6}
+header{background:var(--ink);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:16px;
+  flex-wrap:wrap;position:sticky;top:0;z-index:50}
+header h1{font-size:17px;margin:0;font-weight:700}
+header h1 b{color:var(--gold)}
+.prog{font-size:13px;color:#cfd6d2}
+.prog b{color:var(--gold)}
+.sp{flex:1}
+.tbtn{background:#2d3050;color:#fff;border:1px solid #3a3e60;border-radius:8px;padding:8px 14px;
+  font-family:inherit;font-weight:600;font-size:13px;cursor:pointer}
+.tbtn:hover{background:#3a3e60}
+.tbtn.gold{background:var(--gold);color:#3a2a00;border-color:var(--gold)}
+.tbtn.gold:hover{background:#e0b652}
+.tbtn.ghost{background:transparent}
+.wrap{display:grid;grid-template-columns:380px 1fr;gap:0;height:calc(100vh - 56px)}
+@media(max-width:860px){.wrap{grid-template-columns:1fr;height:auto}}
+
+/* list */
+.list{border-right:1px solid var(--line);background:var(--card);overflow-y:auto;height:100%}
+@media(max-width:860px){.list{height:auto;max-height:46vh}}
+.lfilter{position:sticky;top:0;background:var(--card);padding:12px;border-bottom:1px solid var(--line);z-index:2}
+.lfilter input{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13.5px}
+.cats{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.cat{font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;border:1px solid var(--line);
+  background:#fff;cursor:pointer;color:#555}
+.cat.on{background:var(--green);color:#fff;border-color:var(--green)}
+.row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #f0f0f0;cursor:pointer}
+.row:hover{background:#f7f9f7}
+.row.sel{background:#eef6f1;box-shadow:inset 3px 0 0 var(--green)}
+.row .nm{flex:1;min-width:0}
+.row .nm b{display:block;font-weight:600;font-size:14px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .nm span{font-size:11.5px;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.badge{font-size:10.5px;font-weight:700;padding:3px 7px;border-radius:999px;white-space:nowrap}
+.b-precise{background:#e6f1ea;color:var(--ok)}
+.b-area{background:#efefef;color:var(--area)}
+.b-manual{background:#fbeede;color:var(--warn)}
+
+/* editor */
+.edit{padding:0;display:flex;flex-direction:column;height:100%;overflow:hidden}
+@media(max-width:860px){.edit{height:auto}}
+.ehd{padding:14px 18px;border-bottom:1px solid var(--line);background:var(--card)}
+.ehd .nm{font-size:18px;font-weight:700;color:var(--ink)}
+.ehd .meta{font-size:12.5px;color:var(--muted);margin-top:2px}
+#amap{flex:1;min-height:300px;background:#e8eef0}
+@media(max-width:860px){#amap{height:340px;flex:none}}
+.tools{padding:14px 18px;background:var(--card);border-top:1px solid var(--line);overflow-y:auto;max-height:42vh}
+.fld{margin-bottom:12px}
+.fld label{display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:5px}
+.fld .hint{font-size:11.5px;color:var(--muted);font-weight:400}
+.irow{display:flex;gap:8px}
+.irow input{flex:1;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13.5px}
+.irow button{padding:9px 14px;border:0;border-radius:8px;background:var(--green);color:#fff;font-family:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+.irow button:hover{background:var(--green-d)}
+.geores{margin-top:6px;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:none}
+.geores.show{display:block}
+.geores div{padding:8px 11px;font-size:12.5px;cursor:pointer;border-bottom:1px solid #f0f0f0}
+.geores div:last-child{border-bottom:0}
+.geores div:hover{background:#f2f7f3}
+.coords{display:flex;gap:8px;align-items:center}
+.coords input{width:120px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px}
+.save{margin-top:6px;display:flex;gap:10px;align-items:center}
+.save button{background:var(--gold);color:#3a2a00;border:0;border-radius:8px;padding:11px 20px;
+  font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}
+.save button:hover{background:#e0b652}
+.save .msg{font-size:12.5px;color:var(--ok);font-weight:600}
+.empty{display:grid;place-items:center;height:100%;color:var(--muted);text-align:center;padding:40px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);
+  color:#fff;padding:11px 20px;border-radius:999px;font-weight:600;font-size:13.5px;opacity:0;
+  pointer-events:none;transition:.25s;z-index:200}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.tip{background:#fffaf0;border:1px solid #f0e2c0;color:#7a5c18;font-size:12px;padding:9px 12px;
+  border-radius:8px;margin:0 0 12px;line-height:1.6}
+</style>
+</head>
+<body>
+<header>
+  <h1>店家位置<b>後台</b></h1>
+  <span class="prog" id="prog">—</span>
+  <span class="sp"></span>
+  <button class="tbtn ghost" id="btnReload" title="捨棄本機修改，重新從 shops.json 載入">↺ 重載檔案</button>
+  <button class="tbtn" id="btnImport">匯入</button>
+  <input type="file" id="fileInput" accept=".json" hidden>
+  <button class="tbtn gold" id="btnExport">⬇ 匯出 shops.json</button>
+</header>
+
+<div class="wrap">
+  <!-- 左：店家清單 -->
+  <div class="list">
+    <div class="lfilter">
+      <input id="search" placeholder="🔍 搜尋店名…">
+      <div class="cats" id="cats"></div>
+    </div>
+    <div id="rows"></div>
+  </div>
+
+  <!-- 右：編輯器 -->
+  <div class="edit" id="editor">
+    <div class="empty" id="empty">← 從左側選一家店，開始設定位置</div>
+    <div class="ehd" id="ehd" style="display:none">
+      <div class="nm" id="eName">—</div>
+      <div class="meta" id="eMeta">—</div>
+    </div>
+    <div id="amap" style="display:none"></div>
+    <div class="tools" id="tools" style="display:none">
+      <p class="tip">設定方式任選一種：① 下方搜尋地址/店名 ② 直接在地圖上<b>點一下</b>或<b>拖曳紅色圖釘</b> ③ 貼 Google Maps 連結或座標。設定後記得按<b>儲存這家</b>。</p>
+
+      <div class="fld">
+        <label>① 搜尋地址 / 地標 / 店名 <span class="hint">（OpenStreetMap）</span></label>
+        <div class="irow">
+          <input id="geoq" placeholder="例：日月潭水社碼頭 / 南投縣魚池鄉中山路…">
+          <button id="geoBtn">搜尋</button>
+        </div>
+        <div class="geores" id="geores"></div>
+      </div>
+
+      <div class="fld">
+        <label>③ 貼 Google Maps 連結或「緯度,經度」</label>
+        <div class="irow">
+          <input id="gmap" placeholder="貼上 google maps 網址，或 23.864,120.910">
+          <button id="gmapBtn">解析</button>
+        </div>
+      </div>
+
+      <div class="fld">
+        <label>座標（可手動微調）</label>
+        <div class="coords">
+          <input id="lat" placeholder="緯度 lat"> <input id="lng" placeholder="經度 lng">
+          <button class="tbtn" id="applyLL" style="background:var(--green);border:0">套用到地圖</button>
+        </div>
+      </div>
+
+      <div class="fld">
+        <label>地址 / 地標備註 <span class="hint">（選填，會存進資料）</span></label>
+        <input id="addr" style="width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13.5px" placeholder="例：日月潭水社碼頭旁">
+      </div>
+
+      <div class="save">
+        <button id="saveBtn">💾 儲存這家</button>
+        <span class="msg" id="saveMsg"></span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const CATNAME={sup:"船 SUP",bike:"騎 單車",stay:"住 住宿",eat:"食 吃喝",play:"玩買"};
+const GCOLOR={sup:"#2E7DA1",bike:"#1a6b4a",stay:"#b5853f",eat:"#c2703a",play:"#6d5a8c"};
+const GROUPS=[["all","全部"],["sup","船 SUP"],["bike","騎 單車"],["stay","住 住宿"],["eat","食 吃喝"],["play","玩買"]];
+const LS="lcq:admin:shops:v1";
+let SHOPS=[], cur=-1, filterG="all", q="";
+let map=null, marker=null;
+
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),1700);}
+function geoLabel(g){return g==="precise"?"精準":g==="manual"?"已設定":"區域示意";}
+function geoBadge(g){return g==="precise"?"b-precise":g==="manual"?"b-manual":"b-area";}
+
+async function load(){
+  const saved=localStorage.getItem(LS);
+  if(saved){ try{ SHOPS=JSON.parse(saved); }catch(e){ SHOPS=[]; } }
+  if(!SHOPS.length){
+    try{ const r=await fetch("data/shops.json",{cache:"no-store"}); SHOPS=await r.json(); }
+    catch(e){ alert("無法載入 data/shops.json，請透過伺服器或部署後的網址開啟此後台。"); return; }
+  }
+  renderCats(); renderRows(); renderProg();
+}
+function persist(){ localStorage.setItem(LS, JSON.stringify(SHOPS)); renderProg(); }
+function renderProg(){
+  const done=SHOPS.filter(s=>s.geo==="precise"||s.geo==="manual").length;
+  const man=SHOPS.filter(s=>s.geo==="manual").length;
+  $("#prog").innerHTML=`已定位 <b>${done}</b>/${SHOPS.length}　（手動修正 ${man}）`;
+}
+function renderCats(){
+  $("#cats").innerHTML=GROUPS.map(g=>`<span class="cat ${g[0]===filterG?'on':''}" data-g="${g[0]}">${g[1]}</span>`).join("");
+  $("#cats").querySelectorAll(".cat").forEach(c=>c.onclick=()=>{filterG=c.dataset.g;renderCats();renderRows();});
+}
+function renderRows(){
+  const list=SHOPS.map((s,i)=>({s,i})).filter(o=>(filterG==="all"||o.s.group===filterG)&&(!q||o.s.name.includes(q)));
+  $("#rows").innerHTML=list.map(o=>`
+    <div class="row ${o.i===cur?'sel':''}" data-i="${o.i}">
+      <span class="dot" style="background:${GCOLOR[o.s.group]}"></span>
+      <span class="nm"><b>${o.s.name}</b><span>${CATNAME[o.s.group]||""}${o.s.area?' ‧ '+o.s.area:''}</span></span>
+      <span class="badge ${geoBadge(o.s.geo)}">${geoLabel(o.s.geo)}</span>
+    </div>`).join("") || `<div style="padding:20px;color:#999;text-align:center">沒有符合的店家</div>`;
+  $("#rows").querySelectorAll(".row").forEach(r=>r.onclick=()=>select(+r.dataset.i));
+}
+$("#search").oninput=e=>{q=e.target.value.trim();renderRows();};
+
+function ensureMap(){
+  if(map)return;
+  map=L.map("amap").setView([23.864,120.915],13);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
+  map.on("click",e=>setLatLng(e.latlng.lat,e.latlng.lng,true));
+}
+function select(i){
+  cur=i; const s=SHOPS[i];
+  $("#empty").style.display="none";
+  $("#ehd").style.display="block"; $("#amap").style.display="block"; $("#tools").style.display="block";
+  $("#eName").textContent=s.name;
+  $("#eMeta").innerHTML=`${CATNAME[s.group]||""}${s.area?' ‧ '+s.area:''}　目前：<b style="color:${s.geo==='manual'?'#c2703a':s.geo==='precise'?'#1a6b4a':'#999'}">${geoLabel(s.geo)}</b>`;
+  $("#lat").value=s.lat; $("#lng").value=s.lng; $("#addr").value=s.addr||"";
+  $("#geoq").value=""; $("#gmap").value=""; $("#geores").classList.remove("show"); $("#saveMsg").textContent="";
+  ensureMap();
+  setTimeout(()=>map.invalidateSize(),60);
+  placeMarker(s.lat,s.lng,false);
+  map.setView([s.lat,s.lng], s.geo==="area"?13:16);
+  renderRows();
+}
+function placeMarker(lat,lng,pan){
+  if(marker){marker.setLatLng([lat,lng]);}
+  else{
+    marker=L.marker([lat,lng],{draggable:true}).addTo(map);
+    marker.on("dragend",()=>{const ll=marker.getLatLng();setLatLng(ll.lat,ll.lng,false);});
+  }
+  if(pan)map.panTo([lat,lng]);
+}
+function setLatLng(lat,lng,pan){
+  lat=+(+lat).toFixed(6); lng=+(+lng).toFixed(6);
+  $("#lat").value=lat; $("#lng").value=lng;
+  placeMarker(lat,lng,pan);
+}
+$("#applyLL").onclick=()=>{
+  const lat=parseFloat($("#lat").value), lng=parseFloat($("#lng").value);
+  if(isNaN(lat)||isNaN(lng)){toast("請輸入有效座標");return;}
+  setLatLng(lat,lng,true); map.setView([lat,lng],16);
+};
+
+/* 地址搜尋 (Nominatim) */
+$("#geoBtn").onclick=doGeocode;
+$("#geoq").addEventListener("keydown",e=>{if(e.key==="Enter")doGeocode();});
+async function doGeocode(){
+  const query=$("#geoq").value.trim(); if(!query)return;
+  $("#geoBtn").textContent="…";
+  try{
+    const url="https://nominatim.openstreetmap.org/search?format=json&limit=6&countrycodes=tw&accept-language=zh-TW&q="+encodeURIComponent(query);
+    const r=await fetch(url); const data=await r.json();
+    const box=$("#geores");
+    if(!data.length){box.innerHTML='<div style="cursor:default;color:#999">查無結果，試試更完整的地址，或直接在地圖上點選。</div>';box.classList.add("show");}
+    else{
+      box.innerHTML=data.map(d=>`<div data-lat="${d.lat}" data-lon="${d.lon}">${d.display_name}</div>`).join("");
+      box.classList.add("show");
+      box.querySelectorAll("div[data-lat]").forEach(el=>el.onclick=()=>{
+        setLatLng(el.dataset.lat,el.dataset.lon,true); map.setView([+el.dataset.lat,+el.dataset.lon],16);
+        box.classList.remove("show"); toast("已定位，確認後按儲存");
+      });
+    }
+  }catch(e){toast("搜尋失敗，請稍後再試");}
+  $("#geoBtn").textContent="搜尋";
+}
+
+/* Google Maps 連結 / 座標解析 */
+$("#gmapBtn").onclick=()=>{
+  const t=$("#gmap").value.trim(); if(!t)return;
+  const ll=parseLatLng(t);
+  if(ll){ setLatLng(ll[0],ll[1],true); map.setView(ll,16); toast("已解析座標，確認後按儲存"); }
+  else if(/maps\.app\.goo\.gl|goo\.gl\/maps/.test(t)){
+    toast("短網址無法自動解析");
+    alert("Google Maps 短網址（maps.app.goo.gl）瀏覽器無法自動展開。\n請在 Google Maps 開啟該地點後，複製網址列中含座標的完整網址（會包含 @23.xx,120.xx），或直接在地圖上點選定位。");
+  }
+  else toast("找不到座標，請改貼含 @緯度,經度 的完整網址");
+};
+function parseLatLng(text){
+  let m=text.match(/^\s*(-?\d{1,3}\.\d+)\s*,\s*(-?\d{1,3}\.\d+)\s*$/); if(m)return [+m[1],+m[2]];
+  m=text.match(/@(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/); if(m)return [+m[1],+m[2]];
+  m=text.match(/!3d(-?\d{1,3}\.\d+)!4d(-?\d{1,3}\.\d+)/); if(m)return [+m[1],+m[2]];
+  m=text.match(/(?:[?&](?:q|ll|query|destination|center)=)(-?\d{1,3}\.\d+),(-?\d{1,3}\.\d+)/); if(m)return [+m[1],+m[2]];
+  return null;
+}
+
+/* 儲存 */
+$("#saveBtn").onclick=()=>{
+  if(cur<0)return;
+  const lat=parseFloat($("#lat").value), lng=parseFloat($("#lng").value);
+  if(isNaN(lat)||isNaN(lng)){toast("座標無效");return;}
+  if(lat<21.5||lat>25.5||lng<119||lng>122.5){
+    if(!confirm("這個座標看起來不在台灣範圍內，確定要儲存嗎？"))return;
+  }
+  const s=SHOPS[cur];
+  s.lat=+lat.toFixed(6); s.lng=+lng.toFixed(6); s.addr=$("#addr").value.trim(); s.geo="manual";
+  persist(); renderRows();
+  $("#eMeta").innerHTML=`${CATNAME[s.group]||""}${s.area?' ‧ '+s.area:''}　目前：<b style="color:#c2703a">已設定</b>`;
+  $("#saveMsg").textContent="✓ 已儲存（記得最後匯出 shops.json）";
+  toast("已儲存 "+s.name);
+};
+
+/* 匯出 / 匯入 / 重載 */
+$("#btnExport").onclick=()=>{
+  const clean=SHOPS.map(s=>({id:s.id,name:s.name,group:s.group,area:s.area,offer:s.offer,
+    inquiry:s.inquiry,lat:s.lat,lng:s.lng,geo:s.geo,addr:s.addr||""}));
+  const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="shops.json"; a.click();
+  toast("已匯出 shops.json");
+};
+$("#btnImport").onclick=()=>$("#fileInput").click();
+$("#fileInput").onchange=e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{ try{ SHOPS=JSON.parse(rd.result); persist(); cur=-1;
+    $("#empty").style.display="grid";$("#ehd").style.display="none";$("#amap").style.display="none";$("#tools").style.display="none";
+    renderRows(); toast("已匯入"); }catch(err){alert("檔案格式錯誤");} };
+  rd.readAsText(f);
+};
+$("#btnReload").onclick=async()=>{
+  if(!confirm("這會捨棄本機尚未匯出的修改，重新從 data/shops.json 載入。確定？"))return;
+  localStorage.removeItem(LS); SHOPS=[]; cur=-1;
+  $("#empty").style.display="grid";$("#ehd").style.display="none";$("#amap").style.display="none";$("#tools").style.display="none";
+  await load(); toast("已重載");
+};
+
+load();
+</script>
+</body>
+</html>

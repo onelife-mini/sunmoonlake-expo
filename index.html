@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1a2e">
+<title>逐路船騎 ‧ 日月潭｜2026 台北國際旅展優惠導覽</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<style>
+:root{
+  --green:#1a6b4a; --green-dark:#134f37; --green-light:#e8f5ee;
+  --gold:#d4a843; --gold-deep:#c29a3a; --cream:#fdf6e3;
+  --ink:#1a1a2e; --ink-soft:#2d2d44;
+  --text:#333; --muted:#666; --muted-2:#999; --line:#e8e8e8;
+  --bg:#ffffff; --bg-off:#f8f9fa;
+  --shadow:0 4px 20px rgba(0,0,0,.08); --shadow-lg:0 14px 44px rgba(0,0,0,.13);
+  --r:12px; --r-lg:20px; --tr:.3s ease;
+  --fh:"Playfair Display","Noto Serif TC",Georgia,serif;
+  --fb:"Inter","Noto Sans TC","PingFang TC",-apple-system,system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+html{overflow-x:clip}
+body{margin:0;font-family:var(--fb);color:var(--text);background:var(--bg);
+  line-height:1.7;overflow-x:clip;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:720px;margin:0 auto;padding:0 22px}
+.serif{font-family:var(--fh)}
+.kicker{font-family:var(--fb);font-size:12px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:var(--gold-deep)}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;color:#fff;min-height:92vh;display:flex;align-items:center;
+  padding:80px 0 56px;overflow:hidden;background:var(--ink)}
+.hero-slider{position:absolute;inset:0;z-index:0}
+.hero-slide{position:absolute;inset:0;background-size:cover;background-position:center 38%;
+  opacity:0;transition:opacity 1.6s ease}
+.hero-slide.active{opacity:1}
+.hero::before{content:"";position:absolute;inset:0;z-index:1;
+  background:radial-gradient(circle at 78% 12%,rgba(212,168,67,.30),transparent 46%),
+             radial-gradient(circle at 8% 100%,rgba(19,79,55,.42),transparent 45%),
+             linear-gradient(150deg,rgba(20,20,38,.84) 0%,rgba(22,52,42,.72) 52%,rgba(19,79,55,.70) 100%)}
+/* 山稜剪影 */
+.mountains{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;z-index:2;display:block}
+.hero .inner{position:relative;z-index:3;width:100%}
+.hero .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--gold);
+  font-size:12.5px;font-weight:700;letter-spacing:2px;
+  background:rgba(255,255,255,.13);border:1px solid rgba(212,168,67,.4);
+  padding:8px 20px;border-radius:999px;backdrop-filter:blur(8px)}
+.hero h1{font-family:var(--fh);font-weight:700;font-size:62px;line-height:1.05;
+  margin:22px 0 0;letter-spacing:1px}
+.hero h1 .en{display:block;font-size:18px;font-weight:500;letter-spacing:8px;
+  color:rgba(255,255,255,.82);margin-top:14px;text-transform:uppercase}
+.hero .sub{font-size:17px;color:rgba(255,255,255,.9);max-width:30em;margin:20px 0 0;font-weight:300}
+.stats{display:flex;gap:30px;margin:30px 0 0;flex-wrap:wrap}
+.stat .num{font-family:var(--fh);font-size:30px;font-weight:700;color:var(--gold);line-height:1}
+.stat .lbl{font-size:12.5px;color:rgba(255,255,255,.75);letter-spacing:1px;margin-top:5px}
+.pricetag{display:inline-flex;align-items:baseline;gap:12px;margin-top:30px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(212,168,67,.4);
+  padding:14px 20px;border-radius:var(--r);backdrop-filter:blur(6px)}
+.pricetag .ori{font-size:14px;color:rgba(255,255,255,.6);text-decoration:line-through}
+.pricetag .now{font-family:var(--fh);font-size:30px;font-weight:700;color:#fff}
+.pricetag .now b{font-size:15px;font-weight:500;color:var(--gold)}
+.cta{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+.btn{cursor:pointer;font-family:var(--fb);font-weight:600;font-size:15px;letter-spacing:.5px;
+  padding:15px 30px;border-radius:999px;display:inline-flex;align-items:center;gap:9px;
+  border:1.5px solid transparent;transition:var(--tr)}
+.btn-gold{background:var(--gold);color:#3a2a00;box-shadow:0 10px 26px rgba(212,168,67,.32)}
+.btn-gold:hover{background:#e0b652;transform:translateY(-2px)}
+.btn-line{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
+.btn-line:hover{background:rgba(255,255,255,.1);border-color:#fff}
+
+/* ---------- SECTION SHELL ---------- */
+section{padding:64px 0}
+.intro{background:var(--bg-off)}
+.sec-head{text-align:center;max-width:34em;margin:0 auto 40px}
+.sec-head .kicker{display:inline-block;margin-bottom:16px;background:var(--green-light);
+  color:var(--green);padding:7px 16px;border-radius:999px;letter-spacing:1.5px}
+.sec-head h2{font-family:var(--fh);font-size:38px;font-weight:700;color:var(--ink);margin:0;line-height:1.15}
+.sec-head .rule{width:54px;height:3px;background:var(--gold);margin:18px auto 0;border-radius:2px}
+.sec-head p{color:var(--muted);margin:18px 0 0;font-size:15.5px}
+.intro p.lead{font-size:17px;color:#444;text-align:center;max-width:40em;margin:0 auto;font-weight:300}
+
+/* ---------- EXPERIENCE CARDS（交錯大圖卡，仿 sunmoonlaketour）---------- */
+.exp-cards{display:flex;flex-direction:column;gap:30px}
+.exp-card{display:grid;grid-template-columns:1fr 1fr;background:#fff;border:1px solid var(--line);
+  border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);transition:var(--tr)}
+.exp-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
+.exp-card.reverse{direction:rtl}
+.exp-card.reverse>*{direction:ltr}
+.exp-img{position:relative;min-height:250px}
+.exp-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.exp-badge{position:absolute;top:16px;left:16px;width:44px;height:44px;border-radius:50%;
+  background:var(--green);color:#fff;display:grid;place-items:center;font-size:21px;
+  box-shadow:0 5px 14px rgba(0,0,0,.25)}
+.exp-body{padding:30px 28px}
+.exp-body h3{font-family:var(--fh);font-size:23px;font-weight:700;color:var(--ink);margin:0 0 14px}
+.exp-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.exp-meta span{font-size:12px;color:var(--muted);background:var(--bg-off);border:1px solid var(--line);
+  padding:5px 13px;border-radius:999px;font-weight:600}
+.exp-body p{color:var(--muted);font-size:14.5px;margin:0 0 16px;line-height:1.7}
+.exp-hl{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.exp-hl li{display:flex;gap:10px;font-size:14px;color:var(--text);align-items:flex-start}
+.exp-hl li::before{content:"✓";color:var(--green);font-weight:800;flex:0 0 auto}
+@media(max-width:640px){.exp-card,.exp-card.reverse{grid-template-columns:1fr;direction:ltr}}
+
+/* ---------- TOUR / PACKAGE CARD ---------- */
+.tourcard{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;
+  box-shadow:var(--shadow-lg);margin-bottom:26px}
+.tourcard .timg{position:relative;height:230px}
+.tourcard .timg img{width:100%;height:100%;object-fit:cover;display:block}
+.tourcard .tdur{position:absolute;bottom:16px;left:16px;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  color:#fff;padding:7px 16px;border-radius:999px;font-size:12.5px;font-weight:600}
+.tourcard .tbadge{position:absolute;top:16px;right:16px;background:var(--gold);color:#3a2a00;
+  padding:7px 16px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:1px}
+.tourcard .tprice{position:absolute;bottom:16px;right:16px;text-align:right;color:#fff;
+  text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.tourcard .tprice .now{font-family:var(--fh);font-size:26px;font-weight:700}
+.tourcard .tprice .ori{font-size:12px;opacity:.8;text-decoration:line-through;display:block}
+.tourcard .tbody{padding:26px 26px 8px}
+
+/* ---------- ITINERARY ---------- */
+.daycard{background:var(--bg);border:1px solid var(--line);border-radius:var(--r-lg);
+  box-shadow:var(--shadow);padding:26px 24px;margin-bottom:22px}
+.dayhd{display:flex;align-items:center;gap:14px;margin-bottom:6px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.daynum{font-family:var(--fh);font-size:14px;font-weight:700;letter-spacing:2px;color:#fff;
+  background:var(--green);width:54px;height:54px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;text-align:center;line-height:1.1}
+.daynum.d2{background:var(--gold-deep)}
+.dayhd .dt{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--ink)}
+.dayhd .ds{font-size:13px;color:var(--muted)}
+.step{display:flex;gap:16px;padding:16px 0;border-bottom:1px dashed var(--line)}
+.step:last-child{border-bottom:0;padding-bottom:2px}
+.step .ic{flex:0 0 46px;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
+  font-size:21px;background:var(--green-light);border:1px solid #d7ebe0;overflow:hidden}
+.step .ic.photo{flex:0 0 64px;width:64px;height:64px;border-radius:14px;border:0;background:none}
+.step .ic.photo img{width:100%;height:100%;object-fit:cover;border-radius:14px;display:block}
+.step .time{font-size:12px;font-weight:700;color:var(--green);letter-spacing:1px}
+.step .ttl{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--ink);margin:2px 0 3px}
+.step .desc{font-size:14px;color:var(--muted);margin:0}
+.includes{background:linear-gradient(135deg,#fffdf6,var(--cream));border:1px solid #efe2bf;
+  border-radius:var(--r-lg);padding:28px 26px;margin-top:6px}
+.includes h3{font-family:var(--fh);margin:0 0 18px;font-size:21px;font-weight:700;color:#8a6a18;
+  display:flex;align-items:center;gap:10px}
+.includes ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.includes li{display:flex;gap:11px;font-size:15px;align-items:flex-start;color:#4a3f24}
+.includes li::before{content:"✦";color:var(--gold-deep);font-weight:700;flex:0 0 auto}
+.note{font-size:12.5px;color:var(--muted-2);margin-top:18px;text-align:center;font-style:italic}
+
+/* ---------- MAP ---------- */
+.mapwrap{margin-top:26px;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);
+  box-shadow:var(--shadow);position:relative}
+#map{height:380px;width:100%;background:#e8eef0;z-index:1}
+.maplegend{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;padding:14px 16px;
+  background:#fff;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+.maplegend .lg{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.maplegend .dot{width:11px;height:11px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.mapnote{font-size:12px;color:var(--muted-2);text-align:center;margin:10px 0 0;font-style:italic}
+.leaflet-popup-content{font-family:var(--fb);margin:13px 15px;line-height:1.55}
+.leaflet-popup-content .pn{font-family:var(--fh);font-size:16px;font-weight:700;color:var(--ink)}
+.leaflet-popup-content .pa{font-size:12px;color:var(--muted);margin:2px 0 7px}
+.leaflet-popup-content .po{font-size:13px;color:#3f3f3f;background:var(--bg-off);
+  border-left:3px solid var(--gold);padding:7px 9px;border-radius:6px;margin-bottom:8px}
+.leaflet-popup-content .po.inq{border-left-color:var(--muted-2);color:var(--muted)}
+.leaflet-popup-content .pg{display:inline-block;font-size:11px;color:var(--muted-2);margin-bottom:8px}
+.leaflet-popup-content a.pnav{display:inline-block;background:var(--green);color:#fff;font-weight:600;
+  font-size:13px;padding:7px 13px;border-radius:8px;text-decoration:none}
+
+/* ---------- FILTER ---------- */
+.filter{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+  padding:16px 0;margin:30px -22px 0;border-bottom:1px solid var(--line)}
+.filter .row{display:flex;gap:10px;overflow-x:auto;padding:0 22px;scrollbar-width:none}
+.filter .row::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;color:var(--text);
+  font-family:var(--fb);font-weight:600;font-size:14px;padding:9px 17px;border-radius:999px;cursor:pointer;
+  white-space:nowrap;transition:var(--tr);display:inline-flex;align-items:center;gap:7px}
+.chip:hover{border-color:var(--green)}
+.chip .n{font-size:11.5px;opacity:.55;font-weight:600}
+.chip.on{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 6px 16px rgba(26,107,74,.25)}
+.chip.on .n{opacity:.85}
+
+/* ---------- SHOP CARDS ---------- */
+.grid{display:grid;gap:18px;margin-top:26px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:22px 20px 18px;box-shadow:var(--shadow);position:relative;transition:var(--tr)}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.card.dim{background:var(--bg-off)}
+.card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.card .name{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--ink);line-height:1.3;margin:0}
+.cat{flex:0 0 auto;font-size:11px;font-weight:700;letter-spacing:1px;color:#fff;
+  padding:5px 11px;border-radius:999px;background:var(--gc);white-space:nowrap}
+.area{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--muted);
+  font-weight:500;margin-bottom:12px}
+.offer{background:var(--bg-off);border-left:3px solid var(--gold);border-radius:8px;
+  padding:12px 14px;font-size:14px;color:#3f3f3f;display:flex;gap:9px;align-items:flex-start}
+.offer .star{color:var(--gold-deep);flex:0 0 auto}
+.offer.inq{border-left-color:var(--muted-2);color:var(--muted);background:#f4f4f5}
+.actions{display:flex;gap:9px;margin-top:14px}
+.act{flex:1;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-family:var(--fb);
+  font-weight:600;font-size:13.5px;padding:11px 6px;border-radius:10px;display:inline-flex;
+  align-items:center;justify-content:center;gap:6px;color:var(--text);transition:var(--tr)}
+.act:hover{border-color:var(--green);color:var(--green)}
+.act.map:hover{background:var(--green-light)}
+.act.claim{background:var(--gold);border-color:var(--gold);color:#3a2a00}
+.act.claim:hover{background:#e0b652;color:#3a2a00}
+.act.claim.done{background:var(--green-light);border-color:#bfe0cd;color:var(--green)}
+
+.g-sup{--gc:#2E7DA1}.g-bike{--gc:#1a6b4a}.g-stay{--gc:#b5853f}.g-eat{--gc:#c2703a}.g-play{--gc:#6d5a8c}
+
+/* ---------- MODAL ---------- */
+.overlay{position:fixed;inset:0;background:rgba(26,26,46,.6);backdrop-filter:blur(5px);
+  z-index:100;display:none;align-items:center;justify-content:center;padding:24px}
+.overlay.show{display:flex;animation:fade .2s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.voucher{background:#fff;border-radius:24px;max-width:380px;width:100%;overflow:hidden;
+  box-shadow:0 30px 70px rgba(0,0,0,.4);animation:pop .28s cubic-bezier(.2,1.2,.4,1)}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.voucher .top{background:linear-gradient(135deg,var(--ink),var(--green-dark));color:#fff;
+  padding:30px 24px 24px;text-align:center}
+.voucher .check{width:64px;height:64px;border-radius:50%;background:var(--gold);color:#fff;
+  display:grid;place-items:center;font-size:32px;margin:0 auto 14px;box-shadow:0 8px 20px rgba(212,168,67,.45)}
+.voucher .top h3{margin:0;font-size:12px;letter-spacing:4px;color:var(--gold);font-weight:700;text-transform:uppercase}
+.voucher .top .vn{font-family:var(--fh);margin:8px 0 0;font-size:23px;font-weight:700}
+.perf{height:0;border-top:2px dashed var(--line);position:relative}
+.perf::before,.perf::after{content:"";position:absolute;top:-11px;width:22px;height:22px;border-radius:50%;background:rgba(26,26,46,.6)}
+.perf::before{left:-11px}.perf::after{right:-11px}
+.voucher .body{padding:22px 24px 8px}
+.voucher .voffer{background:var(--cream);border-radius:12px;padding:14px;font-size:14.5px;margin-bottom:16px;color:#4a3f24}
+.voucher .meta{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.voucher .stamp{font-family:var(--fh);font-weight:700;color:var(--green);font-size:16px}
+.voucher .hint{text-align:center;font-size:13px;color:var(--gold-deep);font-weight:600;margin:18px 0 4px}
+.voucher .foot{padding:10px 24px 24px}
+.voucher .close{width:100%;padding:15px;border:0;border-radius:12px;background:var(--ink);color:#fff;
+  font-family:var(--fb);font-weight:600;font-size:16px;cursor:pointer;transition:var(--tr)}
+.voucher .close:hover{background:var(--ink-soft)}
+
+.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:#fff;padding:13px 22px;border-radius:999px;font-weight:600;font-size:14px;
+  opacity:0;pointer-events:none;transition:var(--tr);z-index:200;box-shadow:var(--shadow-lg)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- FOOTER ---------- */
+footer{background:var(--ink);color:#c7c7d2;padding:54px 0 46px}
+footer .fh{font-family:var(--fh);color:#fff;font-size:26px;font-weight:700;margin:0 0 6px}
+footer .fgold{color:var(--gold);font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700}
+footer p{margin:6px 0;font-size:14px;opacity:.85}
+footer .disc{font-size:12px;opacity:.55;margin-top:20px;line-height:1.8;
+  border-top:1px solid rgba(255,255,255,.12);padding-top:18px}
+
+/* ---------- LINE 浮鈕 ---------- */
+.line-fab{position:fixed;right:18px;bottom:20px;z-index:90;display:inline-flex;align-items:center;gap:9px;
+  background:#06C755;color:#fff;padding:14px 22px;border-radius:999px;font-family:var(--fb);font-weight:700;
+  font-size:15px;box-shadow:0 8px 24px rgba(6,199,85,.45);transition:var(--tr)}
+.line-fab:hover{background:#05b34c;transform:translateY(-2px);box-shadow:0 12px 30px rgba(6,199,85,.5)}
+.line-fab svg{width:23px;height:23px;flex:0 0 auto}
+@media(max-width:600px){.line-fab{padding:13px 18px;font-size:14px;right:14px;bottom:16px}}
+
+@media(max-width:600px){
+  .hero h1{font-size:44px}.hero{min-height:auto;padding:72px 0 48px}
+  .sec-head h2{font-size:30px}section{padding:50px 0}
+  .stats{gap:22px}.stat .num{font-size:25px}
+}
+@media(min-width:620px){.grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="hero-slider" id="heroSlider">
+    <div class="hero-slide active" style="background-image:url('images/hero.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('images/hero2.jpg')"></div>
+    <div class="hero-slide" style="background-image:url('images/hero3.jpg')"></div>
+  </div>
+  <div class="wrap inner">
+    <span class="eyebrow">2026 台北國際旅展 ‧ 南投日月潭</span>
+    <h1 class="serif">逐路船騎<span class="en">Sun Moon Lake</span></h1>
+    <p class="sub">魚人帶路，把「路 ‧ 船 ‧ 騎」一次玩遍——日月老茶廠、月牙灣 SUP、環湖單車，串起在地店家的獨家旅展優惠。</p>
+    <div class="stats">
+      <div class="stat"><div class="num">50+</div><div class="lbl">合作優惠店家</div></div>
+      <div class="stat"><div class="num">2<small style="font-size:14px"> 天 1 夜</small></div><div class="lbl">招牌逐路船騎</div></div>
+      <div class="stat"><div class="num">$3,000</div><div class="lbl">旅展現場現省</div></div>
+    </div>
+    <div class="pricetag">
+      <span class="ori">原價 $8,990</span>
+      <span class="now"><b>2 人 </b>$5,990</span>
+    </div>
+    <div class="cta">
+      <a href="#route" class="btn btn-gold">探索兩日遊程 →</a>
+      <a href="#shops" class="btn btn-line">瀏覽優惠店家</a>
+    </div>
+  </div>
+  <svg class="mountains" viewBox="0 0 1440 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path fill="#15402f" opacity=".55" d="M0,80 L240,40 L480,90 L720,30 L960,85 L1200,45 L1440,80 L1440,140 L0,140 Z"></path>
+    <path fill="#f8f9fa" d="M0,110 L240,86 L480,118 L720,92 L960,120 L1200,96 L1440,114 L1440,140 L0,140 Z"></path>
+  </svg>
+</header>
+
+<!-- ===== INTRO ===== -->
+<section class="intro">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Discover Sun Moon Lake</span>
+      <h2>台灣最美的湖光山色</h2>
+      <div class="rule"></div>
+    </div>
+    <p class="lead">日月潭，台灣最大的天然湖泊，海拔 748 公尺，群山環抱、邵族文化薈萃。騎一段 CNN 票選全球最美自行車道、在晨霧中划行立槳、品一杯日月潭紅茶——這趟「逐路船騎」，把湖畔最精華的玩法收進兩天。</p>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <!-- ===== EXPERIENCES ===== -->
+  <section id="exp">
+    <div class="sec-head">
+      <span class="kicker">Experiences ‧ 體驗亮點</span>
+      <h2>把「路 ‧ 船 ‧ 騎」一次玩遍</h2>
+      <div class="rule"></div>
+      <p>日月潭最精華的四種玩法，都收進這趟逐路船騎。</p>
+    </div>
+    <div class="exp-cards">
+
+      <article class="exp-card">
+        <div class="exp-img"><img src="images/sup.jpg" alt="月牙灣 SUP 立槳" loading="lazy"><span class="exp-badge">🌊</span></div>
+        <div class="exp-body">
+          <h3>月牙灣 ‧ SUP 立槳</h3>
+          <div class="exp-meta"><span>⏱ 約 90 分鐘</span><span>🔰 新手友善</span><span>🧑‍🏫 教練帶領</span></div>
+          <p>從水面看湖光山色，晨霧中划行橫渡，日月潭最療癒的視角。</p>
+          <ul class="exp-hl">
+            <li>專業教練帶領、全程裝備與保險</li>
+            <li>月牙灣下水，划行至北旦碼頭上岸</li>
+            <li>免經驗，大小朋友都能輕鬆上手</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="exp-card reverse">
+        <div class="exp-img"><img src="images/bike.jpg" alt="環湖單車" loading="lazy"><span class="exp-badge">🚲</span></div>
+        <div class="exp-body">
+          <h3>環湖單車 ‧ 最美湖岸線</h3>
+          <div class="exp-meta"><span>⏱ 約 4 小時</span><span>🏆 CNN 十大最美車道</span><span>⚡ 電輔車可選</span></div>
+          <p>沿著全球公認最美的湖畔自行車道，把日月潭的湖景一路騎進心裡。</p>
+          <ul class="exp-hl">
+            <li>向山遊客中心起點，平緩好騎</li>
+            <li>穿越水上自行車道與絕美觀景點</li>
+            <li>適合親子與輕鬆騎乘</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="exp-card">
+        <div class="exp-img"><img src="images/tea.jpg" alt="日月老茶廠" loading="lazy"><span class="exp-badge">🍵</span></div>
+        <div class="exp-body">
+          <h3>日月老茶廠 ‧ 認識紅茶</h3>
+          <div class="exp-meta"><span>🎬《茶金》場景</span><span>🏭 製茶巡禮</span><span>🍵 品茶吃茶餐</span></div>
+          <p>走進日治時期的老茶廠，認識日月潭阿薩姆與台茶十八號的故事。</p>
+          <ul class="exp-hl">
+            <li>製茶廠巡禮、現場品紅茶</li>
+            <li>第一日午餐：日月茶套餐</li>
+            <li>選購碳足跡標章紅茶伴手禮</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="exp-card reverse">
+        <div class="exp-img"><img src="images/balloon.jpg" alt="薰衣草森林 氦氣球" loading="lazy"><span class="exp-badge">🎈</span></div>
+        <div class="exp-body">
+          <h3>薰衣草森林 ‧ 九九峰氦氣球</h3>
+          <div class="exp-meta"><span>🚗 回程最佳中繼</span><span>🌿 香草餐盒</span><span>🎈 氦氣球體驗</span></div>
+          <p>回程順遊南投九九峰園區，在香草香氣裡用餐，視天候搭乘氦氣球俯瞰山景。</p>
+          <ul class="exp-hl">
+            <li>門票＋第二日香草套餐午餐</li>
+            <li>視天候可加購搭乘氦氣球</li>
+            <li>回程不繞路，完美收尾</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ===== ROUTE ===== -->
+  <section id="route">
+    <div class="sec-head">
+      <span class="kicker">Signature Route ‧ 二日遊</span>
+      <h2>兩日遊行程，2 人成行</h2>
+      <div class="rule"></div>
+      <p>逐路船騎招牌玩法，串起日月潭在地店家合作，彈性安排、時間為示意。</p>
+    </div>
+
+    <div class="tourcard">
+      <div class="timg">
+        <img src="images/stay.jpg" alt="逐路船騎兩日遊" loading="lazy">
+        <span class="tbadge">★ 招牌主推</span>
+        <span class="tdur">🗓 2 天 1 夜 ‧ 2 人成行</span>
+        <span class="tprice"><span class="ori">原價 $8,990</span><span class="now">2 人 $5,990</span></span>
+      </div>
+      <div class="tbody">
+        <p style="color:var(--muted);font-size:14.5px;margin:0 0 4px">魚人帶路，茶廠、SUP、環湖單車、香草氣球一次玩遍，旅展現場報名現省 <b style="color:#c2703a">$3,000</b>。</p>
+      </div>
+    </div>
+
+    <div class="daycard">
+      <div class="dayhd">
+        <div class="daynum">DAY<br>01</div>
+        <div><div class="dt">逐路 ‧ 船 ‧ 騎</div><div class="ds">茶廠導覽 → 月牙灣 SUP → 環湖單車 → 入住</div></div>
+      </div>
+      <div id="day1"></div>
+    </div>
+    <div class="daycard">
+      <div class="dayhd">
+        <div class="daynum d2">DAY<br>02</div>
+        <div><div class="dt">伴手 ‧ 香草 ‧ 賦歸</div><div class="ds">湖畔退房 → 魚池伴手禮 → 九九峰氦氣球 → 賦歸</div></div>
+      </div>
+      <div id="day2"></div>
+    </div>
+
+    <div class="includes">
+      <h3>✦ 費用包含</h3>
+      <ul id="includes"></ul>
+      <p class="note">＊時間為示意，實際依現場與天候調整。旅展現場報名享現省 $3,000 優惠。</p>
+    </div>
+  </section>
+
+  <!-- ===== SHOPS ===== -->
+  <section id="shops">
+    <div class="sec-head">
+      <span class="kicker">Local Partners ‧ 優惠店家</span>
+      <h2>在地店家旅展優惠</h2>
+      <div class="rule"></div>
+      <p>共 <b id="total">50</b> 家合作店家。點分類篩選，按「導航」找路、「複製」存資訊、「領優惠」出示給店家折抵。</p>
+    </div>
+
+    <div class="filter"><div class="row" id="filterRow"></div></div>
+
+    <div class="mapwrap">
+      <div id="map"></div>
+      <div class="maplegend" id="maplegend"></div>
+    </div>
+    <p class="mapnote">點圖釘看店家優惠與導航。標示「區域示意」者為近似位置，精確地點請點導航。</p>
+
+    <div class="grid" id="grid"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgold">Sun Moon Lake ‧ Nantou</div>
+    <h4 class="fh">逐路船騎 ‧ 日月潭</h4>
+    <p>主辦合作：OneLife 玩生活 ‧ 魚人帶路</p>
+    <p>地點：南投日月潭（水社 ‧ 月牙灣 ‧ 伊達邵 ‧ 魚池）</p>
+    <p>2026 台北國際旅展現場專用優惠導覽</p>
+    <p class="disc">優惠內容以各店家現場公告為準，部分店家優惠尚在洽談中（標示「優惠洽詢現場」）。「領優惠」核銷紀錄僅存於本手機瀏覽器，供現場出示店家辨識，非官方電子票券，恕不負保證與兌換責任。地圖導航以店名搜尋為主，請以實際地址為準。</p>
+    <p class="disc">照片來源（CC 授權，Wikimedia Commons）：日月潭日出 © rheins (CC BY)；日月潭湖景 © Ken Marshall (CC BY)；日月潭 © M. Weitzel (CC BY)；茶園 © eazytraveler (CC BY)；SUP © Guillaume Bonastre (CC BY)；日月潭湖景 © ironypoisoning (CC BY-SA)；水社碼頭 © LowensteinYang (CC BY-SA)；台灣熱氣球節 © Dan Cheung (CC BY-SA)。</p>
+  </div>
+</footer>
+
+<!-- ===== LINE 聯絡浮鈕 ===== -->
+<a class="line-fab" href="https://line.me/R/ti/p/%40onelife" target="_blank" rel="noopener" aria-label="加 LINE 好友詢問">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3zM8.13 13.32H6.18a.51.51 0 0 1-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.26h1.43c.29 0 .52.23.52.51s-.23.51-.52.51zm2.02-.51c0 .28-.23.51-.51.51s-.51-.23-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm4.56 0a.51.51 0 0 1-.35.49.5.5 0 0 1-.58-.18l-1.95-2.66v2.35c0 .28-.23.51-.52.51a.51.51 0 0 1-.51-.51V9.04c0-.22.14-.42.35-.49a.51.51 0 0 1 .58.19l1.96 2.66V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm3.06-2.39c.28 0 .51.23.51.52s-.23.51-.51.51h-1.43v.85h1.43c.28 0 .51.23.51.51s-.23.52-.51.52h-1.95a.51.51 0 0 1-.51-.52V9.04c0-.28.23-.51.51-.51h1.95c.28 0 .51.23.51.51s-.23.52-.51.52h-1.43v.85h1.43z"/></svg>
+  加 LINE 好友
+</a>
+
+<!-- ===== 核銷卡 MODAL ===== -->
+<div class="overlay" id="overlay">
+  <div class="voucher">
+    <div class="top">
+      <div class="check">✓</div>
+      <h3>Voucher Claimed ‧ 優惠已領取</h3>
+      <div class="vn" id="vName">店名</div>
+    </div>
+    <div class="perf"></div>
+    <div class="body">
+      <div class="voffer" id="vOffer">優惠內容</div>
+      <div class="meta"><span>領取時間</span><span class="stamp" id="vTime">--</span></div>
+      <div class="hint">📱 請將本畫面出示給店家折抵</div>
+    </div>
+    <div class="foot"><button class="close" id="vClose">關閉</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">已複製</div>
+
+<script>
+/* ====== 店家資料（由 Excel 軸線一清洗，注入） ====== */
+let SHOPS = [];
+
+/* ====== 遊程資料 ====== */
+const DAY1=[
+  {ic:"🍵",img:"images/tea.jpg",time:"10:00",ttl:"日月老茶廠 ‧ 認識日月潭紅茶",desc:"《茶金》場景，製茶廠巡禮、品紅茶、吃茶餐"},
+  {ic:"🚩",time:"13:00–14:00",ttl:"向山 ‧ 集合出發",desc:"向山遊客中心集合，專人導覽開場，沿湖風光導覽前往月牙灣"},
+  {ic:"🌊",img:"images/sup.jpg",time:"14:00–15:30",ttl:"月牙灣 ‧ SUP 下水",desc:"教練帶領立槳體驗，從水面看湖光山色，划行橫渡至北旦碼頭上岸"},
+  {ic:"🚲",img:"images/bike.jpg",time:"15:30–16:30",ttl:"換單車 ‧ 沿湖騎回向山",desc:"探踏最美湖岸線，騎回起點，向山圓滿結束"},
+  {ic:"🛏️",img:"images/stay.jpg",time:"傍晚",ttl:"入住日月潭",desc:"優惠店家自行預訂，享旅展優惠折扣"},
+];
+const DAY2=[
+  {ic:"🛏️",time:"11:00",ttl:"民宿飯店退房",desc:"享受日月潭湖畔最後時光"},
+  {ic:"🎁",time:"11:00–12:30",ttl:"魚池伴手禮",desc:"空中的魚紅茶乳酪／魚光窯烤麵包／日月老茶廠"},
+  {ic:"🎈",img:"images/balloon.jpg",time:"12:30–14:30",ttl:"薰衣草森林 ‧ 南投九九峰園區（氦氣球樂園）",desc:"回程最佳中繼站，內用香草餐盒（門票＋套餐），視天候可加購搭氦氣球"},
+  {ic:"🚗",time:"14:30",ttl:"賦歸",desc:"帶著滿滿回憶，平安返程"},
+];
+const INCLUDES=["魚人一日導覽","月牙灣 SUP 體驗","環湖單車租借 2 台",
+  "日月老茶廠巡禮 ＋ 第一日午餐（日月茶套餐）",
+  "薰衣草森林 ‧ 九九峰園區（氦氣球樂園）門票 ＋ 第二日午餐（香草套餐）",
+  "南投風味餐盒｜魚光窯烤","活動保險"];
+
+/* ====== 群組設定 ====== */
+const GROUPS=[
+  {key:"all",label:"全部",emoji:"✨"},
+  {key:"sup",label:"船 ‧ SUP",emoji:"🌊"},
+  {key:"bike",label:"騎 ‧ 單車",emoji:"🚲"},
+  {key:"stay",label:"住 ‧ 住宿",emoji:"🛏️"},
+  {key:"eat",label:"食 ‧ 吃喝",emoji:"☕"},
+  {key:"play",label:"玩買 ‧ 體驗",emoji:"🎁"},
+];
+const CATNAME={sup:"SUP",bike:"單車",stay:"住宿",eat:"吃喝",play:"體驗"};
+const GCOLOR={sup:"#2E7DA1",bike:"#1a6b4a",stay:"#b5853f",eat:"#c2703a",play:"#6d5a8c"};
+
+const $=s=>document.querySelector(s);
+const esc=s=>(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const claimKey=n=>"lcq:claim:"+n;
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),1600);}
+
+function step(s){
+  const ic=s.img
+    ? `<div class="ic photo"><img src="${s.img}" alt="${esc(s.ttl)}" loading="lazy"></div>`
+    : `<div class="ic">${s.ic}</div>`;
+  return `<div class="step">${ic}<div class="t">
+  <div class="time">${s.time}</div><div class="ttl">${esc(s.ttl)}</div><p class="desc">${esc(s.desc)}</p></div></div>`;}
+$("#day1").innerHTML=DAY1.map(step).join("");
+$("#day2").innerHTML=DAY2.map(step).join("");
+$("#includes").innerHTML=INCLUDES.map(i=>`<li>${esc(i)}</li>`).join("");
+
+let current="all";
+function counts(){const c={all:SHOPS.length};SHOPS.forEach(s=>c[s.group]=(c[s.group]||0)+1);return c;}
+function renderFilter(){
+  const c=counts();
+  $("#filterRow").innerHTML=GROUPS.map(g=>{
+    const n=c[g.key]||0; if(g.key!=="all"&&n===0)return"";
+    return `<button class="chip ${g.key===current?'on':''}" data-g="${g.key}">
+      ${g.emoji} ${g.label} <span class="n">${n}</span></button>`;
+  }).join("");
+  $("#filterRow").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{current=b.dataset.g;renderFilter();renderGrid();renderMap();});
+}
+
+/* ====== 地圖 ====== */
+let map=null, markerLayer=null;
+function initMap(){
+  if(typeof L==="undefined"){return;}
+  map=L.map("map",{scrollWheelZoom:false}).setView([23.864,120.915],13);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    maxZoom:18, attribution:'© OpenStreetMap'}).addTo(map);
+  markerLayer=L.layerGroup().addTo(map);
+  // 圖例
+  $("#maplegend").innerHTML=GROUPS.filter(g=>g.key!=="all").map(g=>
+    `<span class="lg"><span class="dot" style="background:${GCOLOR[g.key]}"></span>${g.label}</span>`).join("");
+  renderMap();
+  // 進入視野時重算尺寸，避免初次載入有灰格未填滿
+  setTimeout(()=>{map.invalidateSize();renderMap();},300);
+  if("IntersectionObserver" in window){
+    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){map.invalidateSize();}}),{threshold:.1});
+    io.observe(document.getElementById("map"));
+  }
+}
+function renderMap(){
+  if(!map||!markerLayer)return;
+  markerLayer.clearLayers();
+  const list=SHOPS.filter(s=>current==="all"||s.group===current);
+  const pts=[];
+  list.forEach(s=>{
+    if(typeof s.lat!=="number")return;
+    const m=L.circleMarker([s.lat,s.lng],{radius:8,color:"#fff",weight:2,
+      fillColor:GCOLOR[s.group]||"#888",fillOpacity:1});
+    const offer=s.inquiry
+      ? `<div class="po inq">🕓 優惠洽詢現場</div>`
+      : `<div class="po">✦ ${esc(s.offer)}</div>`;
+    const geoNote=s.geo==="area"?`<span class="pg">📍 區域示意位置</span>`:"";
+    m.bindPopup(`<div class="pn">${esc(s.name)}</div>
+      <div class="pa">${esc(CATNAME[s.group]||"")} ‧ ${esc(s.area||"日月潭周邊")}</div>
+      ${offer}${geoNote}<br>
+      <a class="pnav" href="${mapUrl(s.name)}" target="_blank" rel="noopener">🧭 開啟導航</a>`);
+    markerLayer.addLayer(m);
+    pts.push([s.lat,s.lng]);
+  });
+  if(pts.length){map.fitBounds(pts,{padding:[40,40],maxZoom:14});}
+}
+
+function mapUrl(name){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(name.replace(/（.*?）|\(.*?\)/g,"").trim()+" 日月潭 南投");}
+function card(s,idx){
+  const claimed=localStorage.getItem(claimKey(s.name));
+  const offerHtml=s.inquiry
+    ? `<div class="offer inq">🕓 優惠洽詢現場（店家優惠洽談中）</div>`
+    : `<div class="offer"><span class="star">✦</span><span>${esc(s.offer)}</span></div>`;
+  let claimBtn="";
+  if(!s.inquiry){
+    claimBtn = claimed
+      ? `<button class="act claim done" data-i="${idx}">✓ 已領取</button>`
+      : `<button class="act claim" data-i="${idx}">🎟️ 領優惠</button>`;
+  }
+  return `<div class="card g-${s.group} ${s.inquiry?'dim':''}">
+    <div class="top">
+      <h3 class="name">${esc(s.name)}</h3>
+      <span class="cat">${CATNAME[s.group]||""}</span>
+    </div>
+    <div class="area">📍 ${esc(s.area||"日月潭周邊")}</div>
+    ${offerHtml}
+    <div class="actions">
+      <a class="act map" href="${mapUrl(s.name)}" target="_blank" rel="noopener">🧭 導航</a>
+      <button class="act" data-copy="${idx}">📋 複製</button>
+      ${claimBtn}
+    </div>
+  </div>`;
+}
+function renderGrid(){
+  const list=SHOPS.map((s,i)=>({s,i})).filter(o=>current==="all"||o.s.group===current);
+  $("#grid").innerHTML=list.map(o=>card(o.s,o.i)).join("");
+  $("#grid").querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>copyShop(SHOPS[+b.dataset.copy]));
+  $("#grid").querySelectorAll(".act.claim").forEach(b=>b.onclick=()=>openVoucher(SHOPS[+b.dataset.i]));
+}
+
+function copyShop(s){
+  const txt=`${s.name}\n${s.inquiry?'優惠洽詢現場':('旅展優惠：'+s.offer)}\n${mapUrl(s.name)}`;
+  const done=()=>toast("已複製店家資訊");
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>fallbackCopy(txt,done));}
+  else fallbackCopy(txt,done);
+}
+function fallbackCopy(txt,cb){const ta=document.createElement("textarea");ta.value=txt;
+  ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
+  try{document.execCommand("copy");cb();}catch(e){toast("複製失敗，請手動選取");}document.body.removeChild(ta);}
+
+function fmt(d){const p=n=>String(n).padStart(2,"0");
+  return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;}
+function openVoucher(s){
+  let ts=localStorage.getItem(claimKey(s.name));
+  if(!ts){ts=new Date().toISOString();localStorage.setItem(claimKey(s.name),ts);renderFilter();renderGrid();}
+  $("#vName").textContent=s.name;
+  $("#vOffer").textContent=s.offer||"旅展現場優惠";
+  $("#vTime").textContent=fmt(new Date(ts));
+  $("#overlay").classList.add("show");
+}
+$("#vClose").onclick=()=>$("#overlay").classList.remove("show");
+$("#overlay").onclick=e=>{if(e.target.id==="overlay")$("#overlay").classList.remove("show");};
+
+// 對仍為「區域示意」的點做散佈，避免重疊；精準／手動點維持原座標
+function applyDisplayJitter(list){
+  const groups={};
+  list.forEach(s=>{ if(s.geo==="area"){ const k=s.lat+","+s.lng; (groups[k]=groups[k]||[]).push(s);} });
+  Object.keys(groups).forEach(k=>{
+    const arr=groups[k]; if(arr.length<2)return;
+    arr.forEach((s,i)=>{ const ring=Math.floor(i/8), r=0.0032+0.0016*ring,
+      ang=2*Math.PI*(i%8)/Math.min(8,arr.length)+ring*0.4;
+      s.lat=+(s.lat+r*Math.cos(ang)).toFixed(6);
+      s.lng=+(s.lng+r*Math.sin(ang)/Math.cos(s.lat*Math.PI/180)).toFixed(6);
+    });
+  });
+}
+async function boot(){
+  try{
+    const res=await fetch("data/shops.json",{cache:"no-store"});
+    if(!res.ok) throw new Error(res.status);
+    SHOPS=await res.json();
+  }catch(e){
+    $("#grid").innerHTML=`<p style="color:#888;text-align:center;padding:20px">店家資料載入失敗（請透過伺服器或部署後的網址開啟，勿用 file:// 直接雙擊）。</p>`;
+    $("#total").textContent="0"; return;
+  }
+  applyDisplayJitter(SHOPS);
+  $("#total").textContent=SHOPS.length;
+  renderFilter();renderGrid();initMap();
+}
+boot();
+
+/* Hero 多照輪播（跨淡） */
+(function(){
+  const slides=document.querySelectorAll("#heroSlider .hero-slide");
+  if(slides.length<2)return;
+  let i=0;
+  setInterval(()=>{ slides[i].classList.remove("active"); i=(i+1)%slides.length; slides[i].classList.add("active"); },5000);
+})();
+</script>
+</body>
+</html>

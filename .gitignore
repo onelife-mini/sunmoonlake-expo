@@ -1,0 +1,13 @@
+# 只收網站檔，其餘全部忽略
+/*
+
+# 網站本體
+!index.html
+!admin.html
+!images/
+!data/
+
+# GitHub Pages 與專案設定
+!.nojekyll
+!.gitignore
+!README.md
