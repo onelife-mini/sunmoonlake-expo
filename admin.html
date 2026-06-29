@@ -207,7 +207,7 @@ $("#search").oninput=e=>{q=e.target.value.trim();renderRows();};
 function ensureMap(){
   if(map)return;
   map=L.map("amap").setView([23.864,120.915],13);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:20,subdomains:"abcd",detectRetina:true,attribution:"© OpenStreetMap、© CARTO"}).addTo(map);
   map.on("click",e=>setLatLng(e.latlng.lat,e.latlng.lng,true));
 }
 function select(i){

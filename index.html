@@ -2087,8 +2087,9 @@ let map=null, markerLayer=null;
 function initMap(){
   if(typeof L==="undefined"){return;}
   map=L.map("map",{scrollWheelZoom:false}).setView([23.864,120.915],13);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-    maxZoom:18, attribution:'© OpenStreetMap'}).addTo(map);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{
+    maxZoom:19, subdomains:"abcd", detectRetina:true,
+    attribution:'© OpenStreetMap、© CARTO'}).addTo(map);
   markerLayer=L.layerGroup().addTo(map);
   // 圖例
   $("#maplegend").innerHTML=GROUPS.filter(g=>g.key!=="all").map(g=>
