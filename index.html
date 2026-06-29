@@ -820,7 +820,7 @@ section { padding: 72px 0; }
   align-items: center;
   gap: 16px;
   padding: 22px 26px 18px;
-  background: var(--bg-off);
+  background: var(--bg);
   border-bottom: 1px solid var(--line);
 }
 .daynum {
@@ -875,7 +875,7 @@ section { padding: 72px 0; }
   display: grid;
   place-items: center;
   font-size: 22px;
-  background: var(--bg-off);
+  background: var(--bg);
   border: 2px solid var(--orange);
   overflow: hidden;
   position: relative;
@@ -1066,6 +1066,49 @@ section { padding: 72px 0; }
   .shop-row-hd h3 { font-size:18px; }
   .shop-scroller .card { flex:0 0 84%; width:84%; }
 }
+
+/* ===== 折扣券風店家 ===== */
+.shop-search{ display:flex; align-items:center; gap:9px; background:#fff; border:1px solid var(--line); border-radius:999px; padding:10px 18px; margin:20px 0 14px; }
+.shop-search .si{ font-size:15px; opacity:.55; }
+.shop-search input{ flex:1; border:0; outline:0; background:none; font-family:var(--fb); font-size:15px; color:var(--ink); }
+.shop-search input::placeholder{ color:var(--muted-2); }
+.map-toggle{ display:inline-flex; align-items:center; gap:7px; background:#fff; border:1.5px solid var(--teal); color:var(--teal); font-family:var(--fb); font-weight:700; font-size:14px; border-radius:999px; padding:9px 18px; cursor:pointer; margin:2px 0 4px; transition:var(--tr); }
+.map-toggle:hover{ background:#e1f3f1; }
+.mapwrap[hidden]{ display:none; }
+#mapWrap{ margin:12px 0 6px; }
+
+.cpn-group{ margin-top:24px; }
+.cpn-grouphd{ display:flex; align-items:center; gap:9px; font-family:var(--fh); font-size:18px; font-weight:900; color:var(--ink); margin:0 2px 13px; }
+.cpn-grouphd .rdot{ width:11px; height:11px; border-radius:50%; flex:0 0 auto; }
+.cpn-grouphd .cnt{ font-size:12px; font-weight:700; color:#fff; background:var(--ink); border-radius:999px; padding:2px 9px; }
+
+.coupon{ display:flex; background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-bottom:12px; box-shadow:0 4px 16px rgba(25,55,67,.06); }
+.coupon.dim{ opacity:.92; }
+.cpn-stub{ flex:0 0 78px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; text-align:center; padding:10px 4px; }
+.cpn-stub.d-cash{ background:var(--orange); }
+.cpn-stub.d-pct{ background:var(--teal); }
+.cpn-stub.d-gift{ background:var(--sky); }
+.cpn-stub.d-other{ background:#c2703a; }
+.cpn-stub.d-inq{ background:#9aa6ab; }
+.cs-big{ font-family:var(--fh); font-size:25px; font-weight:900; line-height:1; }
+.cpn-stub.d-inq .cs-big, .cpn-stub.d-gift .cs-big, .cpn-stub.d-other .cs-big{ font-size:18px; }
+.cs-unit{ font-size:12px; font-weight:700; margin-top:2px; }
+.cpn-body{ flex:1; min-width:0; padding:13px 15px; border-left:2px dashed var(--line); position:relative; }
+.cpn-body::before, .cpn-body::after{ content:""; position:absolute; left:-7px; width:12px; height:12px; border-radius:50%; background:var(--bg); }
+.cpn-body::before{ top:-7px; }
+.cpn-body::after{ bottom:-7px; }
+.cpn-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+.cpn-name{ font-family:var(--fh); font-size:16px; font-weight:900; color:var(--ink); margin:0; line-height:1.3; }
+.cpn-cat{ flex:0 0 auto; font-size:10.5px; font-weight:700; color:var(--teal); background:#e1f3f1; border-radius:999px; padding:3px 9px; white-space:nowrap; }
+.cpn-area{ font-size:12px; color:var(--muted); margin:4px 0 7px; }
+.cpn-offer{ font-size:13px; color:#444; line-height:1.55; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; margin-bottom:11px; }
+.cpn-acts{ display:flex; align-items:center; gap:12px; }
+.cpn-claim{ background:var(--ink); color:#fff; border:0; font-family:var(--fb); font-weight:700; font-size:13px; border-radius:999px; padding:7px 18px; cursor:pointer; transition:var(--tr); }
+.cpn-claim:hover{ background:var(--ink-soft); }
+.cpn-claim.done{ background:#e1f3f1; color:var(--teal); }
+.cpn-link{ background:none; border:0; color:var(--teal); font-family:var(--fb); font-weight:600; font-size:13px; cursor:pointer; text-decoration:none; }
+.cpn-inq{ font-size:12.5px; color:var(--muted-2); font-style:italic; }
+.no-result{ text-align:center; color:var(--muted-2); padding:34px 0; }
 
 .card {
   background: var(--bg-white);
@@ -1844,20 +1887,26 @@ footer .disc {
   <div class="wrap">
     <div class="sec-head">
       <span class="kicker">Local Partners ‧ 優惠店家</span>
-      <h2>在地店家旅展優惠</h2>
+      <h2>在地店家好康</h2>
       <div class="sec-rule"></div>
-      <p>共 <b id="total" style="color:var(--orange)">50</b> 家合作店家。點分類篩選，按「導航」找路、「複製」存資訊、「領優惠」出示給店家折抵。</p>
+      <p>共 <b id="total" style="color:var(--orange)">50</b> 家・憑券現場折抵。選分類找好康，按「領取」出示店家折抵。</p>
+    </div>
+
+    <div class="shop-search">
+      <span class="si">🔍</span>
+      <input id="shopSearch" type="search" placeholder="搜尋店名…" autocomplete="off" aria-label="搜尋店名">
     </div>
 
     <div class="filter"><div class="row" id="filterRow"></div></div>
 
-    <div class="mapwrap">
+    <button class="map-toggle" id="mapToggle" type="button">🗺️ 看地圖</button>
+    <div class="mapwrap" id="mapWrap" hidden>
       <div id="map"></div>
       <div class="maplegend" id="maplegend"></div>
+      <p class="mapnote">標示「區域示意」者為近似位置，精確地點請點導航。</p>
     </div>
-    <p class="mapnote">點圖釘看店家優惠與導航。標示「區域示意」者為近似位置，精確地點請點導航。</p>
 
-    <div class="grid" id="grid"></div>
+    <div id="grid"></div>
   </div>
 </section>
 
@@ -2021,6 +2070,7 @@ $("#day2").innerHTML=DAY2.map(step).join("");
 $("#includes").innerHTML=INCLUDES.map(i=>`<li>${esc(i)}</li>`).join("");
 
 let current="all";
+let query="";
 function counts(){const c={all:SHOPS.length};SHOPS.forEach(s=>c[s.group]=(c[s.group]||0)+1);return c;}
 function renderFilter(){
   const c=counts();
@@ -2075,48 +2125,57 @@ function renderMap(){
 }
 
 function mapUrl(name){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(name.replace(/（.*?）|\(.*?\)/g,"").trim()+" 日月潭 南投");}
+/* 從優惠文字抓出折扣徽章 */
+function deal(s){
+  if(s.inquiry) return {big:"洽詢",unit:"",cls:"d-inq"};
+  const o=(s.offer||"").replace(/[,，]/g,"");
+  let m;
+  if(m=o.match(/(\d+(?:\.\d+)?)\s*折/)) return {big:m[1],unit:"折",cls:"d-pct"};
+  if(/百元折扣|折\s*100|現折\s*100|現省\s*\$?100/.test(o)) return {big:"$100",unit:"",cls:"d-cash"};
+  if(/五十元|50\s*元\s*折|折\s*50\s*元|折\s*50(?!\d)|現折\s*50/.test(o)) return {big:"$50",unit:"",cls:"d-cash"};
+  if(m=o.match(/折\s*價?\s*\$?(\d{2,4})\s*元/)) return {big:"$"+m[1],unit:"",cls:"d-cash"};
+  if(m=o.match(/(?:現省|省)\s*\$?(\d{2,4})/)) return {big:"$"+m[1],unit:"",cls:"d-cash"};
+  if(/贈|送|免費|乙[包張本份]|價值/.test(o)) return {big:"好康",unit:"",cls:"d-gift"};
+  return {big:"優惠",unit:"",cls:"d-other"};
+}
 function card(s,idx){
+  const d=deal(s);
   const claimed=localStorage.getItem(claimKey(s.name));
-  const offerHtml=s.inquiry
-    ? `<div class="offer inq">🕓 優惠洽詢現場（店家優惠洽談中）</div>`
-    : `<div class="offer"><span class="star">✦</span><span>${esc(s.offer)}</span></div>`;
-  let claimBtn="";
-  if(!s.inquiry){
-    claimBtn = claimed
-      ? `<button class="act claim done" data-i="${idx}">✓ 已領取</button>`
-      : `<button class="act claim" data-i="${idx}">🎟️ 領優惠</button>`;
-  }
-  return `<div class="card g-${s.group} ${s.inquiry?'dim':''}">
-    <div class="top">
-      <h3 class="name">${esc(s.name)}</h3>
-      <span class="cat">${CATNAME[s.group]||""}</span>
-    </div>
-    <div class="area">📍 ${esc(s.area||"日月潭周邊")}</div>
-    ${offerHtml}
-    <div class="actions">
-      <a class="act map" href="${mapUrl(s.name)}" target="_blank" rel="noopener">🧭 導航</a>
-      <button class="act" data-copy="${idx}">📋 複製</button>
-      ${claimBtn}
+  const action = s.inquiry
+    ? `<span class="cpn-inq">優惠洽詢現場</span>`
+    : (claimed
+        ? `<button class="cpn-claim done" data-i="${idx}">✓ 已領取</button>`
+        : `<button class="cpn-claim" data-i="${idx}">領取</button>`);
+  return `<div class="coupon ${s.inquiry?'dim':''}">
+    <div class="cpn-stub ${d.cls}"><span class="cs-big">${d.big}</span>${d.unit?`<span class="cs-unit">${d.unit}</span>`:""}</div>
+    <div class="cpn-body">
+      <div class="cpn-top"><h4 class="cpn-name">${esc(s.name)}</h4><span class="cpn-cat">${CATNAME[s.group]||""}</span></div>
+      <div class="cpn-area">📍 ${esc(s.area||"日月潭周邊")}</div>
+      <div class="cpn-offer">${s.inquiry?"店家優惠洽談中，請洽旅展攤位或店家現場":esc(s.offer)}</div>
+      <div class="cpn-acts">
+        ${action}
+        <a class="cpn-link" href="${mapUrl(s.name)}" target="_blank" rel="noopener">🧭 導航</a>
+        <button class="cpn-link" data-copy="${idx}" title="複製">📋</button>
+      </div>
     </div>
   </div>`;
 }
 function renderGrid(){
+  const q=(query||"").trim();
   const groups = current==="all" ? GROUPS.filter(g=>g.key!=="all") : GROUPS.filter(g=>g.key===current);
   let html="";
   groups.forEach(g=>{
-    const items=SHOPS.map((s,i)=>({s,i})).filter(o=>o.s.group===g.key);
+    const items=SHOPS.map((s,i)=>({s,i})).filter(o=>o.s.group===g.key && (!q || o.s.name.includes(q)));
     if(!items.length) return;
-    html += `<div class="shop-row">
-      <div class="shop-row-hd">
-        <h3><span class="rdot" style="background:${GCOLOR[g.key]}"></span>${g.label}<span class="cnt">${items.length}</span></h3>
-        <span class="swipe-hint">←　左右滑動　→</span>
-      </div>
-      <div class="shop-scroller">${items.map(o=>card(o.s,o.i)).join("")}</div>
+    html += `<div class="cpn-group">
+      <div class="cpn-grouphd"><span class="rdot" style="background:${GCOLOR[g.key]}"></span>${g.label}<span class="cnt">${items.length}</span></div>
+      ${items.map(o=>card(o.s,o.i)).join("")}
     </div>`;
   });
+  if(!html) html=`<p class="no-result">找不到符合「${esc(q)}」的店家，換個關鍵字試試。</p>`;
   $("#grid").innerHTML=html;
   $("#grid").querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>copyShop(SHOPS[+b.dataset.copy]));
-  $("#grid").querySelectorAll(".act.claim").forEach(b=>b.onclick=()=>openVoucher(SHOPS[+b.dataset.i]));
+  $("#grid").querySelectorAll(".cpn-claim[data-i]").forEach(b=>b.onclick=()=>openVoucher(SHOPS[+b.dataset.i]));
 }
 
 function copyShop(s){
@@ -2170,6 +2229,23 @@ async function boot(){
   if(typeof syncPage==="function") syncPage();
 }
 boot();
+
+/* 搜尋框 */
+(function(){
+  const inp=$("#shopSearch");
+  if(inp) inp.addEventListener("input",e=>{ query=e.target.value; renderGrid(); });
+})();
+/* 地圖收合 */
+(function(){
+  const btn=$("#mapToggle"), w=$("#mapWrap");
+  if(!btn||!w) return;
+  btn.addEventListener("click",()=>{
+    const open=w.hasAttribute("hidden");
+    if(open){ w.removeAttribute("hidden"); btn.textContent="🗺️ 收起地圖";
+      if(typeof map!=="undefined"&&map){ setTimeout(()=>{ map.invalidateSize(); if(typeof renderMap==="function") renderMap(); },60); } }
+    else { w.setAttribute("hidden",""); btn.textContent="🗺️ 看地圖"; }
+  });
+})();
 
 /* ===== 多分頁切換（非一頁式）===== */
 const PAGES={
