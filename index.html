@@ -20,7 +20,7 @@
   --ink:#193743; --ink-soft:#2d4f5e;                              /* 標題＝深藍綠 */
   --text:#222; --muted:#5a6a70; --muted-2:#9aa6ab; --line:#e3e6e8;
   --bg:#ffffff; --bg-off:#f4f8fa;
-  --cyan:#06b9ea; --orange:#f29700; --orange2:#f58220; --teal:#193743;
+  --cyan:#06b9ea; --orange:#f29700; --orange2:#f58220; --teal:#193743; --band:#16a89e;
   --shadow:0 4px 20px rgba(25,55,67,.08); --shadow-lg:0 14px 44px rgba(25,55,67,.14);
   --r:12px; --r-lg:20px; --tr:.3s ease;
   --fh:"Noto Sans TC","PingFang TC",sans-serif;
@@ -164,6 +164,24 @@ section{padding:64px 0}
 .org-chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:11px 24px;
   font-family:var(--fh);font-weight:700;color:var(--ink);font-size:15.5px;box-shadow:var(--shadow)}
 .org-chip small{font-family:var(--fb);font-weight:500;color:var(--muted);font-size:12.5px;display:block;margin-top:1px}
+
+/* ---------- 色塊帶 + 倒三角缺口 + 圓點底紋（仿天下）---------- */
+.band-teal{position:relative;background:var(--band);color:#fff;padding:78px 0 70px;
+  width:100vw;margin:44px 0 44px calc(50% - 50vw);overflow:hidden;
+  background-image:radial-gradient(rgba(255,255,255,.16) 2px,transparent 2px);background-size:26px 26px}
+.band-teal::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  border-left:30px solid transparent;border-right:30px solid transparent;border-top:26px solid var(--bg)}
+.band-teal .sec-head h2{color:#fff}
+.band-teal .sec-head p{color:rgba(255,255,255,.9)}
+.band-teal .sec-head .kicker{background:rgba(255,255,255,.18);color:#fff}
+.band-teal .sec-head h2::before,.band-teal .sec-head h2::after{display:none}
+.band-teal .rule{background:#fff}
+/* 標題前的方塊小圖示 */
+.ticon{display:inline-block;vertical-align:-4px;margin-right:10px}
+
+/* 幾何路徑裝飾（圓角線條＋圓點，呼應「逐路」）*/
+.deco-routes{display:block;width:100vw;margin:0 0 -10px calc(50% - 50vw);height:90px;opacity:.92}
+@media(max-width:600px){.deco-routes{height:60px}.band-teal{padding:58px 0 52px}}
 
 /* ---------- ITINERARY ---------- */
 .daycard{background:var(--bg);border:1px solid var(--line);border-radius:var(--r-lg);
@@ -445,11 +463,25 @@ footer .disc{font-size:12px;opacity:.55;margin-top:20px;line-height:1.8;
     </div>
   </section>
 
-  <!-- ===== ROUTE ===== -->
-  <section id="route">
+  <!-- 幾何路徑裝飾 -->
+  <svg class="deco-routes" viewBox="0 0 1200 90" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <circle cx="70" cy="18" r="4" fill="#f29700"/><circle cx="120" cy="64" r="3.5" fill="#06b9ea"/>
+    <circle cx="1130" cy="24" r="4" fill="#06b9ea"/><circle cx="1080" cy="70" r="3.5" fill="#16a89e"/>
+    <circle cx="600" cy="14" r="3.5" fill="#f29700"/>
+    <rect x="165" y="8" width="11" height="52" rx="5.5" fill="#16a89e"/>
+    <path d="M220 4 V40 a26 26 0 0 0 26 26 H335" stroke="#06b9ea" stroke-width="11" stroke-linecap="round"/>
+    <path d="M300 6 V30 a20 20 0 0 0 20 20 H380" stroke="#f29700" stroke-width="9" stroke-linecap="round"/>
+    <rect x="1018" y="10" width="11" height="50" rx="5.5" fill="#f29700"/>
+    <path d="M980 86 V46 a26 26 0 0 1 26 -26 H1075" stroke="#16a89e" stroke-width="11" stroke-linecap="round"/>
+    <path d="M905 84 V54 a22 22 0 0 1 22 -22 H1000" stroke="#06b9ea" stroke-width="9" stroke-linecap="round"/>
+  </svg>
+
+  <!-- ===== ROUTE（青綠色塊帶）===== -->
+  <section id="route" class="band-teal">
+   <div class="wrap">
     <div class="sec-head">
       <span class="kicker">Signature Route ‧ 二日遊</span>
-      <h2>兩日遊行程，2 人成行</h2>
+      <h2><svg class="ticon" width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l9 5-9 5-9-5z" fill="#f29700"/><path d="M3 7l9 5v10L3 17z" fill="#fff"/><path d="M21 7l-9 5v10l9-5z" fill="#ffd9a0"/></svg>兩日遊行程，2 人成行</h2>
       <div class="rule"></div>
       <p>逐路船騎招牌玩法，串起日月潭在地店家合作，彈性安排、時間為示意。</p>
     </div>
@@ -486,6 +518,7 @@ footer .disc{font-size:12px;opacity:.55;margin-top:20px;line-height:1.8;
       <ul id="includes"></ul>
       <p class="note">＊時間為示意，實際依現場與天候調整。旅展現場報名享現省 $3,000 優惠。</p>
     </div>
+   </div>
   </section>
 
   <!-- ===== SHOPS ===== -->
