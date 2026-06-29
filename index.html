@@ -7,22 +7,24 @@
 <title>逐路船騎 ‧ 日月潭｜2026 台北國際旅展優惠導覽</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&family=Rubik:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>
 :root{
-  --green:#1a6b4a; --green-dark:#134f37; --green-light:#e8f5ee;
-  --gold:#d4a843; --gold-deep:#c29a3a; --cream:#fdf6e3;
-  --ink:#1a1a2e; --ink-soft:#2d2d44;
-  --text:#333; --muted:#666; --muted-2:#999; --line:#e8e8e8;
-  --bg:#ffffff; --bg-off:#f8f9fa;
-  --shadow:0 4px 20px rgba(0,0,0,.08); --shadow-lg:0 14px 44px rgba(0,0,0,.13);
+  /* 天下「微笑台灣」配色：橘=主強調 / 天空藍=色帶 / 深藍綠=標題 */
+  --green:#f29700; --green-dark:#d98300; --green-light:#fdeccb;   /* 主強調＝暖橘 */
+  --gold:#06b9ea; --gold-deep:#0497c2; --cream:#e7f7fd;            /* 次強調＝天空藍 */
+  --ink:#193743; --ink-soft:#2d4f5e;                              /* 標題＝深藍綠 */
+  --text:#222; --muted:#5a6a70; --muted-2:#9aa6ab; --line:#e3e6e8;
+  --bg:#ffffff; --bg-off:#f4f8fa;
+  --cyan:#06b9ea; --orange:#f29700; --orange2:#f58220; --teal:#193743;
+  --shadow:0 4px 20px rgba(25,55,67,.08); --shadow-lg:0 14px 44px rgba(25,55,67,.14);
   --r:12px; --r-lg:20px; --tr:.3s ease;
-  --fh:"Playfair Display","Noto Serif TC",Georgia,serif;
-  --fb:"Inter","Noto Sans TC","PingFang TC",-apple-system,system-ui,sans-serif;
+  --fh:"Noto Sans TC","PingFang TC",sans-serif;
+  --fb:"Noto Sans TC","PingFang TC",-apple-system,system-ui,sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
@@ -43,9 +45,9 @@ a{color:inherit;text-decoration:none}
   opacity:0;transition:opacity 1.6s ease}
 .hero-slide.active{opacity:1}
 .hero::before{content:"";position:absolute;inset:0;z-index:1;
-  background:radial-gradient(circle at 78% 12%,rgba(212,168,67,.30),transparent 46%),
-             radial-gradient(circle at 8% 100%,rgba(19,79,55,.42),transparent 45%),
-             linear-gradient(150deg,rgba(20,20,38,.84) 0%,rgba(22,52,42,.72) 52%,rgba(19,79,55,.70) 100%)}
+  background:radial-gradient(circle at 80% 10%,rgba(242,151,0,.30),transparent 46%),
+             radial-gradient(circle at 5% 100%,rgba(6,185,234,.32),transparent 46%),
+             linear-gradient(150deg,rgba(15,40,50,.86) 0%,rgba(20,52,64,.74) 52%,rgba(25,55,67,.72) 100%)}
 /* 山稜剪影 */
 .mountains{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;z-index:2;display:block}
 .hero .inner{position:relative;z-index:3;width:100%}
@@ -71,8 +73,8 @@ a{color:inherit;text-decoration:none}
 .btn{cursor:pointer;font-family:var(--fb);font-weight:600;font-size:15px;letter-spacing:.5px;
   padding:15px 30px;border-radius:999px;display:inline-flex;align-items:center;gap:9px;
   border:1.5px solid transparent;transition:var(--tr)}
-.btn-gold{background:var(--gold);color:#3a2a00;box-shadow:0 10px 26px rgba(212,168,67,.32)}
-.btn-gold:hover{background:#e0b652;transform:translateY(-2px)}
+.btn-gold{background:var(--orange);color:#fff;box-shadow:0 10px 26px rgba(242,151,0,.38)}
+.btn-gold:hover{background:#d98300;transform:translateY(-2px)}
 .btn-line{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
 .btn-line:hover{background:rgba(255,255,255,.1);border-color:#fff}
 
@@ -82,8 +84,11 @@ section{padding:64px 0}
 .sec-head{text-align:center;max-width:34em;margin:0 auto 40px}
 .sec-head .kicker{display:inline-block;margin-bottom:16px;background:var(--green-light);
   color:var(--green);padding:7px 16px;border-radius:999px;letter-spacing:1.5px}
-.sec-head h2{font-family:var(--fh);font-size:38px;font-weight:700;color:var(--ink);margin:0;line-height:1.15}
-.sec-head .rule{width:54px;height:3px;background:var(--gold);margin:18px auto 0;border-radius:2px}
+.sec-head h2{font-family:var(--fh);font-size:40px;font-weight:900;color:var(--ink);margin:0;line-height:1.25;
+  display:inline-flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center}
+.sec-head h2::before,.sec-head h2::after{content:"";width:30px;height:14px;flex:0 0 auto;opacity:.95;
+  background:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2030%2014'%3E%3Cpath%20d='M1%207%20Q7.5%201%2015%207%20T29%207'%20fill='none'%20stroke='%23f29700'%20stroke-width='2.6'%20stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.sec-head .rule{width:60px;height:3px;background:var(--orange);margin:16px auto 0;border-radius:2px}
 .sec-head p{color:var(--muted);margin:18px 0 0;font-size:15.5px}
 .intro p.lead{font-size:17px;color:#444;text-align:center;max-width:40em;margin:0 auto;font-weight:300}
 
@@ -111,19 +116,54 @@ section{padding:64px 0}
 @media(max-width:640px){.exp-card,.exp-card.reverse{grid-template-columns:1fr;direction:ltr}}
 
 /* ---------- TOUR / PACKAGE CARD ---------- */
-.tourcard{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;
+.tourcard{background:#fff;border:4px solid var(--orange);border-radius:var(--r-lg);overflow:hidden;
   box-shadow:var(--shadow-lg);margin-bottom:26px}
 .tourcard .timg{position:relative;height:230px}
 .tourcard .timg img{width:100%;height:100%;object-fit:cover;display:block}
 .tourcard .tdur{position:absolute;bottom:16px;left:16px;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
   color:#fff;padding:7px 16px;border-radius:999px;font-size:12.5px;font-weight:600}
-.tourcard .tbadge{position:absolute;top:16px;right:16px;background:var(--gold);color:#3a2a00;
+.tourcard .tbadge{position:absolute;top:16px;right:16px;background:var(--orange);color:#fff;
   padding:7px 16px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:1px}
 .tourcard .tprice{position:absolute;bottom:16px;right:16px;text-align:right;color:#fff;
   text-shadow:0 2px 8px rgba(0,0,0,.6)}
 .tourcard .tprice .now{font-family:var(--fh);font-size:26px;font-weight:700}
 .tourcard .tprice .ori{font-size:12px;opacity:.8;text-decoration:line-through;display:block}
 .tourcard .tbody{padding:26px 26px 8px}
+
+/* ---------- 三大重點（仿天下「3 個關鍵」）---------- */
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.key{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:30px 22px;
+  text-align:center;box-shadow:var(--shadow);transition:var(--tr)}
+.key:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.key .ki{width:58px;height:58px;border-radius:50%;background:var(--green-light);
+  display:grid;place-items:center;font-size:27px;margin:0 auto 16px}
+.key h3{font-family:var(--fh);font-size:19px;color:var(--ink);margin:0 0 9px}
+.key p{font-size:14px;color:var(--muted);margin:0;line-height:1.7}
+@media(max-width:600px){.keys{grid-template-columns:1fr;gap:14px}}
+
+/* ---------- FAQ 常見問題 ---------- */
+.faq{display:flex;flex-direction:column;gap:12px;max-width:660px;margin:0 auto}
+.faq details{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:var(--tr)}
+.faq details[open]{box-shadow:var(--shadow)}
+.faq summary{cursor:pointer;list-style:none;padding:17px 20px;font-weight:700;font-size:15.5px;
+  color:var(--ink);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--green);font-size:24px;font-weight:300;line-height:1;transition:var(--tr)}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details[open] summary{border-bottom:1px solid var(--line)}
+.faq .a{padding:15px 20px 18px;font-size:14px;color:var(--muted);line-height:1.75}
+.faq .a b{color:var(--green)}
+
+/* ---------- 主辦單位 / 合作夥伴 ---------- */
+.orgs{text-align:center}
+.org-grp{margin-bottom:24px}
+.org-grp:last-child{margin-bottom:0}
+.org-grp h4{font-size:12px;letter-spacing:2.5px;color:var(--muted-2);text-transform:uppercase;
+  margin:0 0 14px;font-weight:700}
+.org-logos{display:flex;flex-wrap:wrap;gap:12px 16px;justify-content:center;align-items:center}
+.org-chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:11px 24px;
+  font-family:var(--fh);font-weight:700;color:var(--ink);font-size:15.5px;box-shadow:var(--shadow)}
+.org-chip small{font-family:var(--fb);font-weight:500;color:var(--muted);font-size:12.5px;display:block;margin-top:1px}
 
 /* ---------- ITINERARY ---------- */
 .daycard{background:var(--bg);border:1px solid var(--line);border-radius:var(--r-lg);
@@ -245,9 +285,9 @@ section{padding:64px 0}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ---------- FOOTER ---------- */
-footer{background:var(--ink);color:#c7c7d2;padding:54px 0 46px}
-footer .fh{font-family:var(--fh);color:#fff;font-size:26px;font-weight:700;margin:0 0 6px}
-footer .fgold{color:var(--gold);font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700}
+footer{background:var(--cyan);color:rgba(255,255,255,.92);padding:54px 0 46px}
+footer .fh{font-family:var(--fh);color:#fff;font-size:26px;font-weight:900;margin:0 0 6px}
+footer .fgold{color:rgba(255,255,255,.9);font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700}
 footer p{margin:6px 0;font-size:14px;opacity:.85}
 footer .disc{font-size:12px;opacity:.55;margin-top:20px;line-height:1.8;
   border-top:1px solid rgba(255,255,255,.12);padding-top:18px}
@@ -314,6 +354,27 @@ footer .disc{font-size:12px;opacity:.55;margin-top:20px;line-height:1.8;
 </section>
 
 <main class="wrap">
+
+  <!-- ===== 三大重點 ===== -->
+  <section id="keys" style="padding-top:24px">
+    <div class="keys">
+      <div class="key">
+        <div class="ki">🛶</div>
+        <h3>全程專人帶路</h3>
+        <p>魚人導覽，「船 ‧ 騎」一次玩遍，不必自己做功課。</p>
+      </div>
+      <div class="key">
+        <div class="ki">🎟️</div>
+        <h3>旅展限定優惠</h3>
+        <p>50+ 在地店家折扣，兩日遊現省 $3,000。</p>
+      </div>
+      <div class="key">
+        <div class="ki">🗺️</div>
+        <h3>一頁全收</h3>
+        <p>遊程、優惠、地圖、核銷打卡，掃碼即用。</p>
+      </div>
+    </div>
+  </section>
 
   <!-- ===== EXPERIENCES ===== -->
   <section id="exp">
@@ -445,6 +506,70 @@ footer .disc{font-size:12px;opacity:.55;margin-top:20px;line-height:1.8;
     <p class="mapnote">點圖釘看店家優惠與導航。標示「區域示意」者為近似位置，精確地點請點導航。</p>
 
     <div class="grid" id="grid"></div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq">
+    <div class="sec-head">
+      <span class="kicker">FAQ ‧ 常見問題</span>
+      <h2>現場怎麼用？</h2>
+      <div class="rule"></div>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>優惠怎麼領、怎麼用？</summary>
+        <div class="a">在店家卡片點「<b>領優惠</b>」，會跳出帶時間戳的核銷畫面，<b>出示給店家</b>即可折抵；也可截圖保存。同一支手機每家限領一次。</div>
+      </details>
+      <details>
+        <summary>「優惠洽詢現場」是什麼意思？</summary>
+        <div class="a">代表該店家優惠仍在洽談中，請到<b>旅展攤位</b>或<b>店家現場</b>詢問最新折扣內容。</div>
+      </details>
+      <details>
+        <summary>兩日遊怎麼報名？費用多少？</summary>
+        <div class="a">原價 $8,990，<b>旅展現場報名 2 人 $5,990</b>（現省 $3,000）。可到攤位或加 LINE 洽詢報名。</div>
+      </details>
+      <details>
+        <summary>地圖上的位置不太準？</summary>
+        <div class="a">部分店家標示「<b>區域示意</b>」為近似位置，請點卡片或圖釘的「<b>導航</b>」以店名搜尋實際地點。</div>
+      </details>
+      <details>
+        <summary>還有其他問題？</summary>
+        <div class="a">右下角點「<b>加 LINE 好友</b>」（@onelife），直接線上詢問最快。</div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ===== 主辦單位 / 合作夥伴 ===== -->
+  <section id="orgs">
+    <div class="sec-head">
+      <span class="kicker">Partners ‧ 主辦與夥伴</span>
+      <h2>一起把日月潭帶進旅展</h2>
+      <div class="rule"></div>
+    </div>
+    <div class="orgs">
+      <div class="org-grp">
+        <h4>主辦</h4>
+        <div class="org-logos">
+          <span class="org-chip">OneLife 玩生活<small>逐路船騎 ‧ 魚人帶路</small></span>
+        </div>
+      </div>
+      <div class="org-grp">
+        <h4>活動場域</h4>
+        <div class="org-logos">
+          <span class="org-chip">日月潭<small>水社 ‧ 月牙灣 ‧ 伊達邵 ‧ 魚池</small></span>
+        </div>
+      </div>
+      <div class="org-grp">
+        <h4>合作店家</h4>
+        <div class="org-logos">
+          <span class="org-chip">SUP 立槳</span>
+          <span class="org-chip">環湖單車</span>
+          <span class="org-chip">在地民宿</span>
+          <span class="org-chip">餐飲伴手禮</span>
+          <span class="org-chip">體驗樂園</span>
+        </div>
+      </div>
+    </div>
   </section>
 </main>
 
