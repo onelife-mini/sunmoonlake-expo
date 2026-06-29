@@ -1029,20 +1029,21 @@ section { padding: 72px 0; }
 
 .card {
   background: var(--bg-white);
-  border: 2px solid var(--ink);
+  border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  padding: 24px 22px 20px;
+  padding: 22px 20px 18px;
   position: relative;
-  transition: transform var(--tr), box-shadow var(--tr);
-  box-shadow: 5px 5px 0 var(--teal);
+  transition: transform var(--tr), box-shadow var(--tr), border-color var(--tr);
+  box-shadow: 0 4px 18px rgba(25,55,67,.07);
 }
 .card:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0 var(--teal);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(25,55,67,.13);
+  border-color: #d6dadd;
 }
 .card.dim {
-  opacity: .8;
-  box-shadow: 5px 5px 0 var(--muted-2);
+  opacity: .85;
+  box-shadow: 0 3px 12px rgba(25,55,67,.05);
 }
 .card .top {
   display: flex;
