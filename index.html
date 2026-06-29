@@ -132,11 +132,33 @@ img { display: block; max-width: 100%; }
   box-shadow: 0 4px 16px rgba(242,151,0,.38);
 }
 .nav-cta:hover { background: var(--orange-dk); transform: translateY(-1px); }
+.nav-logo { cursor: pointer; }
+.site-nav [data-page].active { color: var(--orange); background: rgba(242,151,0,.12); }
+.nav-links a.active { color: var(--orange); background: rgba(242,151,0,.12); }
 @media (max-width: 620px) {
-  .nav-links { display: none; }
-  .site-nav { padding: 9px 12px 9px 18px; }
-  .nav-logo { font-size: 14px; }
-  .nav-cta { font-size: 12.5px; padding: 8px 16px; }
+  .site-nav { flex-wrap: wrap; border-radius: 22px; padding: 9px 12px 8px 16px; }
+  .nav-logo { font-size: 14px; order: 1; }
+  .nav-cta { font-size: 12px; padding: 7px 14px; order: 2; }
+  .nav-links {
+    display: flex; order: 3; width: 100%; flex: 0 0 100%;
+    justify-content: flex-start; gap: 4px; overflow-x: auto;
+    margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line);
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { font-size: 13px; padding: 6px 11px; flex: 0 0 auto; }
+}
+
+/* ════════════════════════════════════════
+   多分頁（非一頁式）
+════════════════════════════════════════ */
+/* 分頁模式不需要區段間的過渡裝飾 */
+.track-divider, .deco-routes { display: none !important; }
+/* 內頁需空出固定導覽列的高度 */
+body.pg-inner main { padding-top: 92px; }
+body.pg-inner #route { margin-top: 4px; }
+@media (max-width: 620px){
+  body.pg-inner main { padding-top: 116px; }
 }
 
 /* ════════════════════════════════════════
@@ -1522,12 +1544,13 @@ footer .disc {
 
 <!-- ===== STICKY NAV ===== -->
 <nav class="site-nav" role="navigation" aria-label="主選單">
-  <div class="nav-logo">逐路<span>船騎</span></div>
+  <div class="nav-logo" data-page="home" role="button" tabindex="0">逐路<span>船騎</span></div>
   <div class="nav-links">
-    <a href="#exp">體驗亮點</a>
-    <a href="#route">兩日遊</a>
-    <a href="#shops">優惠店家</a>
-    <a href="#faq">FAQ</a>
+    <a href="#home" data-page="home">首頁</a>
+    <a href="#exp" data-page="exp">體驗亮點</a>
+    <a href="#route" data-page="route">兩日遊</a>
+    <a href="#shops" data-page="shops">優惠店家</a>
+    <a href="#faq" data-page="faq">常見問題</a>
   </div>
   <a href="https://line.me/R/ti/p/%40onelife" class="nav-cta" target="_blank" rel="noopener">立即報名 →</a>
 </nav>
@@ -2144,8 +2167,38 @@ async function boot(){
   applyDisplayJitter(SHOPS);
   $("#total").textContent=SHOPS.length;
   renderFilter();renderGrid();initMap();
+  if(typeof syncPage==="function") syncPage();
 }
 boot();
+
+/* ===== 多分頁切換（非一頁式）===== */
+const PAGES={
+  home:[".hero",".intro-band","#keys"],
+  exp:["#exp"],
+  route:["#route"],
+  shops:["#shops"],
+  faq:["#faq","#orgs"],
+};
+let currentPage="home";
+function showPage(p){
+  if(!PAGES[p]) p="home";
+  currentPage=p;
+  Object.keys(PAGES).forEach(k=>{
+    PAGES[k].forEach(sel=>{const e=document.querySelector(sel); if(e) e.style.display=(k===p?"":"none");});
+  });
+  document.body.classList.toggle("pg-inner", p!=="home");
+  document.querySelectorAll(".site-nav [data-page]").forEach(a=>a.classList.toggle("active", a.dataset.page===p));
+  window.scrollTo(0,0);
+  if(p==="shops" && typeof map!=="undefined" && map){ setTimeout(()=>{ map.invalidateSize(); if(typeof renderMap==="function") renderMap(); },80); }
+  try{ history.replaceState(null,"", p==="home"?(location.pathname+location.search):("#"+p)); }catch(e){}
+}
+function syncPage(){ showPage(currentPage); }
+document.querySelectorAll(".site-nav [data-page]").forEach(a=>{
+  a.addEventListener("click",e=>{ e.preventDefault(); showPage(a.dataset.page); });
+  a.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); showPage(a.dataset.page);} });
+});
+window.addEventListener("hashchange",()=>showPage((location.hash||"").replace("#","")||"home"));
+showPage((location.hash||"").replace("#","")||"home");
 
 /* Hero 多照輪播（跨淡） */
 (function(){
