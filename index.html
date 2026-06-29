@@ -3,486 +3,1752 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#1a1a2e">
+<meta name="theme-color" content="#193743">
 <title>逐路船騎 ‧ 日月潭｜2026 台北國際旅展優惠導覽</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&family=Rubik:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&family=Rubik:ital,wght@0,700;0,900;1,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>
-:root{
-  /* 天下「微笑台灣」配色：橘=主強調 / 天空藍=色帶 / 深藍綠=標題 */
-  --green:#f29700; --green-dark:#d98300; --green-light:#fdeccb;   /* 主強調＝暖橘 */
-  --gold:#06b9ea; --gold-deep:#0497c2; --cream:#e7f7fd;            /* 次強調＝天空藍 */
-  --ink:#193743; --ink-soft:#2d4f5e;                              /* 標題＝深藍綠 */
-  --text:#222; --muted:#5a6a70; --muted-2:#9aa6ab; --line:#e3e6e8;
-  --bg:#ffffff; --bg-off:#f4f8fa;
-  --cyan:#06b9ea; --orange:#f29700; --orange2:#f58220; --teal:#193743; --band:#16a89e;
-  --shadow:0 4px 20px rgba(25,55,67,.08); --shadow-lg:0 14px 44px rgba(25,55,67,.14);
-  --r:12px; --r-lg:20px; --tr:.3s ease;
-  --fh:"Noto Sans TC","PingFang TC",sans-serif;
-  --fb:"Noto Sans TC","PingFang TC",-apple-system,system-ui,sans-serif;
+/* ════════════════════════════════════════
+   DESIGN TOKENS
+════════════════════════════════════════ */
+:root {
+  --orange:    #f29700;
+  --orange-dk: #d98300;
+  --orange-lt: #fff0cc;
+  --teal:      #16a89e;
+  --teal-dk:   #0d8a81;
+  --teal-lt:   #d4f2f0;
+  --sky:       #06b9ea;
+  --sky-dk:    #0497c2;
+  --sky-lt:    #e0f6fd;
+  --ink:       #193743;
+  --ink-soft:  #2d4f5e;
+  --black:     #1a1a1a;
+  --text:      #2c3a40;
+  --muted:     #5a6a70;
+  --muted-2:   #9aa6ab;
+  --line:      #dde3e6;
+  --bg:        #f1f0ea;
+  --bg-white:  #ffffff;
+
+  --fh: "Noto Sans TC","PingFang TC",sans-serif;
+  --fb: "Noto Sans TC","PingFang TC",-apple-system,system-ui,sans-serif;
+  --fd: "Rubik","Noto Sans TC",sans-serif;
+
+  --r:    14px;
+  --r-lg: 22px;
+  --tr:   .28s ease;
+
+  --shadow-card: 6px 6px 0 var(--teal);
+  --shadow-card-orange: 6px 6px 0 var(--orange);
+  --shadow-soft: 0 8px 32px rgba(25,55,67,.1);
+  --shadow-lg:   0 20px 60px rgba(25,55,67,.18);
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
-html{overflow-x:clip}
-body{margin:0;font-family:var(--fb);color:var(--text);background:var(--bg);
-  line-height:1.7;overflow-x:clip;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}
-.wrap{max-width:720px;margin:0 auto;padding:0 22px}
-.serif{font-family:var(--fh)}
-.kicker{font-family:var(--fb);font-size:12px;font-weight:700;letter-spacing:3px;
-  text-transform:uppercase;color:var(--gold-deep)}
 
-/* ---------- HERO ---------- */
-.hero{position:relative;color:#fff;min-height:92vh;display:flex;align-items:center;
-  padding:80px 0 56px;overflow:hidden;background:var(--ink)}
-.hero-slider{position:absolute;inset:0;z-index:0}
-.hero-slide{position:absolute;inset:0;background-size:cover;background-position:center 38%;
-  opacity:0;transition:opacity 1.6s ease}
-.hero-slide.active{opacity:1}
-.hero::before{content:"";position:absolute;inset:0;z-index:1;
-  background:radial-gradient(circle at 80% 10%,rgba(242,151,0,.30),transparent 46%),
-             radial-gradient(circle at 5% 100%,rgba(6,185,234,.32),transparent 46%),
-             linear-gradient(150deg,rgba(15,40,50,.86) 0%,rgba(20,52,64,.74) 52%,rgba(25,55,67,.72) 100%)}
-/* 山稜剪影 */
-.mountains{position:absolute;left:0;right:0;bottom:0;width:100%;height:auto;z-index:2;display:block}
-.hero .inner{position:relative;z-index:3;width:100%}
-.hero .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--gold);
-  font-size:12.5px;font-weight:700;letter-spacing:2px;
-  background:rgba(255,255,255,.13);border:1px solid rgba(212,168,67,.4);
-  padding:8px 20px;border-radius:999px;backdrop-filter:blur(8px)}
-.hero h1{font-family:var(--fh);font-weight:700;font-size:62px;line-height:1.05;
-  margin:22px 0 0;letter-spacing:1px}
-.hero h1 .en{display:block;font-size:18px;font-weight:500;letter-spacing:8px;
-  color:rgba(255,255,255,.82);margin-top:14px;text-transform:uppercase}
-.hero .sub{font-size:17px;color:rgba(255,255,255,.9);max-width:30em;margin:20px 0 0;font-weight:300}
-.stats{display:flex;gap:30px;margin:30px 0 0;flex-wrap:wrap}
-.stat .num{font-family:var(--fh);font-size:30px;font-weight:700;color:var(--gold);line-height:1}
-.stat .lbl{font-size:12.5px;color:rgba(255,255,255,.75);letter-spacing:1px;margin-top:5px}
-.pricetag{display:inline-flex;align-items:baseline;gap:12px;margin-top:30px;
-  background:rgba(255,255,255,.07);border:1px solid rgba(212,168,67,.4);
-  padding:14px 20px;border-radius:var(--r);backdrop-filter:blur(6px)}
-.pricetag .ori{font-size:14px;color:rgba(255,255,255,.6);text-decoration:line-through}
-.pricetag .now{font-family:var(--fh);font-size:30px;font-weight:700;color:#fff}
-.pricetag .now b{font-size:15px;font-weight:500;color:var(--gold)}
-.cta{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
-.btn{cursor:pointer;font-family:var(--fb);font-weight:600;font-size:15px;letter-spacing:.5px;
-  padding:15px 30px;border-radius:999px;display:inline-flex;align-items:center;gap:9px;
-  border:1.5px solid transparent;transition:var(--tr)}
-.btn-gold{background:var(--orange);color:#fff;box-shadow:0 10px 26px rgba(242,151,0,.38)}
-.btn-gold:hover{background:#d98300;transform:translateY(-2px)}
-.btn-line{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
-.btn-line:hover{background:rgba(255,255,255,.1);border-color:#fff}
-
-/* ---------- SECTION SHELL ---------- */
-section{padding:64px 0}
-.intro{background:var(--bg-off)}
-.sec-head{text-align:center;max-width:34em;margin:0 auto 40px}
-.sec-head .kicker{display:inline-block;margin-bottom:16px;background:var(--green-light);
-  color:var(--green);padding:7px 16px;border-radius:999px;letter-spacing:1.5px}
-.sec-head h2{font-family:var(--fh);font-size:40px;font-weight:900;color:var(--ink);margin:0;line-height:1.25;
-  display:inline-flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center}
-.sec-head h2::before,.sec-head h2::after{content:"";width:30px;height:14px;flex:0 0 auto;opacity:.95;
-  background:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2030%2014'%3E%3Cpath%20d='M1%207%20Q7.5%201%2015%207%20T29%207'%20fill='none'%20stroke='%23f29700'%20stroke-width='2.6'%20stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
-.sec-head .rule{width:60px;height:3px;background:var(--orange);margin:16px auto 0;border-radius:2px}
-.sec-head p{color:var(--muted);margin:18px 0 0;font-size:15.5px}
-.intro p.lead{font-size:17px;color:#444;text-align:center;max-width:40em;margin:0 auto;font-weight:300}
-
-/* ---------- EXPERIENCE CARDS（交錯大圖卡，仿 sunmoonlaketour）---------- */
-.exp-cards{display:flex;flex-direction:column;gap:30px}
-.exp-card{display:grid;grid-template-columns:1fr 1fr;background:#fff;border:1px solid var(--line);
-  border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);transition:var(--tr)}
-.exp-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
-.exp-card.reverse{direction:rtl}
-.exp-card.reverse>*{direction:ltr}
-.exp-img{position:relative;min-height:250px}
-.exp-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.exp-badge{position:absolute;top:16px;left:16px;width:44px;height:44px;border-radius:50%;
-  background:var(--green);color:#fff;display:grid;place-items:center;font-size:21px;
-  box-shadow:0 5px 14px rgba(0,0,0,.25)}
-.exp-body{padding:30px 28px}
-.exp-body h3{font-family:var(--fh);font-size:23px;font-weight:700;color:var(--ink);margin:0 0 14px}
-.exp-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.exp-meta span{font-size:12px;color:var(--muted);background:var(--bg-off);border:1px solid var(--line);
-  padding:5px 13px;border-radius:999px;font-weight:600}
-.exp-body p{color:var(--muted);font-size:14.5px;margin:0 0 16px;line-height:1.7}
-.exp-hl{list-style:none;margin:0;padding:0;display:grid;gap:9px}
-.exp-hl li{display:flex;gap:10px;font-size:14px;color:var(--text);align-items:flex-start}
-.exp-hl li::before{content:"✓";color:var(--green);font-weight:800;flex:0 0 auto}
-@media(max-width:640px){.exp-card,.exp-card.reverse{grid-template-columns:1fr;direction:ltr}}
-
-/* ---------- TOUR / PACKAGE CARD ---------- */
-.tourcard{background:#fff;border:4px solid var(--orange);border-radius:var(--r-lg);overflow:hidden;
-  box-shadow:var(--shadow-lg);margin-bottom:26px}
-.tourcard .timg{position:relative;height:230px}
-.tourcard .timg img{width:100%;height:100%;object-fit:cover;display:block}
-.tourcard .tdur{position:absolute;bottom:16px;left:16px;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
-  color:#fff;padding:7px 16px;border-radius:999px;font-size:12.5px;font-weight:600}
-.tourcard .tbadge{position:absolute;top:16px;right:16px;background:var(--orange);color:#fff;
-  padding:7px 16px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:1px}
-.tourcard .tprice{position:absolute;bottom:16px;right:16px;text-align:right;color:#fff;
-  text-shadow:0 2px 8px rgba(0,0,0,.6)}
-.tourcard .tprice .now{font-family:var(--fh);font-size:26px;font-weight:700}
-.tourcard .tprice .ori{font-size:12px;opacity:.8;text-decoration:line-through;display:block}
-.tourcard .tbody{padding:26px 26px 8px}
-
-/* ---------- 三大重點（仿天下「3 個關鍵」）---------- */
-.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.key{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:30px 22px;
-  text-align:center;box-shadow:var(--shadow);transition:var(--tr)}
-.key:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
-.key .ki{width:58px;height:58px;border-radius:50%;background:var(--green-light);
-  display:grid;place-items:center;font-size:27px;margin:0 auto 16px}
-.key h3{font-family:var(--fh);font-size:19px;color:var(--ink);margin:0 0 9px}
-.key p{font-size:14px;color:var(--muted);margin:0;line-height:1.7}
-@media(max-width:600px){.keys{grid-template-columns:1fr;gap:14px}}
-
-/* ---------- FAQ 常見問題 ---------- */
-.faq{display:flex;flex-direction:column;gap:12px;max-width:660px;margin:0 auto}
-.faq details{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:var(--tr)}
-.faq details[open]{box-shadow:var(--shadow)}
-.faq summary{cursor:pointer;list-style:none;padding:17px 20px;font-weight:700;font-size:15.5px;
-  color:var(--ink);display:flex;justify-content:space-between;align-items:center;gap:12px}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";color:var(--green);font-size:24px;font-weight:300;line-height:1;transition:var(--tr)}
-.faq details[open] summary::after{transform:rotate(45deg)}
-.faq details[open] summary{border-bottom:1px solid var(--line)}
-.faq .a{padding:15px 20px 18px;font-size:14px;color:var(--muted);line-height:1.75}
-.faq .a b{color:var(--green)}
-
-/* ---------- 主辦單位 / 合作夥伴 ---------- */
-.orgs{text-align:center}
-.org-grp{margin-bottom:24px}
-.org-grp:last-child{margin-bottom:0}
-.org-grp h4{font-size:12px;letter-spacing:2.5px;color:var(--muted-2);text-transform:uppercase;
-  margin:0 0 14px;font-weight:700}
-.org-logos{display:flex;flex-wrap:wrap;gap:12px 16px;justify-content:center;align-items:center}
-.org-chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:11px 24px;
-  font-family:var(--fh);font-weight:700;color:var(--ink);font-size:15.5px;box-shadow:var(--shadow)}
-.org-chip small{font-family:var(--fb);font-weight:500;color:var(--muted);font-size:12.5px;display:block;margin-top:1px}
-
-/* ---------- 色塊帶 + 倒三角缺口 + 圓點底紋（仿天下）---------- */
-.band-teal{position:relative;background:var(--band);color:#fff;padding:78px 0 70px;
-  width:100vw;margin:44px 0 44px calc(50% - 50vw);overflow:hidden;
-  background-image:radial-gradient(rgba(255,255,255,.16) 2px,transparent 2px);background-size:26px 26px}
-.band-teal::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
-  border-left:30px solid transparent;border-right:30px solid transparent;border-top:26px solid var(--bg)}
-.band-teal .sec-head h2{color:#fff}
-.band-teal .sec-head p{color:rgba(255,255,255,.9)}
-.band-teal .sec-head .kicker{background:rgba(255,255,255,.18);color:#fff}
-.band-teal .sec-head h2::before,.band-teal .sec-head h2::after{display:none}
-.band-teal .rule{background:#fff}
-/* 標題前的方塊小圖示 */
-.ticon{display:inline-block;vertical-align:-4px;margin-right:10px}
-
-/* 幾何路徑裝飾（圓角線條＋圓點，呼應「逐路」）*/
-.deco-routes{display:block;width:100vw;margin:0 0 -10px calc(50% - 50vw);height:90px;opacity:.92}
-@media(max-width:600px){.deco-routes{height:60px}.band-teal{padding:58px 0 52px}}
-
-/* ---------- ITINERARY ---------- */
-.daycard{background:var(--bg);border:1px solid var(--line);border-radius:var(--r-lg);
-  box-shadow:var(--shadow);padding:26px 24px;margin-bottom:22px}
-.dayhd{display:flex;align-items:center;gap:14px;margin-bottom:6px;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.daynum{font-family:var(--fh);font-size:14px;font-weight:700;letter-spacing:2px;color:#fff;
-  background:var(--green);width:54px;height:54px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;text-align:center;line-height:1.1}
-.daynum.d2{background:var(--gold-deep)}
-.dayhd .dt{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--ink)}
-.dayhd .ds{font-size:13px;color:var(--muted)}
-.step{display:flex;gap:16px;padding:16px 0;border-bottom:1px dashed var(--line)}
-.step:last-child{border-bottom:0;padding-bottom:2px}
-.step .ic{flex:0 0 46px;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
-  font-size:21px;background:var(--green-light);border:1px solid #d7ebe0;overflow:hidden}
-.step .ic.photo{flex:0 0 64px;width:64px;height:64px;border-radius:14px;border:0;background:none}
-.step .ic.photo img{width:100%;height:100%;object-fit:cover;border-radius:14px;display:block}
-.step .time{font-size:12px;font-weight:700;color:var(--green);letter-spacing:1px}
-.step .ttl{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--ink);margin:2px 0 3px}
-.step .desc{font-size:14px;color:var(--muted);margin:0}
-.includes{background:linear-gradient(135deg,#fffdf6,var(--cream));border:1px solid #efe2bf;
-  border-radius:var(--r-lg);padding:28px 26px;margin-top:6px}
-.includes h3{font-family:var(--fh);margin:0 0 18px;font-size:21px;font-weight:700;color:#8a6a18;
-  display:flex;align-items:center;gap:10px}
-.includes ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
-.includes li{display:flex;gap:11px;font-size:15px;align-items:flex-start;color:#4a3f24}
-.includes li::before{content:"✦";color:var(--gold-deep);font-weight:700;flex:0 0 auto}
-.note{font-size:12.5px;color:var(--muted-2);margin-top:18px;text-align:center;font-style:italic}
-
-/* ---------- MAP ---------- */
-.mapwrap{margin-top:26px;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);
-  box-shadow:var(--shadow);position:relative}
-#map{height:380px;width:100%;background:#e8eef0;z-index:1}
-.maplegend{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;padding:14px 16px;
-  background:#fff;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
-.maplegend .lg{display:inline-flex;align-items:center;gap:6px;font-weight:600}
-.maplegend .dot{width:11px;height:11px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
-.mapnote{font-size:12px;color:var(--muted-2);text-align:center;margin:10px 0 0;font-style:italic}
-.leaflet-popup-content{font-family:var(--fb);margin:13px 15px;line-height:1.55}
-.leaflet-popup-content .pn{font-family:var(--fh);font-size:16px;font-weight:700;color:var(--ink)}
-.leaflet-popup-content .pa{font-size:12px;color:var(--muted);margin:2px 0 7px}
-.leaflet-popup-content .po{font-size:13px;color:#3f3f3f;background:var(--bg-off);
-  border-left:3px solid var(--gold);padding:7px 9px;border-radius:6px;margin-bottom:8px}
-.leaflet-popup-content .po.inq{border-left-color:var(--muted-2);color:var(--muted)}
-.leaflet-popup-content .pg{display:inline-block;font-size:11px;color:var(--muted-2);margin-bottom:8px}
-.leaflet-popup-content a.pnav{display:inline-block;background:var(--green);color:#fff;font-weight:600;
-  font-size:13px;padding:7px 13px;border-radius:8px;text-decoration:none}
-
-/* ---------- FILTER ---------- */
-.filter{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
-  padding:16px 0;margin:30px -22px 0;border-bottom:1px solid var(--line)}
-.filter .row{display:flex;gap:10px;overflow-x:auto;padding:0 22px;scrollbar-width:none}
-.filter .row::-webkit-scrollbar{display:none}
-.chip{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;color:var(--text);
-  font-family:var(--fb);font-weight:600;font-size:14px;padding:9px 17px;border-radius:999px;cursor:pointer;
-  white-space:nowrap;transition:var(--tr);display:inline-flex;align-items:center;gap:7px}
-.chip:hover{border-color:var(--green)}
-.chip .n{font-size:11.5px;opacity:.55;font-weight:600}
-.chip.on{background:var(--green);color:#fff;border-color:var(--green);box-shadow:0 6px 16px rgba(26,107,74,.25)}
-.chip.on .n{opacity:.85}
-
-/* ---------- SHOP CARDS ---------- */
-.grid{display:grid;gap:18px;margin-top:26px}
-.card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);
-  padding:22px 20px 18px;box-shadow:var(--shadow);position:relative;transition:var(--tr)}
-.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
-.card.dim{background:var(--bg-off)}
-.card .top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
-.card .name{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--ink);line-height:1.3;margin:0}
-.cat{flex:0 0 auto;font-size:11px;font-weight:700;letter-spacing:1px;color:#fff;
-  padding:5px 11px;border-radius:999px;background:var(--gc);white-space:nowrap}
-.area{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--muted);
-  font-weight:500;margin-bottom:12px}
-.offer{background:var(--bg-off);border-left:3px solid var(--gold);border-radius:8px;
-  padding:12px 14px;font-size:14px;color:#3f3f3f;display:flex;gap:9px;align-items:flex-start}
-.offer .star{color:var(--gold-deep);flex:0 0 auto}
-.offer.inq{border-left-color:var(--muted-2);color:var(--muted);background:#f4f4f5}
-.actions{display:flex;gap:9px;margin-top:14px}
-.act{flex:1;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-family:var(--fb);
-  font-weight:600;font-size:13.5px;padding:11px 6px;border-radius:10px;display:inline-flex;
-  align-items:center;justify-content:center;gap:6px;color:var(--text);transition:var(--tr)}
-.act:hover{border-color:var(--green);color:var(--green)}
-.act.map:hover{background:var(--green-light)}
-.act.claim{background:var(--gold);border-color:var(--gold);color:#3a2a00}
-.act.claim:hover{background:#e0b652;color:#3a2a00}
-.act.claim.done{background:var(--green-light);border-color:#bfe0cd;color:var(--green)}
-
-.g-sup{--gc:#2E7DA1}.g-bike{--gc:#1a6b4a}.g-stay{--gc:#b5853f}.g-eat{--gc:#c2703a}.g-play{--gc:#6d5a8c}
-
-/* ---------- MODAL ---------- */
-.overlay{position:fixed;inset:0;background:rgba(26,26,46,.6);backdrop-filter:blur(5px);
-  z-index:100;display:none;align-items:center;justify-content:center;padding:24px}
-.overlay.show{display:flex;animation:fade .2s ease}
-@keyframes fade{from{opacity:0}to{opacity:1}}
-.voucher{background:#fff;border-radius:24px;max-width:380px;width:100%;overflow:hidden;
-  box-shadow:0 30px 70px rgba(0,0,0,.4);animation:pop .28s cubic-bezier(.2,1.2,.4,1)}
-@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
-.voucher .top{background:linear-gradient(135deg,var(--ink),var(--green-dark));color:#fff;
-  padding:30px 24px 24px;text-align:center}
-.voucher .check{width:64px;height:64px;border-radius:50%;background:var(--gold);color:#fff;
-  display:grid;place-items:center;font-size:32px;margin:0 auto 14px;box-shadow:0 8px 20px rgba(212,168,67,.45)}
-.voucher .top h3{margin:0;font-size:12px;letter-spacing:4px;color:var(--gold);font-weight:700;text-transform:uppercase}
-.voucher .top .vn{font-family:var(--fh);margin:8px 0 0;font-size:23px;font-weight:700}
-.perf{height:0;border-top:2px dashed var(--line);position:relative}
-.perf::before,.perf::after{content:"";position:absolute;top:-11px;width:22px;height:22px;border-radius:50%;background:rgba(26,26,46,.6)}
-.perf::before{left:-11px}.perf::after{right:-11px}
-.voucher .body{padding:22px 24px 8px}
-.voucher .voffer{background:var(--cream);border-radius:12px;padding:14px;font-size:14.5px;margin-bottom:16px;color:#4a3f24}
-.voucher .meta{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
-.voucher .stamp{font-family:var(--fh);font-weight:700;color:var(--green);font-size:16px}
-.voucher .hint{text-align:center;font-size:13px;color:var(--gold-deep);font-weight:600;margin:18px 0 4px}
-.voucher .foot{padding:10px 24px 24px}
-.voucher .close{width:100%;padding:15px;border:0;border-radius:12px;background:var(--ink);color:#fff;
-  font-family:var(--fb);font-weight:600;font-size:16px;cursor:pointer;transition:var(--tr)}
-.voucher .close:hover{background:var(--ink-soft)}
-
-.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);
-  background:var(--ink);color:#fff;padding:13px 22px;border-radius:999px;font-weight:600;font-size:14px;
-  opacity:0;pointer-events:none;transition:var(--tr);z-index:200;box-shadow:var(--shadow-lg)}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ---------- FOOTER ---------- */
-footer{background:var(--cyan);color:rgba(255,255,255,.92);padding:54px 0 46px}
-footer .fh{font-family:var(--fh);color:#fff;font-size:26px;font-weight:900;margin:0 0 6px}
-footer .fgold{color:rgba(255,255,255,.9);font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700}
-footer p{margin:6px 0;font-size:14px;opacity:.85}
-footer .disc{font-size:12px;opacity:.55;margin-top:20px;line-height:1.8;
-  border-top:1px solid rgba(255,255,255,.12);padding-top:18px}
-
-/* ---------- LINE 浮鈕 ---------- */
-.line-fab{position:fixed;right:18px;bottom:20px;z-index:90;display:inline-flex;align-items:center;gap:9px;
-  background:#06C755;color:#fff;padding:14px 22px;border-radius:999px;font-family:var(--fb);font-weight:700;
-  font-size:15px;box-shadow:0 8px 24px rgba(6,199,85,.45);transition:var(--tr)}
-.line-fab:hover{background:#05b34c;transform:translateY(-2px);box-shadow:0 12px 30px rgba(6,199,85,.5)}
-.line-fab svg{width:23px;height:23px;flex:0 0 auto}
-@media(max-width:600px){.line-fab{padding:13px 18px;font-size:14px;right:14px;bottom:16px}}
-
-@media(max-width:600px){
-  .hero h1{font-size:44px}.hero{min-height:auto;padding:72px 0 48px}
-  .sec-head h2{font-size:30px}section{padding:50px 0}
-  .stats{gap:22px}.stat .num{font-size:25px}
+/* ════════════════════════════════════════
+   BASE
+════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; overflow-x: clip; }
+body {
+  margin: 0;
+  font-family: var(--fb);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.7;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
 }
-@media(min-width:620px){.grid{grid-template-columns:1fr 1fr}}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+/* ════════════════════════════════════════
+   STICKY NAV（圓角藥丸）
+════════════════════════════════════════ */
+.site-nav {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  width: calc(100% - 32px);
+  max-width: 740px;
+  background: rgba(255,255,255,.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 999px;
+  border: 1.5px solid rgba(255,255,255,.9);
+  box-shadow: 0 4px 24px rgba(25,55,67,.14), 0 1px 0 rgba(255,255,255,.6) inset;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 10px 20px;
+  gap: 12px;
+}
+.nav-logo {
+  font-family: var(--fh);
+  font-weight: 900;
+  font-size: 16px;
+  color: var(--ink);
+  white-space: nowrap;
+  flex: 0 0 auto;
+  letter-spacing: .5px;
+}
+.nav-logo span { color: var(--orange); }
+.nav-links {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+}
+.nav-links a {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 7px 13px;
+  border-radius: 999px;
+  transition: var(--tr);
+  white-space: nowrap;
+}
+.nav-links a:hover { color: var(--ink); background: rgba(25,55,67,.07); }
+.nav-cta {
+  flex: 0 0 auto;
+  background: var(--orange);
+  color: #fff;
+  font-family: var(--fb);
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 9px 20px;
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: var(--tr);
+  box-shadow: 0 4px 16px rgba(242,151,0,.38);
+}
+.nav-cta:hover { background: var(--orange-dk); transform: translateY(-1px); }
+@media (max-width: 620px) {
+  .nav-links { display: none; }
+  .site-nav { padding: 9px 12px 9px 18px; }
+  .nav-logo { font-size: 14px; }
+  .nav-cta { font-size: 12.5px; padding: 8px 16px; }
+}
+
+/* ════════════════════════════════════════
+   HERO
+════════════════════════════════════════ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 120px 0 80px;
+  overflow: hidden;
+  background: var(--ink);
+  color: #fff;
+}
+
+/* 背景輪播 */
+.hero-slider { position: absolute; inset: 0; z-index: 0; }
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 38%;
+  opacity: 0;
+  transition: opacity 1.8s ease;
+}
+.hero-slide.active { opacity: 1; }
+
+/* 深色遮罩 */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(130deg,
+      rgba(25,55,67,.92) 0%,
+      rgba(25,55,67,.78) 55%,
+      rgba(22,168,158,.35) 100%);
+}
+
+/* 賽道 SVG 背景 */
+.hero-track {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+  opacity: .32;
+}
+
+/* 散點裝飾 */
+.hero-dots {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* 斜線刻度裝飾 */
+.hero::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 2;
+  background-image: repeating-linear-gradient(
+    -55deg,
+    transparent,
+    transparent 60px,
+    rgba(255,255,255,.018) 60px,
+    rgba(255,255,255,.018) 61px
+  );
+  pointer-events: none;
+}
+
+.hero .inner {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+}
+
+/* 活動標籤 */
+.hero .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.25);
+  padding: 8px 18px;
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  color: rgba(255,255,255,.9);
+}
+.eyebrow-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--orange);
+  flex: 0 0 auto;
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: .35; }
+}
+
+/* 主標題 */
+.hero h1 {
+  font-family: var(--fh);
+  font-weight: 900;
+  font-size: clamp(56px, 10vw, 92px);
+  line-height: 1;
+  margin: 22px 0 0;
+  letter-spacing: -1px;
+  color: #fff;
+}
+.hero h1 .zh { display: block; }
+.hero h1 .en {
+  display: block;
+  font-family: var(--fd);
+  font-style: italic;
+  font-size: clamp(18px, 3.5vw, 32px);
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: var(--orange);
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+
+/* 副標 */
+.hero .sub {
+  font-size: clamp(15px, 2.5vw, 18px);
+  color: rgba(255,255,255,.85);
+  max-width: 26em;
+  margin: 22px 0 0;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+/* 數據列 */
+.stats {
+  display: flex;
+  gap: 0;
+  margin: 36px 0 0;
+  flex-wrap: wrap;
+}
+.stat {
+  padding: 0 28px 0 0;
+  margin: 0 28px 0 0;
+  border-right: 1px solid rgba(255,255,255,.2);
+  flex: 0 0 auto;
+}
+.stat:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+.stat .num {
+  font-family: var(--fd);
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 900;
+  color: var(--orange);
+  line-height: 1;
+}
+.stat .lbl {
+  font-size: 12px;
+  color: rgba(255,255,255,.7);
+  letter-spacing: .5px;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+/* 價格票卡 */
+.pricetag {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 32px;
+  background: rgba(255,255,255,.07);
+  border: 2px solid var(--orange);
+  padding: 14px 22px;
+  border-radius: var(--r);
+  backdrop-filter: blur(8px);
+  position: relative;
+}
+.pricetag::before {
+  content: "旅展特價";
+  position: absolute;
+  top: -12px;
+  left: 16px;
+  background: var(--orange);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.pricetag .ori {
+  font-size: 13.5px;
+  color: rgba(255,255,255,.55);
+  text-decoration: line-through;
+}
+.pricetag .now {
+  font-family: var(--fd);
+  font-size: 34px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+.pricetag .now b {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,.75);
+  font-family: var(--fb);
+}
+
+/* CTA 按鈕 */
+.cta {
+  display: flex;
+  gap: 14px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+.btn {
+  cursor: pointer;
+  font-family: var(--fb);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: .5px;
+  padding: 15px 32px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 2px solid transparent;
+  transition: var(--tr);
+}
+.btn-orange {
+  background: var(--orange);
+  color: #fff;
+  box-shadow: 0 8px 28px rgba(242,151,0,.45), 4px 4px 0 var(--orange-dk);
+}
+.btn-orange:hover { background: var(--orange-dk); transform: translateY(-3px); }
+.btn-ghost {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255,255,255,.45);
+}
+.btn-ghost:hover { background: rgba(255,255,255,.1); border-color: #fff; }
+
+/* 底部山形切角 */
+.hero-bottom-wave {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ════════════════════════════════════════
+   SECTION SHELL & HEADINGS
+════════════════════════════════════════ */
+section { padding: 72px 0; }
+
+.sec-head {
+  text-align: center;
+  max-width: 36em;
+  margin: 0 auto 48px;
+}
+.kicker {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--orange);
+  background: var(--orange-lt);
+  padding: 6px 16px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+.sec-head h2 {
+  font-family: var(--fh);
+  font-weight: 900;
+  font-size: clamp(30px, 5vw, 44px);
+  color: var(--black);
+  margin: 0 0 14px;
+  line-height: 1.15;
+}
+.sec-head p {
+  color: var(--muted);
+  font-size: 15.5px;
+  margin: 0;
+  line-height: 1.75;
+}
+.sec-rule {
+  width: 48px;
+  height: 4px;
+  background: var(--orange);
+  border-radius: 2px;
+  margin: 14px auto;
+}
+
+/* 幾何圖示 (SVG inline，取代 emoji) */
+.sec-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+/* ════════════════════════════════════════
+   INTRO 帶（暖灰底）
+════════════════════════════════════════ */
+.intro-band {
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--line);
+  padding: 56px 0;
+}
+.intro-band .lead {
+  font-size: 17px;
+  color: var(--text);
+  text-align: center;
+  max-width: 38em;
+  margin: 0 auto;
+  line-height: 1.85;
+  font-weight: 400;
+}
+
+/* ════════════════════════════════════════
+   三大重點（對話泡泡＋幾何色塊）
+════════════════════════════════════════ */
+.keys-section { background: var(--bg); padding: 60px 0 64px; }
+.keys {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.key {
+  background: var(--bg-white);
+  border-radius: var(--r-lg);
+  padding: 32px 24px 28px;
+  position: relative;
+  box-shadow: var(--shadow-card);
+  border: 2px solid var(--ink);
+  transition: transform var(--tr), box-shadow var(--tr);
+}
+.key:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0 var(--teal);
+}
+.key:nth-child(2) {
+  box-shadow: 6px 6px 0 var(--orange);
+  border-color: var(--ink);
+}
+.key:nth-child(2):hover { box-shadow: 9px 9px 0 var(--orange); }
+.key:nth-child(3) {
+  box-shadow: 6px 6px 0 var(--sky);
+  border-color: var(--ink);
+}
+.key:nth-child(3):hover { box-shadow: 9px 9px 0 var(--sky); }
+
+/* 幾何色塊圖示 */
+.key-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: visible;
+}
+.key:nth-child(1) .key-icon { background: var(--teal); }
+.key:nth-child(2) .key-icon { background: var(--orange); }
+.key:nth-child(3) .key-icon { background: var(--sky); }
+/* 旋轉方塊裝飾 */
+.key-icon::after {
+  content: "";
+  position: absolute;
+  width: 14px; height: 14px;
+  border-radius: 3px;
+  top: -5px; right: -5px;
+  opacity: .7;
+}
+.key:nth-child(1) .key-icon::after { background: var(--orange); transform: rotate(20deg); }
+.key:nth-child(2) .key-icon::after { background: var(--teal); transform: rotate(30deg); }
+.key:nth-child(3) .key-icon::after { background: var(--orange); transform: rotate(-15deg); }
+
+.key h3 {
+  font-family: var(--fh);
+  font-size: 19px;
+  font-weight: 900;
+  color: var(--black);
+  margin: 0 0 10px;
+}
+/* 對話泡泡箭頭 */
+.key p {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.7;
+}
+.key-bubble {
+  background: var(--bg);
+  border-radius: 12px 12px 12px 2px;
+  padding: 12px 14px;
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-top: 12px;
+  position: relative;
+}
+
+/* «« 雙箭頭裝飾 */
+.deco-arrows {
+  text-align: center;
+  font-size: 22px;
+  color: var(--orange);
+  letter-spacing: 4px;
+  margin: 32px 0 0;
+  font-family: var(--fd);
+  font-weight: 900;
+  opacity: .6;
+}
+
+@media (max-width: 640px) {
+  .keys { grid-template-columns: 1fr; gap: 16px; }
+}
+
+/* ════════════════════════════════════════
+   TRACK SVG 分隔線（賽道線條跨區塊）
+════════════════════════════════════════ */
+.track-divider {
+  display: block;
+  width: 100%;
+  overflow: visible;
+  height: 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ════════════════════════════════════════
+   EXPERIENCE（2×2 實色磚格）
+════════════════════════════════════════ */
+.exp-section {
+  background: var(--bg-white);
+  padding: 72px 0;
+}
+.exp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--orange);
+}
+.exp-tile {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+}
+.exp-tile img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .5s ease;
+}
+.exp-tile:hover img { transform: scale(1.06); }
+.exp-tile-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+}
+/* 各磚顏色條紋 */
+.exp-tile:nth-child(1) .exp-tile-overlay {
+  background: linear-gradient(to top, rgba(22,168,158,.92) 0%, transparent 55%);
+}
+.exp-tile:nth-child(2) .exp-tile-overlay {
+  background: linear-gradient(to top, rgba(6,185,234,.9) 0%, transparent 55%);
+}
+.exp-tile:nth-child(3) .exp-tile-overlay {
+  background: linear-gradient(to top, rgba(242,151,0,.9) 0%, transparent 55%);
+}
+.exp-tile:nth-child(4) .exp-tile-overlay {
+  background: linear-gradient(to top, rgba(25,55,67,.92) 0%, transparent 55%);
+}
+.exp-tile-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.18);
+  border-radius: 999px;
+  padding: 4px 11px;
+  margin-bottom: 8px;
+  backdrop-filter: blur(4px);
+  align-self: flex-start;
+}
+.exp-tile h3 {
+  font-family: var(--fh);
+  font-weight: 900;
+  font-size: clamp(17px, 2.5vw, 22px);
+  color: #fff;
+  margin: 0 0 6px;
+  line-height: 1.2;
+}
+.exp-tile p {
+  font-size: 13px;
+  color: rgba(255,255,255,.85);
+  margin: 0;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.exp-tile-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.exp-tile-meta span {
+  font-size: 11px;
+  color: rgba(255,255,255,.8);
+  background: rgba(255,255,255,.15);
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+@media (max-width: 580px) {
+  .exp-grid { grid-template-columns: 1fr; box-shadow: 4px 4px 0 var(--orange); }
+  .exp-tile { aspect-ratio: 16/9; }
+}
+
+/* ════════════════════════════════════════
+   色塊帶（ROUTE section）
+════════════════════════════════════════ */
+.band-route {
+  position: relative;
+  background: var(--teal);
+  color: #fff;
+  padding: 88px 0 80px;
+  overflow: hidden;
+  /* 圓點底紋 */
+  background-image:
+    radial-gradient(rgba(255,255,255,.12) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+/* 倒三角缺口（上邊） */
+.band-route::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 40px solid transparent;
+  border-right: 40px solid transparent;
+  border-top: 34px solid var(--bg-white);
+  z-index: 2;
+}
+/* 倒三角缺口（下邊） */
+.band-route::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 40px solid transparent;
+  border-right: 40px solid transparent;
+  border-bottom: 34px solid var(--bg);
+  z-index: 2;
+}
+
+/* 賽道線裝飾（在色帶內）*/
+.band-track-inner {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: .2;
+}
+
+.band-route .kicker {
+  background: rgba(255,255,255,.18);
+  color: #fff;
+  border-radius: 999px;
+}
+.band-route .sec-head h2 { color: #fff; }
+.band-route .sec-head p  { color: rgba(255,255,255,.88); }
+.band-route .sec-rule    { background: rgba(255,255,255,.5); }
+
+/* Tour 大圖卡（票卡風格）*/
+.tourcard {
+  background: var(--bg-white);
+  border: 3px solid var(--orange);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: 8px 8px 0 rgba(0,0,0,.25);
+  margin-bottom: 28px;
+}
+.tourcard .timg { position: relative; height: 240px; }
+.tourcard .timg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tourcard .tbadge {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--orange); color: #fff;
+  padding: 7px 16px; border-radius: 999px;
+  font-size: 12px; font-weight: 800; letter-spacing: 1px;
+}
+.tourcard .tdur {
+  position: absolute; bottom: 16px; left: 16px;
+  background: rgba(0,0,0,.65); backdrop-filter: blur(8px);
+  color: #fff; padding: 7px 16px; border-radius: 999px;
+  font-size: 12.5px; font-weight: 600;
+}
+.tourcard .tprice {
+  position: absolute; bottom: 16px; right: 16px;
+  text-align: right; color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,.6);
+}
+.tourcard .tprice .now {
+  font-family: var(--fd); font-size: 28px; font-weight: 900;
+}
+.tourcard .tprice .ori {
+  font-size: 12px; opacity: .8; text-decoration: line-through; display: block;
+}
+.tourcard .tbody { padding: 24px 26px 16px; }
+
+/* 鋸齒虛線分隔（票卡裁切感）*/
+.ticket-tear {
+  height: 1px;
+  border: none;
+  background: repeating-linear-gradient(
+    to right,
+    var(--line) 0px, var(--line) 8px,
+    transparent 8px, transparent 16px
+  );
+  margin: 0;
+}
+
+/* 日期行程卡（時間軸風格）*/
+.daycard {
+  background: var(--bg-white);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,.15);
+  margin-bottom: 24px;
+  border: 1.5px solid rgba(255,255,255,.3);
+}
+.dayhd {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 26px 18px;
+  background: rgba(255,255,255,.08);
+  border-bottom: 1px solid rgba(255,255,255,.15);
+}
+.daynum {
+  font-family: var(--fd);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #fff;
+  background: var(--orange);
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  text-align: center;
+  line-height: 1.1;
+  box-shadow: 3px 3px 0 rgba(0,0,0,.2);
+}
+.daynum.d2 { background: var(--sky); }
+.dayhd .dt {
+  font-family: var(--fh);
+  font-size: 21px;
+  font-weight: 900;
+  color: #fff;
+}
+.dayhd .ds { font-size: 13px; color: rgba(255,255,255,.7); margin-top: 2px; }
+
+/* 行程步驟（橘色時間軸線）*/
+.step {
+  display: flex;
+  gap: 18px;
+  padding: 18px 26px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  position: relative;
+}
+.step:last-child { border-bottom: 0; }
+/* 橘色軸線 */
+.step::before {
+  content: "";
+  position: absolute;
+  left: 50px; top: 0; bottom: 0;
+  width: 2px;
+  background: rgba(242,151,0,.3);
+}
+.step:first-child::before { top: 28px; }
+.step:last-child::before  { bottom: calc(100% - 28px); top: 0; }
+
+.step .ic {
+  flex: 0 0 48px;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  background: rgba(255,255,255,.12);
+  border: 2px solid var(--orange);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+.step .ic.photo {
+  flex: 0 0 64px;
+  width: 64px; height: 64px;
+  border-radius: 14px;
+  border: 2px solid var(--orange);
+  background: none;
+}
+.step .ic.photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+.step .t .time {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--orange);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.step .t .ttl {
+  font-family: var(--fh);
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  margin: 2px 0 4px;
+}
+.step .t .desc { font-size: 13.5px; color: rgba(255,255,255,.72); margin: 0; }
+
+/* 費用包含 */
+.includes {
+  background: rgba(242,151,0,.12);
+  border: 2px solid var(--orange);
+  border-radius: var(--r-lg);
+  padding: 28px 28px;
+  margin-top: 8px;
+}
+.includes h3 {
+  font-family: var(--fh);
+  font-size: 21px;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.includes ul {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.includes li {
+  display: flex;
+  gap: 12px;
+  font-size: 15px;
+  color: rgba(255,255,255,.9);
+  align-items: flex-start;
+}
+.includes li::before {
+  content: "✦";
+  color: var(--orange);
+  font-weight: 700;
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+.note {
+  font-size: 12.5px;
+  color: rgba(255,255,255,.55);
+  margin-top: 20px;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ════════════════════════════════════════
+   SHOPS 區塊
+════════════════════════════════════════ */
+.shops-section { background: var(--bg); padding: 72px 0; }
+
+/* 篩選 Chips */
+.filter {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(241,240,234,.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 14px 0;
+  margin: 32px -24px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.filter .row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0 24px;
+  scrollbar-width: none;
+}
+.filter .row::-webkit-scrollbar { display: none; }
+.chip {
+  flex: 0 0 auto;
+  border: 2px solid var(--line);
+  background: var(--bg-white);
+  color: var(--text);
+  font-family: var(--fb);
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--tr);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.chip:hover { border-color: var(--orange); color: var(--orange); }
+.chip .n { font-size: 11px; opacity: .55; font-weight: 600; }
+.chip.on {
+  background: var(--orange);
+  color: #fff;
+  border-color: var(--orange);
+  box-shadow: 3px 3px 0 var(--orange-dk);
+}
+.chip.on .n { opacity: .85; }
+
+/* 地圖 */
+.mapwrap {
+  margin-top: 28px;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  box-shadow: 6px 6px 0 var(--teal);
+  position: relative;
+}
+#map { height: 380px; width: 100%; background: #e0e8ec; z-index: 1; }
+.maplegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  padding: 14px 16px;
+  background: var(--bg-white);
+  border-top: 1px solid var(--line);
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.maplegend .lg { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.maplegend .dot {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.15);
+}
+.mapnote {
+  font-size: 12px;
+  color: var(--muted-2);
+  text-align: center;
+  margin: 10px 0 0;
+  font-style: italic;
+}
+
+/* 店家卡片（立體 offset shadow）*/
+.grid { display: grid; gap: 20px; margin-top: 28px; }
+@media (min-width: 620px) { .grid { grid-template-columns: 1fr 1fr; } }
+
+.card {
+  background: var(--bg-white);
+  border: 2px solid var(--ink);
+  border-radius: var(--r-lg);
+  padding: 24px 22px 20px;
+  position: relative;
+  transition: transform var(--tr), box-shadow var(--tr);
+  box-shadow: 5px 5px 0 var(--teal);
+}
+.card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--teal);
+}
+.card.dim {
+  opacity: .8;
+  box-shadow: 5px 5px 0 var(--muted-2);
+}
+.card .top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.card .name {
+  font-family: var(--fh);
+  font-size: 19px;
+  font-weight: 900;
+  color: var(--black);
+  line-height: 1.3;
+  margin: 0;
+}
+.cat {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--gc);
+  white-space: nowrap;
+}
+.area {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  color: var(--muted);
+  font-weight: 500;
+  margin-bottom: 13px;
+}
+.offer {
+  background: var(--orange-lt);
+  border-left: 4px solid var(--orange);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--text);
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+}
+.offer .star { color: var(--orange); flex: 0 0 auto; }
+.offer.inq {
+  border-left-color: var(--muted-2);
+  color: var(--muted);
+  background: #f0f0f0;
+}
+
+/* 卡片按鈕 */
+.actions {
+  display: flex;
+  gap: 9px;
+  margin-top: 16px;
+}
+.act {
+  flex: 1;
+  border: 2px solid var(--line);
+  background: var(--bg-white);
+  cursor: pointer;
+  font-family: var(--fb);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 10px 6px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--text);
+  transition: var(--tr);
+}
+.act:hover { border-color: var(--teal); color: var(--teal); }
+.act.map:hover { background: var(--teal-lt); border-color: var(--teal); }
+.act.claim {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+  box-shadow: 2px 2px 0 var(--orange-dk);
+}
+.act.claim:hover {
+  background: var(--orange-dk);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--orange-dk);
+}
+.act.claim.done {
+  background: var(--teal-lt);
+  border-color: var(--teal);
+  color: var(--teal);
+  box-shadow: none;
+}
+
+/* 群組顏色 */
+.g-sup  { --gc: #2E7DA1; }
+.g-bike { --gc: #1a6b4a; }
+.g-stay { --gc: #b5853f; }
+.g-eat  { --gc: #c2703a; }
+.g-play { --gc: #6d5a8c; }
+
+/* Leaflet popup */
+.leaflet-popup-content { font-family: var(--fb); margin: 13px 15px; line-height: 1.55; }
+.leaflet-popup-content .pn { font-family: var(--fh); font-size: 16px; font-weight: 700; color: var(--ink); }
+.leaflet-popup-content .pa { font-size: 12px; color: var(--muted); margin: 2px 0 7px; }
+.leaflet-popup-content .po {
+  font-size: 13px; color: #3f3f3f;
+  background: var(--orange-lt);
+  border-left: 3px solid var(--orange);
+  padding: 7px 9px; border-radius: 6px; margin-bottom: 8px;
+}
+.leaflet-popup-content .po.inq { border-left-color: var(--muted-2); color: var(--muted); background: #f4f4f5; }
+.leaflet-popup-content .pg { display: inline-block; font-size: 11px; color: var(--muted-2); margin-bottom: 8px; }
+.leaflet-popup-content a.pnav {
+  display: inline-block;
+  background: var(--teal);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+/* ════════════════════════════════════════
+   FAQ
+════════════════════════════════════════ */
+.faq-section {
+  background: var(--bg-white);
+  padding: 72px 0;
+}
+.faq { display: flex; flex-direction: column; gap: 14px; max-width: 660px; margin: 0 auto; }
+.faq details {
+  background: var(--bg-white);
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: var(--tr);
+}
+.faq details[open] {
+  border-color: var(--orange);
+  box-shadow: 4px 4px 0 var(--orange-lt);
+}
+.faq summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 18px 22px;
+  font-weight: 700;
+  font-size: 15.5px;
+  color: var(--black);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: "+";
+  color: var(--orange);
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1;
+  transition: transform var(--tr);
+  flex: 0 0 auto;
+}
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq details[open] summary { border-bottom: 1px solid var(--line); }
+.faq .a {
+  padding: 16px 22px 20px;
+  font-size: 14.5px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+.faq .a b { color: var(--orange); }
+
+/* ════════════════════════════════════════
+   ORGS（主辦 / 夥伴）
+════════════════════════════════════════ */
+.orgs-section { background: var(--bg); padding: 64px 0 72px; }
+.orgs { text-align: center; }
+.org-grp { margin-bottom: 28px; }
+.org-grp:last-child { margin-bottom: 0; }
+.org-grp h4 {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  margin: 0 0 14px;
+  font-weight: 700;
+}
+.org-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 14px;
+  justify-content: center;
+  align-items: center;
+}
+.org-chip {
+  background: var(--bg-white);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 11px 26px;
+  font-family: var(--fh);
+  font-weight: 700;
+  color: var(--black);
+  font-size: 15px;
+  box-shadow: 3px 3px 0 var(--teal);
+  transition: transform var(--tr), box-shadow var(--tr);
+}
+.org-chip:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--teal);
+}
+.org-chip small {
+  font-family: var(--fb);
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 12px;
+  display: block;
+  margin-top: 1px;
+}
+
+/* ════════════════════════════════════════
+   MODAL（核銷卡）
+════════════════════════════════════════ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(25,55,67,.7);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.overlay.show { display: flex; animation: fade .2s ease; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+.voucher {
+  background: var(--bg-white);
+  border-radius: 24px;
+  max-width: 380px;
+  width: 100%;
+  overflow: hidden;
+  border: 3px solid var(--orange);
+  box-shadow: 8px 8px 0 var(--orange-dk), 0 30px 70px rgba(0,0,0,.4);
+  animation: pop .28s cubic-bezier(.2,1.2,.4,1);
+}
+@keyframes pop {
+  from { transform: scale(.85); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+.voucher .top {
+  background: linear-gradient(135deg, var(--ink), var(--ink-soft));
+  color: #fff;
+  padding: 30px 24px 24px;
+  text-align: center;
+}
+.voucher .check {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+  margin: 0 auto 14px;
+  box-shadow: 0 8px 20px rgba(242,151,0,.45);
+}
+.voucher .top h3 {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--orange);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.voucher .top .vn {
+  font-family: var(--fh);
+  margin: 8px 0 0;
+  font-size: 23px;
+  font-weight: 900;
+}
+
+.perf {
+  height: 0;
+  border-top: 2px dashed var(--line);
+  position: relative;
+}
+.perf::before, .perf::after {
+  content: "";
+  position: absolute;
+  top: -11px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(25,55,67,.6);
+}
+.perf::before { left: -11px; }
+.perf::after  { right: -11px; }
+
+.voucher .body { padding: 22px 24px 8px; }
+.voucher .voffer {
+  background: var(--orange-lt);
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14.5px;
+  margin-bottom: 16px;
+  color: var(--text);
+  border-left: 4px solid var(--orange);
+}
+.voucher .meta {
+  font-size: 13px;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.voucher .stamp {
+  font-family: var(--fh);
+  font-weight: 700;
+  color: var(--teal);
+  font-size: 16px;
+}
+.voucher .hint {
+  text-align: center;
+  font-size: 13px;
+  color: var(--sky-dk);
+  font-weight: 600;
+  margin: 18px 0 4px;
+}
+.voucher .foot { padding: 10px 24px 24px; }
+.voucher .close {
+  width: 100%;
+  padding: 15px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--fb);
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: var(--tr);
+}
+.voucher .close:hover { background: var(--ink-soft); }
+
+/* Toast */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: #fff;
+  padding: 13px 24px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: var(--tr);
+  z-index: 200;
+  box-shadow: 0 8px 28px rgba(25,55,67,.3);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════ */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,.88);
+  padding: 60px 0 50px;
+  position: relative;
+  overflow: hidden;
+}
+footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,.06) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
+  pointer-events: none;
+}
+footer .inner { position: relative; z-index: 1; }
+footer .fgold {
+  color: var(--orange);
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+footer .fh {
+  font-family: var(--fh);
+  color: #fff;
+  font-size: 28px;
+  font-weight: 900;
+  margin: 8px 0 14px;
+}
+footer p { margin: 5px 0; font-size: 14px; opacity: .8; }
+footer .disc {
+  font-size: 12px;
+  opacity: .45;
+  margin-top: 22px;
+  line-height: 1.8;
+  border-top: 1px solid rgba(255,255,255,.1);
+  padding-top: 18px;
+}
+
+/* ════════════════════════════════════════
+   LINE 浮鈕
+════════════════════════════════════════ */
+.line-fab {
+  position: fixed;
+  right: 18px;
+  bottom: 20px;
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: #06C755;
+  color: #fff;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-family: var(--fb);
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: 0 8px 24px rgba(6,199,85,.45), 3px 3px 0 #04a040;
+  transition: var(--tr);
+}
+.line-fab:hover {
+  background: #05b34c;
+  transform: translate(-2px, -2px);
+  box-shadow: 0 12px 30px rgba(6,199,85,.5), 5px 5px 0 #04a040;
+}
+.line-fab svg { width: 23px; height: 23px; flex: 0 0 auto; }
+@media (max-width: 600px) {
+  .line-fab { padding: 13px 18px; font-size: 14px; right: 14px; bottom: 16px; }
+}
+
+/* ════════════════════════════════════════
+   MOBILE MISC
+════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .hero { min-height: auto; padding: 100px 0 60px; }
+  section { padding: 52px 0; }
+  .band-route { padding: 70px 0 64px; }
+  .stats { gap: 16px; }
+  .stat { padding-right: 16px; margin-right: 16px; }
+}
 </style>
 </head>
 <body>
 
+<!-- ===== STICKY NAV ===== -->
+<nav class="site-nav" role="navigation" aria-label="主選單">
+  <div class="nav-logo">逐路<span>船騎</span></div>
+  <div class="nav-links">
+    <a href="#exp">體驗亮點</a>
+    <a href="#route">兩日遊</a>
+    <a href="#shops">優惠店家</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <a href="https://line.me/R/ti/p/%40onelife" class="nav-cta" target="_blank" rel="noopener">立即報名 →</a>
+</nav>
+
 <!-- ===== HERO ===== -->
 <header class="hero">
+  <!-- 背景輪播 -->
   <div class="hero-slider" id="heroSlider">
     <div class="hero-slide active" style="background-image:url('images/hero.jpg')"></div>
     <div class="hero-slide" style="background-image:url('images/hero2.jpg')"></div>
     <div class="hero-slide" style="background-image:url('images/hero3.jpg')"></div>
   </div>
+
+  <!-- 遮罩 -->
+  <div class="hero-overlay"></div>
+
+  <!-- 賽道線條 SVG -->
+  <svg class="hero-track" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+    <!-- 主橘色賽道曲線 -->
+    <path d="M-80,600 C120,500 280,200 520,280 C760,360 820,120 1100,180 C1260,220 1380,300 1520,260"
+      stroke="#f29700" stroke-width="28" stroke-linecap="round" fill="none"/>
+    <!-- 青綠賽道 -->
+    <path d="M-60,720 C200,640 400,400 680,440 C880,470 980,280 1220,320 C1360,340 1440,400 1560,380"
+      stroke="#16a89e" stroke-width="18" stroke-linecap="round" fill="none"/>
+    <!-- 天藍細線 -->
+    <path d="M100,800 C300,700 500,520 720,560 C900,590 1020,400 1280,440 C1380,460 1440,500 1540,480"
+      stroke="#06b9ea" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <!-- 圓點裝飾 -->
+    <circle cx="520" cy="280" r="16" fill="#f29700" opacity=".8"/>
+    <circle cx="1100" cy="180" r="12" fill="#f29700" opacity=".6"/>
+    <circle cx="680" cy="440" r="12" fill="#16a89e" opacity=".8"/>
+    <circle cx="1220" cy="320" r="10" fill="#16a89e" opacity=".6"/>
+    <!-- 格紋旗 -->
+    <rect x="495" y="255" width="9" height="9" fill="#fff" opacity=".5"/>
+    <rect x="504" y="255" width="9" height="9" fill="#f29700" opacity=".4"/>
+    <rect x="495" y="264" width="9" height="9" fill="#f29700" opacity=".4"/>
+    <rect x="504" y="264" width="9" height="9" fill="#fff" opacity=".5"/>
+  </svg>
+
+  <!-- Hero 內容 -->
   <div class="wrap inner">
-    <span class="eyebrow">2026 台北國際旅展 ‧ 南投日月潭</span>
-    <h1 class="serif">逐路船騎<span class="en">Sun Moon Lake</span></h1>
+    <span class="eyebrow">
+      <span class="eyebrow-dot"></span>
+      2026 台北國際旅展 ‧ 南投日月潭
+    </span>
+    <h1>
+      <span class="zh">逐路船騎</span>
+      <span class="en">Sun Moon Lake</span>
+    </h1>
     <p class="sub">魚人帶路，把「路 ‧ 船 ‧ 騎」一次玩遍——日月老茶廠、月牙灣 SUP、環湖單車，串起在地店家的獨家旅展優惠。</p>
+
     <div class="stats">
-      <div class="stat"><div class="num">50+</div><div class="lbl">合作優惠店家</div></div>
-      <div class="stat"><div class="num">2<small style="font-size:14px"> 天 1 夜</small></div><div class="lbl">招牌逐路船騎</div></div>
-      <div class="stat"><div class="num">$3,000</div><div class="lbl">旅展現場現省</div></div>
+      <div class="stat">
+        <div class="num">50+</div>
+        <div class="lbl">合作優惠店家</div>
+      </div>
+      <div class="stat">
+        <div class="num">2<small style="font-size:16px;font-family:var(--fb)"> 天 1 夜</small></div>
+        <div class="lbl">招牌逐路船騎</div>
+      </div>
+      <div class="stat">
+        <div class="num">$3,000</div>
+        <div class="lbl">旅展現場現省</div>
+      </div>
     </div>
+
     <div class="pricetag">
       <span class="ori">原價 $8,990</span>
       <span class="now"><b>2 人 </b>$5,990</span>
     </div>
+
     <div class="cta">
-      <a href="#route" class="btn btn-gold">探索兩日遊程 →</a>
-      <a href="#shops" class="btn btn-line">瀏覽優惠店家</a>
+      <a href="#route" class="btn btn-orange">探索兩日遊程 →</a>
+      <a href="#shops" class="btn btn-ghost">瀏覽優惠店家</a>
     </div>
   </div>
-  <svg class="mountains" viewBox="0 0 1440 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-    <path fill="#15402f" opacity=".55" d="M0,80 L240,40 L480,90 L720,30 L960,85 L1200,45 L1440,80 L1440,140 L0,140 Z"></path>
-    <path fill="#f8f9fa" d="M0,110 L240,86 L480,118 L720,92 L960,120 L1200,96 L1440,114 L1440,140 L0,140 Z"></path>
+
+  <!-- 底部山形切角 -->
+  <svg class="hero-bottom-wave" viewBox="0 0 1440 100" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,60 L200,30 L400,70 L600,20 L800,65 L1000,28 L1200,62 L1440,35 L1440,100 L0,100 Z" fill="#f1f0ea"/>
   </svg>
 </header>
 
 <!-- ===== INTRO ===== -->
-<section class="intro">
+<div class="intro-band">
+  <div class="wrap">
+    <p class="lead">日月潭，台灣最大的天然湖泊，海拔 748 公尺，群山環抱、邵族文化薈萃。騎一段 CNN 票選全球最美自行車道、在晨霧中划行立槳、品一杯日月潭紅茶——這趟「逐路船騎」，把湖畔最精華的玩法收進兩天。</p>
+  </div>
+</div>
+
+<main>
+
+<!-- ===== 三大重點 ===== -->
+<section class="keys-section" id="keys">
   <div class="wrap">
     <div class="sec-head">
-      <span class="kicker">Discover Sun Moon Lake</span>
-      <h2>台灣最美的湖光山色</h2>
-      <div class="rule"></div>
+      <span class="kicker">Why ‧ 為什麼選我們</span>
+      <h2>三個理由，一次出發</h2>
+      <div class="sec-rule"></div>
     </div>
-    <p class="lead">日月潭，台灣最大的天然湖泊，海拔 748 公尺，群山環抱、邵族文化薈萃。騎一段 CNN 票選全球最美自行車道、在晨霧中划行立槳、品一杯日月潭紅茶——這趟「逐路船騎」，把湖畔最精華的玩法收進兩天。</p>
+    <div class="keys">
+      <!-- KEY 1 -->
+      <div class="key">
+        <div class="key-icon">
+          <!-- 船槳幾何圖示 -->
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="13" y="2" width="3" height="20" rx="1.5" fill="#fff"/>
+            <ellipse cx="14.5" cy="22" rx="6" ry="4" fill="rgba(255,255,255,.7)"/>
+          </svg>
+        </div>
+        <h3>全程專人帶路</h3>
+        <div class="key-bubble">魚人導覽，「船 ‧ 騎」一次玩遍，不必自己做功課。</div>
+      </div>
+      <!-- KEY 2 -->
+      <div class="key">
+        <div class="key-icon">
+          <!-- 票券幾何圖示 -->
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="3" y="8" width="22" height="14" rx="3" fill="#fff" opacity=".9"/>
+            <rect x="3" y="8" width="8" height="14" rx="3" fill="rgba(255,255,255,.5)"/>
+            <circle cx="11" cy="15" r="1.5" fill="rgba(242,151,0,.8)"/>
+          </svg>
+        </div>
+        <h3>旅展限定優惠</h3>
+        <div class="key-bubble">50+ 在地店家折扣，兩日遊現省 $3,000。</div>
+      </div>
+      <!-- KEY 3 -->
+      <div class="key">
+        <div class="key-icon">
+          <!-- 地圖圖示 -->
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M4 7l7-3 6 3 7-3v17l-7 3-6-3-7 3V7z" fill="#fff" opacity=".85"/>
+            <line x1="11" y1="4" x2="11" y2="21" stroke="rgba(6,185,234,.8)" stroke-width="1.5"/>
+            <line x1="17" y1="7" x2="17" y2="24" stroke="rgba(6,185,234,.6)" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <h3>一頁全收</h3>
+        <div class="key-bubble">遊程、優惠、地圖、核銷打卡，掃碼即用。</div>
+      </div>
+    </div>
+    <div class="deco-arrows">«« 出發！»»</div>
   </div>
 </section>
 
-<main class="wrap">
+<!-- 賽道分隔線 -->
+<svg class="track-divider" viewBox="0 0 760 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+  <path d="M-20,60 C80,20 180,70 300,35 C420,0 520,60 640,30 C700,18 740,40 780,28"
+    stroke="#f29700" stroke-width="10" stroke-linecap="round" fill="none"/>
+  <path d="M-20,72 C100,42 220,76 360,52 C480,30 580,70 680,48 C720,38 755,52 790,44"
+    stroke="#16a89e" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <circle cx="300" cy="35" r="6" fill="#f29700"/>
+  <circle cx="640" cy="30" r="5" fill="#f29700" opacity=".6"/>
+  <circle cx="360" cy="52" r="5" fill="#16a89e"/>
+</svg>
 
-  <!-- ===== 三大重點 ===== -->
-  <section id="keys" style="padding-top:24px">
-    <div class="keys">
-      <div class="key">
-        <div class="ki">🛶</div>
-        <h3>全程專人帶路</h3>
-        <p>魚人導覽，「船 ‧ 騎」一次玩遍，不必自己做功課。</p>
-      </div>
-      <div class="key">
-        <div class="ki">🎟️</div>
-        <h3>旅展限定優惠</h3>
-        <p>50+ 在地店家折扣，兩日遊現省 $3,000。</p>
-      </div>
-      <div class="key">
-        <div class="ki">🗺️</div>
-        <h3>一頁全收</h3>
-        <p>遊程、優惠、地圖、核銷打卡，掃碼即用。</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== EXPERIENCES ===== -->
-  <section id="exp">
+<!-- ===== EXPERIENCES ===== -->
+<section class="exp-section" id="exp">
+  <div class="wrap">
     <div class="sec-head">
       <span class="kicker">Experiences ‧ 體驗亮點</span>
       <h2>把「路 ‧ 船 ‧ 騎」一次玩遍</h2>
-      <div class="rule"></div>
+      <div class="sec-rule"></div>
       <p>日月潭最精華的四種玩法，都收進這趟逐路船騎。</p>
     </div>
-    <div class="exp-cards">
 
-      <article class="exp-card">
-        <div class="exp-img"><img src="images/sup.jpg" alt="月牙灣 SUP 立槳" loading="lazy"><span class="exp-badge">🌊</span></div>
-        <div class="exp-body">
+    <div class="exp-grid">
+      <!-- 磚 1：SUP -->
+      <div class="exp-tile">
+        <img src="images/sup.jpg" alt="月牙灣 SUP 立槳" loading="lazy">
+        <div class="exp-tile-overlay">
+          <span class="exp-tile-tag">水上活動</span>
           <h3>月牙灣 ‧ SUP 立槳</h3>
-          <div class="exp-meta"><span>⏱ 約 90 分鐘</span><span>🔰 新手友善</span><span>🧑‍🏫 教練帶領</span></div>
-          <p>從水面看湖光山色，晨霧中划行橫渡，日月潭最療癒的視角。</p>
-          <ul class="exp-hl">
-            <li>專業教練帶領、全程裝備與保險</li>
-            <li>月牙灣下水，划行至北旦碼頭上岸</li>
-            <li>免經驗，大小朋友都能輕鬆上手</li>
-          </ul>
+          <p>晨霧中划行橫渡，日月潭最療癒的水面視角</p>
+          <div class="exp-tile-meta">
+            <span>約 90 分鐘</span>
+            <span>新手友善</span>
+            <span>教練帶領</span>
+          </div>
         </div>
-      </article>
-
-      <article class="exp-card reverse">
-        <div class="exp-img"><img src="images/bike.jpg" alt="環湖單車" loading="lazy"><span class="exp-badge">🚲</span></div>
-        <div class="exp-body">
+      </div>
+      <!-- 磚 2：單車 -->
+      <div class="exp-tile">
+        <img src="images/bike.jpg" alt="環湖單車" loading="lazy">
+        <div class="exp-tile-overlay">
+          <span class="exp-tile-tag">湖岸騎行</span>
           <h3>環湖單車 ‧ 最美湖岸線</h3>
-          <div class="exp-meta"><span>⏱ 約 4 小時</span><span>🏆 CNN 十大最美車道</span><span>⚡ 電輔車可選</span></div>
-          <p>沿著全球公認最美的湖畔自行車道，把日月潭的湖景一路騎進心裡。</p>
-          <ul class="exp-hl">
-            <li>向山遊客中心起點，平緩好騎</li>
-            <li>穿越水上自行車道與絕美觀景點</li>
-            <li>適合親子與輕鬆騎乘</li>
-          </ul>
+          <p>CNN 票選全球最美自行車道，一路騎進心裡</p>
+          <div class="exp-tile-meta">
+            <span>約 4 小時</span>
+            <span>電輔車可選</span>
+          </div>
         </div>
-      </article>
-
-      <article class="exp-card">
-        <div class="exp-img"><img src="images/tea.jpg" alt="日月老茶廠" loading="lazy"><span class="exp-badge">🍵</span></div>
-        <div class="exp-body">
+      </div>
+      <!-- 磚 3：茶廠 -->
+      <div class="exp-tile">
+        <img src="images/tea.jpg" alt="日月老茶廠" loading="lazy">
+        <div class="exp-tile-overlay">
+          <span class="exp-tile-tag">文化體驗</span>
           <h3>日月老茶廠 ‧ 認識紅茶</h3>
-          <div class="exp-meta"><span>🎬《茶金》場景</span><span>🏭 製茶巡禮</span><span>🍵 品茶吃茶餐</span></div>
-          <p>走進日治時期的老茶廠，認識日月潭阿薩姆與台茶十八號的故事。</p>
-          <ul class="exp-hl">
-            <li>製茶廠巡禮、現場品紅茶</li>
-            <li>第一日午餐：日月茶套餐</li>
-            <li>選購碳足跡標章紅茶伴手禮</li>
-          </ul>
+          <p>《茶金》場景，製茶廠巡禮、品茶、吃茶餐</p>
+          <div class="exp-tile-meta">
+            <span>製茶巡禮</span>
+            <span>品茗午餐</span>
+          </div>
         </div>
-      </article>
-
-      <article class="exp-card reverse">
-        <div class="exp-img"><img src="images/balloon.jpg" alt="薰衣草森林 氦氣球" loading="lazy"><span class="exp-badge">🎈</span></div>
-        <div class="exp-body">
+      </div>
+      <!-- 磚 4：氣球 -->
+      <div class="exp-tile">
+        <img src="images/balloon.jpg" alt="薰衣草森林氦氣球" loading="lazy">
+        <div class="exp-tile-overlay">
+          <span class="exp-tile-tag">回程亮點</span>
           <h3>薰衣草森林 ‧ 九九峰氦氣球</h3>
-          <div class="exp-meta"><span>🚗 回程最佳中繼</span><span>🌿 香草餐盒</span><span>🎈 氦氣球體驗</span></div>
-          <p>回程順遊南投九九峰園區，在香草香氣裡用餐，視天候搭乘氦氣球俯瞰山景。</p>
-          <ul class="exp-hl">
-            <li>門票＋第二日香草套餐午餐</li>
-            <li>視天候可加購搭乘氦氣球</li>
-            <li>回程不繞路，完美收尾</li>
-          </ul>
+          <p>香草香氣裡用餐，視天候搭氦氣球俯瞰山景</p>
+          <div class="exp-tile-meta">
+            <span>香草套餐</span>
+            <span>氦氣球體驗</span>
+          </div>
         </div>
-      </article>
-
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- 幾何路徑裝飾 -->
-  <svg class="deco-routes" viewBox="0 0 1200 90" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-    <circle cx="70" cy="18" r="4" fill="#f29700"/><circle cx="120" cy="64" r="3.5" fill="#06b9ea"/>
-    <circle cx="1130" cy="24" r="4" fill="#06b9ea"/><circle cx="1080" cy="70" r="3.5" fill="#16a89e"/>
-    <circle cx="600" cy="14" r="3.5" fill="#f29700"/>
-    <rect x="165" y="8" width="11" height="52" rx="5.5" fill="#16a89e"/>
-    <path d="M220 4 V40 a26 26 0 0 0 26 26 H335" stroke="#06b9ea" stroke-width="11" stroke-linecap="round"/>
-    <path d="M300 6 V30 a20 20 0 0 0 20 20 H380" stroke="#f29700" stroke-width="9" stroke-linecap="round"/>
-    <rect x="1018" y="10" width="11" height="50" rx="5.5" fill="#f29700"/>
-    <path d="M980 86 V46 a26 26 0 0 1 26 -26 H1075" stroke="#16a89e" stroke-width="11" stroke-linecap="round"/>
-    <path d="M905 84 V54 a22 22 0 0 1 22 -22 H1000" stroke="#06b9ea" stroke-width="9" stroke-linecap="round"/>
-  </svg>
+<!-- ===== ROUTE（青綠色塊帶）===== -->
+<section id="route" class="band-route">
+  <!-- 色帶內賽道裝飾 -->
+  <div class="band-track-inner" aria-hidden="true">
+    <svg width="100%" height="100%" viewBox="0 0 1440 600" fill="none" preserveAspectRatio="xMidYMid slice">
+      <path d="M-100,400 C200,250 400,450 700,300 C900,200 1100,380 1440,280"
+        stroke="#fff" stroke-width="60" stroke-linecap="round" fill="none"/>
+      <path d="M-100,500 C300,380 600,520 900,400 C1100,320 1300,440 1540,380"
+        stroke="#fff" stroke-width="30" stroke-linecap="round" fill="none"/>
+    </svg>
+  </div>
 
-  <!-- ===== ROUTE（青綠色塊帶）===== -->
-  <section id="route" class="band-teal">
-   <div class="wrap">
+  <div class="wrap" style="position:relative;z-index:1">
     <div class="sec-head">
       <span class="kicker">Signature Route ‧ 二日遊</span>
-      <h2><svg class="ticon" width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l9 5-9 5-9-5z" fill="#f29700"/><path d="M3 7l9 5v10L3 17z" fill="#fff"/><path d="M21 7l-9 5v10l9-5z" fill="#ffd9a0"/></svg>兩日遊行程，2 人成行</h2>
-      <div class="rule"></div>
+      <h2>兩日遊行程，2 人成行</h2>
+      <div class="sec-rule"></div>
       <p>逐路船騎招牌玩法，串起日月潭在地店家合作，彈性安排、時間為示意。</p>
     </div>
 
@@ -491,24 +1757,34 @@ footer .disc{font-size:12px;opacity:.55;margin-top:20px;line-height:1.8;
         <img src="images/stay.jpg" alt="逐路船騎兩日遊" loading="lazy">
         <span class="tbadge">★ 招牌主推</span>
         <span class="tdur">🗓 2 天 1 夜 ‧ 2 人成行</span>
-        <span class="tprice"><span class="ori">原價 $8,990</span><span class="now">2 人 $5,990</span></span>
+        <span class="tprice">
+          <span class="ori">原價 $8,990</span>
+          <span class="now">2 人 $5,990</span>
+        </span>
       </div>
       <div class="tbody">
-        <p style="color:var(--muted);font-size:14.5px;margin:0 0 4px">魚人帶路，茶廠、SUP、環湖單車、香草氣球一次玩遍，旅展現場報名現省 <b style="color:#c2703a">$3,000</b>。</p>
+        <p style="color:var(--muted);font-size:14.5px;margin:0 0 4px">魚人帶路，茶廠、SUP、環湖單車、香草氣球一次玩遍，旅展現場報名現省 <b style="color:var(--orange)">$3,000</b>。</p>
       </div>
     </div>
 
     <div class="daycard">
       <div class="dayhd">
         <div class="daynum">DAY<br>01</div>
-        <div><div class="dt">逐路 ‧ 船 ‧ 騎</div><div class="ds">茶廠導覽 → 月牙灣 SUP → 環湖單車 → 入住</div></div>
+        <div>
+          <div class="dt">逐路 ‧ 船 ‧ 騎</div>
+          <div class="ds">茶廠導覽 → 月牙灣 SUP → 環湖單車 → 入住</div>
+        </div>
       </div>
       <div id="day1"></div>
     </div>
+
     <div class="daycard">
       <div class="dayhd">
         <div class="daynum d2">DAY<br>02</div>
-        <div><div class="dt">伴手 ‧ 香草 ‧ 賦歸</div><div class="ds">湖畔退房 → 魚池伴手禮 → 九九峰氦氣球 → 賦歸</div></div>
+        <div>
+          <div class="dt">伴手 ‧ 香草 ‧ 賦歸</div>
+          <div class="ds">湖畔退房 → 魚池伴手禮 → 九九峰氦氣球 → 賦歸</div>
+        </div>
       </div>
       <div id="day2"></div>
     </div>
@@ -518,16 +1794,17 @@ footer .disc{font-size:12px;opacity:.55;margin-top:20px;line-height:1.8;
       <ul id="includes"></ul>
       <p class="note">＊時間為示意，實際依現場與天候調整。旅展現場報名享現省 $3,000 優惠。</p>
     </div>
-   </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ===== SHOPS ===== -->
-  <section id="shops">
+<!-- ===== SHOPS ===== -->
+<section id="shops" class="shops-section">
+  <div class="wrap">
     <div class="sec-head">
       <span class="kicker">Local Partners ‧ 優惠店家</span>
       <h2>在地店家旅展優惠</h2>
-      <div class="rule"></div>
-      <p>共 <b id="total">50</b> 家合作店家。點分類篩選，按「導航」找路、「複製」存資訊、「領優惠」出示給店家折抵。</p>
+      <div class="sec-rule"></div>
+      <p>共 <b id="total" style="color:var(--orange)">50</b> 家合作店家。點分類篩選，按「導航」找路、「複製」存資訊、「領優惠」出示給店家折抵。</p>
     </div>
 
     <div class="filter"><div class="row" id="filterRow"></div></div>
@@ -539,14 +1816,16 @@ footer .disc{font-size:12px;opacity:.55;margin-top:20px;line-height:1.8;
     <p class="mapnote">點圖釘看店家優惠與導航。標示「區域示意」者為近似位置，精確地點請點導航。</p>
 
     <div class="grid" id="grid"></div>
-  </section>
+  </div>
+</section>
 
-  <!-- ===== FAQ ===== -->
-  <section id="faq">
+<!-- ===== FAQ ===== -->
+<section id="faq" class="faq-section">
+  <div class="wrap">
     <div class="sec-head">
       <span class="kicker">FAQ ‧ 常見問題</span>
       <h2>現場怎麼用？</h2>
-      <div class="rule"></div>
+      <div class="sec-rule"></div>
     </div>
     <div class="faq">
       <details open>
@@ -570,14 +1849,16 @@ footer .disc{font-size:12px;opacity:.55;margin-top:20px;line-height:1.8;
         <div class="a">右下角點「<b>加 LINE 好友</b>」（@onelife），直接線上詢問最快。</div>
       </details>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ===== 主辦單位 / 合作夥伴 ===== -->
-  <section id="orgs">
+<!-- ===== 主辦 / 夥伴 ===== -->
+<section id="orgs" class="orgs-section">
+  <div class="wrap">
     <div class="sec-head">
       <span class="kicker">Partners ‧ 主辦與夥伴</span>
       <h2>一起把日月潭帶進旅展</h2>
-      <div class="rule"></div>
+      <div class="sec-rule"></div>
     </div>
     <div class="orgs">
       <div class="org-grp">
@@ -603,11 +1884,13 @@ footer .disc{font-size:12px;opacity:.55;margin-top:20px;line-height:1.8;
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
+
 </main>
 
 <footer>
-  <div class="wrap">
+  <div class="wrap inner">
     <div class="fgold">Sun Moon Lake ‧ Nantou</div>
     <h4 class="fh">逐路船騎 ‧ 日月潭</h4>
     <p>主辦合作：OneLife 玩生活 ‧ 魚人帶路</p>
