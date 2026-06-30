@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#193743">
-<title>逐路船騎 ‧ 日月潭｜2026 台北國際旅展優惠導覽</title>
+<title>逐路船騎 ‧ 日月潭｜2026 台北國際夏季旅展優惠導覽</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&family=Rubik:ital,wght@0,700;0,900;1,900&display=swap" rel="stylesheet">
@@ -608,6 +608,18 @@ section { padding: 72px 0; }
   background: var(--bg-white);
   padding: 72px 0;
 }
+/* 逐鹿傳奇 白鹿傳說 */
+.legend { display:grid; grid-template-columns:1fr 1fr; background:var(--bg); border:1px solid var(--line); border-radius:18px; overflow:hidden; box-shadow:var(--shadow-soft); margin-bottom:18px; }
+.legend-img { position:relative; min-height:320px; }
+.legend-img img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.legend-img .tag { position:absolute; top:16px; left:16px; background:var(--orange); color:#fff; font-size:12px; font-weight:700; padding:5px 14px; border-radius:999px; }
+.legend-body { padding:34px 32px; }
+.legend-body .k { font-size:12px; font-weight:700; letter-spacing:2px; color:var(--orange); text-transform:uppercase; }
+.legend-body h2 { font-family:var(--fh); font-size:30px; font-weight:900; color:var(--ink); margin:8px 0 16px; line-height:1.3; }
+.legend-body p { font-size:14.5px; color:#3f3f3f; line-height:1.9; margin:0 0 12px; }
+.legend-body p b { color:var(--ink); }
+.legend-link { margin-top:6px; display:inline-flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:var(--teal); }
+@media (max-width:700px){ .legend { grid-template-columns:1fr; } .legend-img { min-height:220px; } .legend-body { padding:26px 22px; } .legend-body h2 { font-size:25px; } }
 .exp-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1637,7 +1649,7 @@ footer .disc {
   <div class="wrap inner">
     <span class="eyebrow">
       <span class="eyebrow-dot"></span>
-      2026 台北國際旅展 ‧ 南投日月潭
+      2026 台北國際夏季旅展 ‧ 南投日月潭
     </span>
     <h1>
       <span class="zh">逐路船騎</span>
@@ -1651,7 +1663,7 @@ footer .disc {
         <div class="lbl">合作優惠店家</div>
       </div>
       <div class="stat">
-        <div class="num">2<small style="font-size:16px;font-family:var(--fb)"> 天 1 夜</small></div>
+        <div class="num">2<small style="font-size:16px;font-family:var(--fb)"> 天</small></div>
         <div class="lbl">招牌逐路船騎</div>
       </div>
       <div class="stat">
@@ -1753,10 +1765,31 @@ footer .disc {
 <section class="exp-section" id="exp">
   <div class="wrap">
     <div class="sec-head">
-      <span class="kicker">Experiences ‧ 體驗亮點</span>
-      <h2>把「路 ‧ 船 ‧ 騎」一次玩遍</h2>
+      <span class="kicker">The Legend ‧ 逐鹿傳奇</span>
+      <h2>先說說，為什麼叫「逐鹿」</h2>
       <div class="sec-rule"></div>
-      <p>日月潭最精華的四種玩法，都收進這趟逐路船騎。</p>
+    </div>
+
+    <article class="legend">
+      <div class="legend-img">
+        <img src="images/deer.jpg" alt="白鹿" loading="lazy">
+        <span class="tag">邵族 ‧ 白鹿傳說</span>
+      </div>
+      <div class="legend-body">
+        <div class="k">Thao White Deer</div>
+        <h2>一隻白鹿，帶族人找到日月潭</h2>
+        <p>很久以前，一群邵族獵人在山裡發現一隻肥碩的<b>白鹿</b>，於是翻山越嶺地追，沿途用獵刀在樹皮上刻下記號當路標。</p>
+        <p>追了好幾天，眼前忽然展開一片湖光山色——白鹿縱身躍入湖中，族人這才發現這座<b>魚群豐美的大湖</b>。他們循著樹皮記號回去帶來族人，從此在<b>日月潭</b>定居。</p>
+        <p>這隻引路的白鹿，就是邵族與日月潭的起點。我們把這段「逐鹿」的傳奇，做成一趟能親身玩的旅程——<b>運動版的逐鹿傳奇</b>。</p>
+        <span class="legend-link">↓ 把逐鹿傳奇玩一遍</span>
+      </div>
+    </article>
+
+    <div class="sec-head" style="margin-top:48px">
+      <span class="kicker">Sporty Edition ‧ 運動版</span>
+      <h2>把逐鹿傳奇玩一遍</h2>
+      <div class="sec-rule"></div>
+      <p>沿著傳說中的湖，用 SUP、單車、茶香與氦氣球，把日月潭最精華的玩法收進兩天。</p>
     </div>
 
     <div class="exp-grid">
@@ -1805,8 +1838,8 @@ footer .disc {
         <img src="images/balloon.jpg" alt="薰衣草森林氦氣球" loading="lazy">
         <div class="exp-tile-overlay">
           <span class="exp-tile-tag">回程亮點</span>
-          <h3>薰衣草森林 ‧ 九九峰氦氣球</h3>
-          <p>香草香氣裡用餐，視天候搭氦氣球俯瞰山景</p>
+          <h3>九九峰氦氣球樂園</h3>
+          <p>薰衣草森林打造、全台首座氦氣球樂園，搭巨型氦氣球俯瞰九九峰</p>
           <div class="exp-tile-meta">
             <span>香草套餐</span>
             <span>氦氣球體驗</span>
@@ -1841,7 +1874,7 @@ footer .disc {
       <div class="timg">
         <img src="images/stay.jpg" alt="逐路船騎兩日遊" loading="lazy">
         <span class="tbadge">★ 招牌主推</span>
-        <span class="tdur">🗓 2 天 1 夜 ‧ 2 人成行</span>
+        <span class="tdur">🗓 2 天 ‧ 2 人成行</span>
         <span class="tprice">
           <span class="ori">原價 $8,990</span>
           <span class="now">2 人 $5,990</span>
@@ -1947,13 +1980,13 @@ footer .disc {
 <section id="orgs" class="orgs-section">
   <div class="wrap">
     <div class="sec-head">
-      <span class="kicker">Partners ‧ 主辦與夥伴</span>
+      <span class="kicker">Credits ‧ 網站製作與夥伴</span>
       <h2>一起把日月潭帶進旅展</h2>
       <div class="sec-rule"></div>
     </div>
     <div class="orgs">
       <div class="org-grp">
-        <h4>主辦</h4>
+        <h4>網站製作</h4>
         <div class="org-logos">
           <span class="org-chip">OneLife 玩生活<small>逐路船騎 ‧ 魚人帶路</small></span>
         </div>
@@ -1984,9 +2017,9 @@ footer .disc {
   <div class="wrap inner">
     <div class="fgold">Sun Moon Lake ‧ Nantou</div>
     <h4 class="fh">逐路船騎 ‧ 日月潭</h4>
-    <p>主辦合作：OneLife 玩生活 ‧ 魚人帶路</p>
+    <p>網站製作：OneLife 玩生活 ‧ 魚人帶路</p>
     <p>地點：南投日月潭（水社 ‧ 月牙灣 ‧ 伊達邵 ‧ 魚池）</p>
-    <p>2026 台北國際旅展現場專用優惠導覽</p>
+    <p>2026 台北國際夏季旅展 ‧ 7/17–7/20 ‧ 台北世貿一館</p>
     <p class="disc">優惠內容以各店家現場公告為準，部分店家優惠尚在洽談中（標示「優惠洽詢現場」）。「領優惠」核銷紀錄僅存於本手機瀏覽器，供現場出示店家辨識，非官方電子票券，恕不負保證與兌換責任。地圖導航以店名搜尋為主，請以實際地址為準。</p>
     <p class="disc">照片來源（CC 授權，Wikimedia Commons）：日月潭日出 © rheins (CC BY)；日月潭湖景 © Ken Marshall (CC BY)；日月潭 © M. Weitzel (CC BY)；茶園 © eazytraveler (CC BY)；SUP © Guillaume Bonastre (CC BY)；日月潭湖景 © ironypoisoning (CC BY-SA)；水社碼頭 © LowensteinYang (CC BY-SA)；台灣熱氣球節 © Dan Cheung (CC BY-SA)。</p>
   </div>
