@@ -613,6 +613,7 @@ section { padding: 72px 0; }
 .legend { display:grid; grid-template-columns:1fr 1fr; background:var(--bg); border:1px solid var(--line); border-radius:18px; overflow:hidden; box-shadow:var(--shadow-soft); margin-bottom:18px; }
 .legend-img { position:relative; min-height:320px; }
 .legend-img img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.legend-img svg { position:absolute; inset:0; width:100%; height:100%; display:block; }
 .legend-img .tag { position:absolute; top:16px; left:16px; background:var(--orange); color:#fff; font-size:12px; font-weight:700; padding:5px 14px; border-radius:999px; }
 .legend-body { padding:34px 32px; }
 .legend-body .k { font-size:12px; font-weight:700; letter-spacing:2px; color:var(--orange); text-transform:uppercase; }
@@ -1758,8 +1759,38 @@ footer .disc {
     </div>
 
     <article class="legend">
-      <div class="legend-img">
-        <img src="images/deer.jpg" alt="白鹿" loading="lazy">
+      <div class="legend-img legend-illus">
+        <svg viewBox="0 0 600 480" preserveAspectRatio="xMidYMid slice" role="img" aria-label="白鹿傳說插畫">
+          <rect width="600" height="480" fill="#16a89e"/>
+          <g fill="#ffffff" opacity=".12">
+            <circle cx="60" cy="60" r="3"/><circle cx="160" cy="40" r="3"/><circle cx="300" cy="64" r="3"/><circle cx="540" cy="150" r="3"/><circle cx="80" cy="200" r="3"/><circle cx="560" cy="60" r="3"/><circle cx="420" cy="48" r="3"/><circle cx="240" cy="120" r="3"/>
+          </g>
+          <circle cx="116" cy="92" r="32" fill="#f29700"/>
+          <path d="M486,64 a34,34 0 1 0 4,66 a26,26 0 1 1 -4,-66 z" fill="#fdeccb"/>
+          <path d="M-20,150 C140,118 188,212 360,180 C470,160 524,120 620,150" fill="none" stroke="#f29700" stroke-width="7" stroke-linecap="round" opacity=".5"/>
+          <path d="M-20,174 C150,142 196,236 384,204 C486,186 544,150 620,180" fill="none" stroke="#06b9ea" stroke-width="5" stroke-linecap="round" opacity=".5"/>
+          <path d="M0,332 L120,250 L212,332 Z" fill="#0e8a7d"/>
+          <path d="M150,332 L300,232 L444,332 Z" fill="#0c7568"/>
+          <path d="M360,332 L500,256 L600,332 Z" fill="#0e8a7d"/>
+          <path d="M0,338 Q150,322 300,338 T600,334 L600,480 L0,480 Z" fill="#0c7568"/>
+          <g fill="#fff" stroke="#0b554d" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round">
+            <rect x="206" y="286" width="13" height="76" rx="6"/>
+            <rect x="226" y="288" width="13" height="74" rx="6"/>
+            <rect x="346" y="286" width="13" height="76" rx="6"/>
+            <rect x="366" y="288" width="13" height="74" rx="6"/>
+            <path d="M196,250 l-22,-12 l6,26 z"/>
+            <ellipse cx="288" cy="258" rx="98" ry="52"/>
+            <path d="M348,234 C360,178 376,150 398,140 L426,158 C412,190 398,218 378,246 Z"/>
+            <ellipse cx="412" cy="140" rx="30" ry="22"/>
+            <path d="M434,138 q24,1 30,12 q-5,12 -30,9 z"/>
+            <path d="M398,124 l-9,-23 l19,9 z"/>
+          </g>
+          <g fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M406,122 C402,90 410,72 418,52"/>
+            <path d="M405,98 l-19,-13 M409,76 l-21,-11 M411,108 l17,-15 M416,82 l19,-11"/>
+          </g>
+          <circle cx="418" cy="136" r="3.2" fill="#0b554d"/>
+        </svg>
         <span class="tag">邵族 ‧ 白鹿傳說</span>
       </div>
       <div class="legend-body">
@@ -1768,13 +1799,13 @@ footer .disc {
         <p>很久以前，一群邵族獵人在山裡發現一隻肥碩的<b>白鹿</b>，於是翻山越嶺地追，沿途用獵刀在樹皮上刻下記號當路標。</p>
         <p>追了好幾天，眼前忽然展開一片湖光山色——白鹿縱身躍入湖中，族人這才發現這座<b>魚群豐美的大湖</b>。他們循著樹皮記號回去帶來族人，從此在<b>日月潭</b>定居。</p>
         <p>這隻引路的白鹿，就是邵族與日月潭的起點。我們把這段「逐鹿」的傳奇，做成一趟能親身玩的旅程——<b>運動版的逐鹿傳奇</b>。</p>
-        <span class="legend-link">↓ 把逐鹿傳奇玩一遍</span>
+        <span class="legend-link">↓ 把「路 ‧ 船 ‧ 騎」一次玩遍</span>
       </div>
     </article>
 
     <div class="sec-head" style="margin-top:48px">
-      <span class="kicker">Sporty Edition ‧ 運動版</span>
-      <h2>把逐鹿傳奇玩一遍</h2>
+      <span class="kicker">Experiences ‧ 體驗亮點</span>
+      <h2>把「路 ‧ 船 ‧ 騎」一次玩遍</h2>
       <div class="sec-rule"></div>
       <p>沿著傳說中的湖，用 SUP、單車、茶香與氦氣球，把日月潭最精華的玩法收進兩天。</p>
     </div>
@@ -1909,7 +1940,7 @@ footer .disc {
       <span class="kicker">Local Partners ‧ 優惠店家</span>
       <h2>在地店家好康</h2>
       <div class="sec-rule"></div>
-      <p>共 <b id="total" style="color:var(--orange)">50</b> 家・憑券現場折抵。選分類找好康，按「領取」出示店家折抵。</p>
+      <p>共 <b id="total" style="color:var(--orange)">50</b> 家・憑券現場折抵。選分類找好康，按「領取」出示店家折抵。<br><b style="color:var(--teal)">所有優惠使用至 2026/12/31</b></p>
     </div>
 
     <div class="shop-search">
@@ -2007,7 +2038,7 @@ footer .disc {
     <p>網站製作：OneLife 玩生活 ‧ 魚人帶路</p>
     <p>地點：南投日月潭（水社 ‧ 月牙灣 ‧ 伊達邵 ‧ 魚池）</p>
     <p>2026 台北國際夏季旅展 ‧ 7/17–7/20 ‧ 台北世貿一館</p>
-    <p class="disc">優惠內容以各店家現場公告為準，部分店家優惠尚在洽談中（標示「優惠洽詢現場」）。「領優惠」核銷紀錄僅存於本手機瀏覽器，供現場出示店家辨識，非官方電子票券，恕不負保證與兌換責任。地圖導航以店名搜尋為主，請以實際地址為準。</p>
+    <p class="disc">所有優惠使用期限至 2026/12/31。優惠內容以各店家現場公告為準，部分店家優惠尚在洽談中（標示「優惠洽詢現場」）。「領優惠」核銷紀錄僅存於本手機瀏覽器，供現場出示店家辨識，非官方電子票券，恕不負保證與兌換責任。地圖導航以店名搜尋為主，請以實際地址為準。</p>
     <p class="disc">照片來源（CC 授權，Wikimedia Commons）：日月潭日出 © rheins (CC BY)；日月潭湖景 © Ken Marshall (CC BY)；日月潭 © M. Weitzel (CC BY)；茶園 © eazytraveler (CC BY)；SUP © Guillaume Bonastre (CC BY)；日月潭湖景 © ironypoisoning (CC BY-SA)；水社碼頭 © LowensteinYang (CC BY-SA)；台灣熱氣球節 © Dan Cheung (CC BY-SA)。</p>
   </div>
 </footer>
@@ -2030,6 +2061,7 @@ footer .disc {
     <div class="body">
       <div class="voffer" id="vOffer">優惠內容</div>
       <div class="meta"><span>領取時間</span><span class="stamp" id="vTime">--</span></div>
+      <div class="meta"><span>優惠期限</span><span class="stamp">2026/12/31</span></div>
       <div class="hint">📱 請將本畫面出示給店家折抵</div>
     </div>
     <div class="foot"><button class="close" id="vClose">關閉</button></div>
