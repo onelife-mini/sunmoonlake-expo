@@ -2101,6 +2101,8 @@ const GCOLOR={sup:"#2E7DA1",bike:"#1a6b4a",stay:"#b5853f",eat:"#c2703a",play:"#6
 
 const $=s=>document.querySelector(s);
 const esc=s=>(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// 優惠明細：保留換行、把網址轉成可點連結（先 escape 再 linkify）
+const offerHtml=s=>esc(s).replace(/(https?:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener" style="color:var(--orange);text-decoration:underline;word-break:break-all">$1</a>').replace(/\n/g,"<br>");
 const claimKey=n=>"lcq:claim:"+n;
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");
   clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),1600);}
@@ -2161,14 +2163,20 @@ function renderMap(){
     m.bindPopup(`<div class="pn">${esc(s.name)}</div>
       <div class="pa">${esc(CATNAME[s.group]||"")} ‧ ${esc(s.area||"日月潭周邊")}</div>
       ${offer}${geoNote}<br>
-      <a class="pnav" href="${mapUrl(s.name)}" target="_blank" rel="noopener">🧭 開啟導航</a>`);
+      <a class="pnav" href="${mapUrl(s)}" target="_blank" rel="noopener">🧭 開啟導航</a>`);
     markerLayer.addLayer(m);
     pts.push([s.lat,s.lng]);
   });
   if(pts.length){map.fitBounds(pts,{padding:[40,40],maxZoom:14});}
 }
 
-function mapUrl(name){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(name.replace(/（.*?）|\(.*?\)/g,"").trim()+" 日月潭 南投");}
+function mapUrl(s){
+  // 已定位（精準/手動）→ 用座標，導航到你標的確切位置；未定位 → 用店名搜尋
+  if(s&&typeof s==="object"&&(s.geo==="precise"||s.geo==="manual")&&typeof s.lat==="number")
+    return "https://www.google.com/maps/search/?api=1&query="+s.lat+","+s.lng;
+  const name=((s&&s.name)||s||"").replace(/（.*?）|\(.*?\)/g,"").trim();
+  return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(name+" 日月潭 南投");
+}
 /* 從優惠文字抓出折扣徽章 */
 function deal(s){
   if(s.inquiry) return {big:"洽詢",unit:"",cls:"d-inq"};
@@ -2198,7 +2206,7 @@ function card(s,idx){
       <div class="cpn-offer">${s.inquiry?"店家優惠洽談中，請洽旅展攤位或店家現場":esc(s.offer)}</div>
       <div class="cpn-acts">
         ${action}
-        <a class="cpn-link" href="${mapUrl(s.name)}" target="_blank" rel="noopener">🧭 導航</a>
+        <a class="cpn-link" href="${mapUrl(s)}" target="_blank" rel="noopener">🧭 導航</a>
         <button class="cpn-link" data-copy="${idx}" title="複製">📋</button>
       </div>
     </div>
@@ -2223,7 +2231,7 @@ function renderGrid(){
 }
 
 function copyShop(s){
-  const txt=`${s.name}\n${s.inquiry?'優惠洽詢現場':('旅展優惠：'+s.offer)}\n${mapUrl(s.name)}`;
+  const txt=`${s.name}\n${s.inquiry?'優惠洽詢現場':('旅展優惠：'+s.offer)}\n${mapUrl(s)}`;
   const done=()=>toast("已複製店家資訊");
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>fallbackCopy(txt,done));}
   else fallbackCopy(txt,done);
@@ -2238,7 +2246,7 @@ function openVoucher(s){
   let ts=localStorage.getItem(claimKey(s.id));
   if(!ts){ts=new Date().toISOString();localStorage.setItem(claimKey(s.id),ts);renderFilter();renderGrid();}
   $("#vName").textContent=s.name;
-  $("#vOffer").textContent=s.offer||"旅展現場優惠";
+  $("#vOffer").innerHTML=s.offer?offerHtml(s.offer):"旅展現場優惠";
   $("#vTime").textContent=fmt(new Date(ts));
   $("#overlay").classList.add("show");
 }
