@@ -89,6 +89,35 @@ header h1 b{color:var(--gold)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .tip{background:#fffaf0;border:1px solid #f0e2c0;color:#7a5c18;font-size:12px;padding:9px 12px;
   border-radius:8px;margin:0 0 12px;line-height:1.6}
+
+/* 數據儀表板 */
+.statsOverlay{position:fixed;inset:0;background:rgba(20,20,35,.55);z-index:200;display:none;
+  align-items:flex-start;justify-content:center;padding:34px 16px;overflow-y:auto}
+.statsOverlay.show{display:flex}
+.statsBox{background:var(--bg);width:100%;max-width:760px;border-radius:14px;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.statsHd{background:var(--ink);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.statsHd h2{font-size:17px;margin:0;flex:1}
+.statsBody{padding:20px}
+.statsSetup p{margin:0 0 10px;color:var(--muted);font-size:13px}
+.irow{display:flex;gap:8px}
+.irow input{flex:1;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:14px}
+.statsHint{font-size:12.5px;color:var(--muted)}
+.statsCards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:640px){.statsCards{grid-template-columns:1fr 1fr}}
+.statCard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 14px;text-align:center}
+.statCard.gold{border-color:var(--gold);background:#fffdf5}
+.statCard .sv{font-size:30px;font-weight:900;color:var(--ink);line-height:1.1}
+.statCard.gold .sv{color:var(--gold-d)}
+.statCard .sl{font-size:12.5px;color:var(--muted);margin-top:6px;font-weight:600}
+.statCard .sl span{display:block;font-weight:400;font-size:11px;color:#a5a5a5;margin-top:2px}
+.statsToolsbar{display:flex;align-items:center;gap:10px;margin:16px 0 4px}
+.statsSub{font-size:14px;margin:16px 0 8px;color:var(--ink)}
+.statsTbl{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;font-size:13.5px}
+.statsTbl th{background:#eef1ee;text-align:left;padding:9px 12px;color:#555;font-weight:700}
+.statsTbl td{padding:8px 12px;border-top:1px solid var(--line)}
+.statsTbl td:last-child{font-weight:700;color:var(--ink)}
+.statsTbl tr:hover td{background:#f8f9f7}
 </style>
 </head>
 <body>
@@ -100,7 +129,44 @@ header h1 b{color:var(--gold)}
   <button class="tbtn" id="btnImport">匯入</button>
   <input type="file" id="fileInput" accept=".json" hidden>
   <button class="tbtn gold" id="btnExport">⬇ 匯出 shops.json</button>
+  <button class="tbtn" id="btnStats" title="流量與兌換統計">📊 數據</button>
 </header>
+
+<!-- 數據儀表板 -->
+<div class="statsOverlay" id="statsOverlay">
+  <div class="statsBox">
+    <div class="statsHd">
+      <h2>📊 流量與兌換數據</h2>
+      <button class="tbtn ghost" id="statsClose">✕ 關閉</button>
+    </div>
+    <div class="statsBody" id="statsBody">
+      <div class="statsSetup" id="statsSetup">
+        <p>輸入後台金鑰（STATS_KEY）以讀取數據。金鑰只存在這台裝置的瀏覽器，不會外流。</p>
+        <div class="irow">
+          <input type="password" id="statsKey" placeholder="STATS_KEY">
+          <button class="tbtn gold" id="statsLoad">讀取</button>
+        </div>
+        <p class="statsHint" id="statsMsg"></p>
+      </div>
+      <div id="statsResult" style="display:none">
+        <div class="statsCards">
+          <div class="statCard"><div class="sv" id="svVisitors">—</div><div class="sl">進站手機數<span>不重複裝置</span></div></div>
+          <div class="statCard gold"><div class="sv" id="svClaimers">—</div><div class="sl">按過兌換的手機數<span>不重複裝置</span></div></div>
+          <div class="statCard"><div class="sv" id="svRate">—</div><div class="sl">兌換轉換率<span>兌換手機 ÷ 進站手機</span></div></div>
+          <div class="statCard"><div class="sv" id="svEvents">—</div><div class="sl">領取券別總數<span>同手機跨店分別計</span></div></div>
+        </div>
+        <div class="statsToolsbar">
+          <span class="statsHint" id="statsUpdated"></span>
+          <span class="sp"></span>
+          <button class="tbtn ghost" id="statsRefresh">↻ 重新整理</button>
+          <button class="tbtn ghost" id="statsForget" title="清除本機記住的金鑰">清除金鑰</button>
+        </div>
+        <h3 class="statsSub">各店家「按過兌換」的手機數</h3>
+        <table class="statsTbl"><thead><tr><th>#</th><th>店家</th><th>類別</th><th style="text-align:right">兌換手機數</th></tr></thead><tbody id="statsRows"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="wrap">
   <!-- 左：店家清單 -->
@@ -328,6 +394,49 @@ $("#btnReload").onclick=async()=>{
 };
 
 load();
+
+/* ── 數據儀表板 ─────────────────────────────
+   ANALYTICS_URL 與前台 index.html 同一個 worker 網址；部署後填入。*/
+const ANALYTICS_URL=""; // 例：https://sunmoonlake-expo-stats.你的帳號.workers.dev
+const SK="lcq:statskey";
+function openStats(){ $("#statsOverlay").classList.add("show"); if(localStorage.getItem(SK)){ $("#statsKey").value=localStorage.getItem(SK); loadStats(); } }
+function closeStats(){ $("#statsOverlay").classList.remove("show"); }
+async function loadStats(){
+  const key=($("#statsKey").value||"").trim();
+  if(!key){ $("#statsMsg").textContent="請輸入金鑰"; return; }
+  if(!ANALYTICS_URL){ $("#statsMsg").textContent="尚未設定 ANALYTICS_URL（worker 部署後填入 admin.html 與 index.html）。"; return; }
+  $("#statsMsg").textContent="讀取中…";
+  try{
+    const r=await fetch(ANALYTICS_URL+"/stats?key="+encodeURIComponent(key));
+    if(r.status===401){ $("#statsMsg").textContent="金鑰錯誤"; return; }
+    if(!r.ok) throw new Error(r.status);
+    const d=await r.json();
+    localStorage.setItem(SK,key);
+    $("#statsSetup").style.display="none"; $("#statsResult").style.display="block";
+    $("#svVisitors").textContent=(d.visitors||0).toLocaleString();
+    $("#svClaimers").textContent=(d.claimers||0).toLocaleString();
+    $("#svEvents").textContent=(d.claimEvents||0).toLocaleString();
+    $("#svRate").textContent=d.visitors?((d.claimers/d.visitors*100).toFixed(1)+"%"):"—";
+    const byId={}; SHOPS.forEach(s=>byId[String(s.id)]=s);
+    const CAT={sup:"SUP",eat:"食",stay:"住",bike:"單車",play:"樂/手作"};
+    const rows=(d.perShop||[]).map((p,i)=>{
+      const s=byId[String(p.shop_id)];
+      const nm=s?s.name:("（id "+p.shop_id+"）");
+      const cat=s?(CAT[s.group]||s.group):"—";
+      return `<tr><td>${i+1}</td><td>${nm}</td><td>${cat}</td><td style="text-align:right">${p.n}</td></tr>`;
+    }).join("");
+    $("#statsRows").innerHTML=rows||`<tr><td colspan="4" style="color:#999;padding:14px">目前還沒有兌換記錄</td></tr>`;
+    const t=new Date(d.generatedAt||Date.now());
+    $("#statsUpdated").textContent="更新於 "+t.toLocaleString("zh-TW");
+  }catch(e){ $("#statsMsg").textContent="讀取失敗："+e.message; }
+}
+$("#btnStats").onclick=openStats;
+$("#statsClose").onclick=closeStats;
+$("#statsLoad").onclick=loadStats;
+$("#statsRefresh").onclick=loadStats;
+$("#statsKey").addEventListener("keydown",e=>{ if(e.key==="Enter") loadStats(); });
+$("#statsForget").onclick=()=>{ localStorage.removeItem(SK); $("#statsKey").value=""; $("#statsResult").style.display="none"; $("#statsSetup").style.display="block"; $("#statsMsg").textContent="已清除本機金鑰"; };
+$("#statsOverlay").addEventListener("click",e=>{ if(e.target.id==="statsOverlay") closeStats(); });
 </script>
 </body>
 </html>

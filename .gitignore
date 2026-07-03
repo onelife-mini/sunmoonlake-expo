@@ -14,3 +14,6 @@
 !.nojekyll
 !.gitignore
 !README.md
+
+# 統計後端（Cloudflare Worker 原始碼，供部署備份）
+!analytics/

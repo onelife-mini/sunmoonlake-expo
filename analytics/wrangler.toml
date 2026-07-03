@@ -1,0 +1,13 @@
+name = "sunmoonlake-expo-stats"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+# D1 資料庫綁定：建立資料庫後把 database_id 貼進來
+#   wrangler d1 create sunmoonlake-expo-stats
+[[d1_databases]]
+binding = "DB"
+database_name = "sunmoonlake-expo-stats"
+database_id = "貼上_wrangler_d1_create_回傳的_id"
+
+# STATS_KEY（後台金鑰）請用 secret 設定，不要寫在這裡：
+#   wrangler secret put STATS_KEY

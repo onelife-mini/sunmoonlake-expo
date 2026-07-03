@@ -2246,6 +2246,7 @@ function fallbackCopy(txt,cb){const ta=document.createElement("textarea");ta.val
 function fmt(d){const p=n=>String(n).padStart(2,"0");
   return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;}
 function openVoucher(s){
+  track("claim",s.id); // 按了「領取/兌換」鈕（不論最後是否兌換成功）— 後端用 deviceId+店家 去重
   let ts=localStorage.getItem(claimKey(s.id));
   if(!ts){ts=new Date().toISOString();localStorage.setItem(claimKey(s.id),ts);renderFilter();renderGrid();}
   $("#vName").textContent=s.name;
@@ -2269,7 +2270,26 @@ function applyDisplayJitter(list){
     });
   });
 }
+/* ── 匿名流量/兌換統計（Cloudflare Worker）───────────────────────
+   只送匿名裝置ID，不含個資。ANALYTICS_URL 部署 worker 後填入即可啟用；留空則完全不送。*/
+const ANALYTICS_URL=""; // 例：https://sunmoonlake-expo-stats.你的帳號.workers.dev
+function deviceId(){
+  let d=localStorage.getItem("lcq:did");
+  if(!d){ d=(self.crypto&&crypto.randomUUID)?crypto.randomUUID():(Date.now().toString(36)+Math.random().toString(36).slice(2,10)); localStorage.setItem("lcq:did",d); }
+  return d;
+}
+function track(t,shopId){
+  if(!ANALYTICS_URL) return;
+  try{
+    const body=JSON.stringify({t,d:deviceId(),s:(shopId==null?null:String(shopId))});
+    // text/plain 屬「簡單請求」，不觸發 CORS 預檢；fire-and-forget，後端掛了也不影響使用者
+    if(navigator.sendBeacon){ navigator.sendBeacon(ANALYTICS_URL+"/e",new Blob([body],{type:"text/plain"})); }
+    else{ fetch(ANALYTICS_URL+"/e",{method:"POST",body,keepalive:true,headers:{"Content-Type":"text/plain"},mode:"cors"}).catch(()=>{}); }
+  }catch(e){}
+}
+
 async function boot(){
+  track("visit"); // 進站（含 QR/連結進來）— 後端用 deviceId 去重
   try{
     const res=await fetch("data/shops.json",{cache:"no-store"});
     if(!res.ok) throw new Error(res.status);
