@@ -2174,6 +2174,9 @@ function mapUrl(s){
   // 已定位（精準/手動）→ 用座標，導航到你標的確切位置；未定位 → 用店名搜尋
   if(s&&typeof s==="object"&&(s.geo==="precise"||s.geo==="manual")&&typeof s.lat==="number")
     return "https://www.google.com/maps/search/?api=1&query="+s.lat+","+s.lng;
+  // 有指定搜尋字串（Google 上店名與招牌不同的店）→ 用指定字串
+  if(s&&typeof s==="object"&&s.navq)
+    return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(s.navq);
   const name=((s&&s.name)||s||"").replace(/（.*?）|\(.*?\)/g,"").trim();
   return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(name+" 日月潭 南投");
 }

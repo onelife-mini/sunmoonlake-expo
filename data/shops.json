@@ -174,9 +174,9 @@
     "area": "",
     "offer": "95折",
     "inquiry": false,
-    "lat": 23.858,
-    "lng": 120.915,
-    "geo": "area",
+    "lat": 23.8431444,
+    "lng": 120.9037559,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -222,9 +222,9 @@
     "area": "",
     "offer": "95折",
     "inquiry": false,
-    "lat": 23.858,
-    "lng": 120.915,
-    "geo": "area",
+    "lat": 23.8430571,
+    "lng": 120.9044144,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -258,9 +258,9 @@
     "area": "",
     "offer": "內用達低消贈送餅乾，價值 NT$90",
     "inquiry": false,
-    "lat": 23.858,
-    "lng": 120.915,
-    "geo": "area",
+    "lat": 23.9047341,
+    "lng": 120.9206602,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -270,9 +270,9 @@
     "area": "",
     "offer": "優惠洽詢中",
     "inquiry": true,
-    "lat": 23.858,
-    "lng": 120.915,
-    "geo": "area",
+    "lat": 23.8899591,
+    "lng": 120.9393487,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -294,9 +294,9 @@
     "area": "",
     "offer": "阿薩姆紅茶75g(手採/自然農法/碳足\n跡標章)9折優惠",
     "inquiry": false,
-    "lat": 23.858,
-    "lng": 120.915,
-    "geo": "area",
+    "lat": 23.9166701,
+    "lng": 120.9422494,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -318,9 +318,9 @@
     "area": "",
     "offer": "消費滿500元即可獲贈世界莊園掛耳包乙包",
     "inquiry": false,
-    "lat": 23.858,
-    "lng": 120.915,
-    "geo": "area",
+    "lat": 23.9057565,
+    "lng": 120.926981,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -342,9 +342,9 @@
     "area": "魚池·山居",
     "offer": "",
     "inquiry": true,
-    "lat": 23.897,
-    "lng": 120.939,
-    "geo": "area",
+    "lat": 23.8991729,
+    "lng": 120.9271143,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -354,9 +354,9 @@
     "area": "魚池·山居",
     "offer": "【日管旅展訂房專屬優惠】\n\n最低享定價4折優惠，適用國旅卡！\n加入官方LINE好友+提供通關密語\n訂房即可享有專屬住宿優惠！\n\n📱 官方LINE ID：@home45\n    官方 LINE網址： https://lin.ee/PMZDKsP\n🔑 通關密語：玄町小確幸",
     "inquiry": false,
-    "lat": 23.897,
-    "lng": 120.939,
-    "geo": "area",
+    "lat": 23.9053242,
+    "lng": 120.9389435,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -378,9 +378,9 @@
     "area": "魚池·山居",
     "offer": "實木手作設計Villa“網紅房型”限時優惠\n\n房型：相思-雙人Villa,、綠光-雙人Villa\n活動日期：2026年7月-10月\n旅展優惠含早餐：平日4980元、假日5980元（原價平日7200元、假日8200元），註記：國定連假除外\n訂房請加入Line（ID:@sly3679p ），輸入“我要台北旅展手刀下訂優惠”",
     "inquiry": false,
-    "lat": 23.897,
-    "lng": 120.939,
-    "geo": "area",
+    "lat": 23.9038206,
+    "lng": 120.9366035,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -393,7 +393,8 @@
     "lat": 23.851,
     "lng": 120.939,
     "geo": "area",
-    "addr": ""
+    "addr": "",
+    "navq": "日月潭水岸休閒飯店 南投"
   },
   {
     "id": 34,
@@ -402,9 +403,9 @@
     "area": "伊達邵",
     "offer": "",
     "inquiry": true,
-    "lat": 23.851,
-    "lng": 120.939,
-    "geo": "area",
+    "lat": 23.8464613,
+    "lng": 120.931686,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -438,9 +439,9 @@
     "area": "",
     "offer": "",
     "inquiry": true,
-    "lat": 23.858,
-    "lng": 120.915,
-    "geo": "area",
+    "lat": 23.9024104,
+    "lng": 120.9341888,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -462,9 +463,9 @@
     "area": "",
     "offer": "",
     "inquiry": true,
-    "lat": 23.858,
-    "lng": 120.915,
-    "geo": "area",
+    "lat": 23.9021534,
+    "lng": 120.9326221,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -474,9 +475,9 @@
     "area": "",
     "offer": "魚池雁寓\n1. 主題：一泊二讓心重新感受南投山林的節奏\n優惠連結：https://the-adagio.com/byTpf\n\n2. 主題：一泊二食到魚池探尋山味慢旅\n優惠連結：https://the-adagio.com/RPDxM\n\n3. 主題：避暑1+1：夜宿茶鄉魚池，再搭日月潭的消暑之船\n優惠連結：https://the-adagio.com/hE0bU",
     "inquiry": false,
-    "lat": 23.858,
-    "lng": 120.915,
-    "geo": "area",
+    "lat": 23.9191909,
+    "lng": 120.9177167,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -486,9 +487,9 @@
     "area": "",
     "offer": "平日週一至週四住宿95折",
     "inquiry": false,
-    "lat": 23.858,
-    "lng": 120.915,
-    "geo": "area",
+    "lat": 23.8367633,
+    "lng": 120.9036026,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -498,9 +499,9 @@
     "area": "",
     "offer": "平日入住9折、第二晚7折優惠價",
     "inquiry": false,
-    "lat": 23.858,
-    "lng": 120.915,
-    "geo": "area",
+    "lat": 23.8240952,
+    "lng": 120.9004432,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -510,9 +511,9 @@
     "area": "水社",
     "offer": "1) 平日租任2台 - 折100元 (2) 租親子車 - 送日月蛙風車1支 阿伯茶葉蛋 中山店： 消費贈送 - 茶葉蛋貼紙乙張",
     "inquiry": false,
-    "lat": 23.8645,
-    "lng": 120.9105,
-    "geo": "area",
+    "lat": 23.8665226,
+    "lng": 120.9113168,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -522,9 +523,9 @@
     "area": "水社",
     "offer": "現場提供紙本「50元折扣」券、也可以使用此券或截圖拿取店家優惠折扣",
     "inquiry": false,
-    "lat": 23.8645,
-    "lng": 120.9105,
-    "geo": "area",
+    "lat": 23.8657165,
+    "lng": 120.9083929,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -537,7 +538,8 @@
     "lat": 23.8645,
     "lng": 120.9105,
     "geo": "area",
-    "addr": ""
+    "addr": "",
+    "navq": "日月潭旅人bike 南投"
   },
   {
     "id": 46,
@@ -546,9 +548,9 @@
     "area": "水社",
     "offer": "租車享9折優惠（特價車款除外， 依店內公告為主）",
     "inquiry": false,
-    "lat": 23.8645,
-    "lng": 120.9105,
-    "geo": "area",
+    "lat": 23.8662042,
+    "lng": 120.9109611,
+    "geo": "precise",
     "addr": ""
   },
   {
@@ -558,9 +560,9 @@
     "area": "東光",
     "offer": "現場提供紙本「50元折扣」券、也可以使用此券或截圖拿取店家優惠折扣",
     "inquiry": false,
-    "lat": 23.93,
-    "lng": 120.99,
-    "geo": "area",
+    "lat": 23.8896874,
+    "lng": 120.9662211,
+    "geo": "precise",
     "addr": ""
   },
   {
