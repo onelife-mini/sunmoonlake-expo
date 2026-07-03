@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#193743">
 <title>逐路船騎 ‧ 日月潭｜2026 台北國際夏季旅展優惠導覽</title>
+<meta name="description" content="2026 台北國際夏季旅展｜逐路船騎 日月潭：SUP 立槳、環湖單車、兩日遊行程，串起 50+ 家在地店家旅展優惠，現場掃碼即用。">
+<link rel="canonical" href="https://onelife-mini.github.io/sunmoonlake-expo/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="逐路船騎 ‧ 日月潭｜2026 台北國際夏季旅展">
+<meta property="og:description" content="魚人帶路，把「路‧船‧騎」一次玩遍——SUP、環湖單車、日月老茶廠，加上 50+ 家在地店家旅展優惠。">
+<meta property="og:image" content="https://onelife-mini.github.io/sunmoonlake-expo/images/hero.jpg">
+<meta property="og:url" content="https://onelife-mini.github.io/sunmoonlake-expo/index.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" as="image" href="images/hero.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&family=Rubik:ital,wght@0,700;0,900;1,900&display=swap" rel="stylesheet">
@@ -1869,7 +1880,7 @@ footer .disc {
 
     <div class="tourcard">
       <div class="timg">
-        <img src="images/tour.jpg" alt="逐路船騎兩日遊 日月潭" loading="lazy">
+        <img src="images/hero.jpg" alt="逐路船騎兩日遊 日月潭" loading="lazy">
         <span class="tbadge">★ 招牌主推</span>
         <span class="tdur">🗓 2 天 ‧ 2 人成行</span>
         <span class="tprice">
@@ -2018,7 +2029,7 @@ footer .disc {
     <p>地點：南投日月潭（水社 ‧ 月牙灣 ‧ 伊達邵 ‧ 魚池）</p>
     <p>2026 台北國際夏季旅展 ‧ 7/17–7/20 ‧ 台北世貿一館</p>
     <p class="disc">所有優惠使用期限至 2026/12/31。優惠內容以各店家現場公告為準，部分店家優惠尚在洽談中（標示「優惠洽詢現場」）。「領優惠」核銷紀錄僅存於本手機瀏覽器，供現場出示店家辨識，非官方電子票券，恕不負保證與兌換責任。地圖導航以店名搜尋為主，請以實際地址為準。</p>
-    <p class="disc">照片來源（CC 授權，Wikimedia Commons）：日月潭日出 © rheins (CC BY)；日月潭湖景 © Ken Marshall (CC BY)；日月潭 © M. Weitzel (CC BY)；茶園 © eazytraveler (CC BY)；SUP © Guillaume Bonastre (CC BY)；日月潭湖景 © ironypoisoning (CC BY-SA)；水社碼頭 © LowensteinYang (CC BY-SA)；台灣熱氣球節 © Dan Cheung (CC BY-SA)。</p>
+    <p class="disc">照片與插畫來源：日月潭日出／湖景 © rheins、Ken Marshall、M. Weitzel（CC BY，Wikimedia Commons）；SUP © Guillaume Bonastre（CC BY）；日月潭湖景 © ironypoisoning（CC BY-SA）；日月老茶廠 © Pbdragonwang（CC BY-SA）；氦氣球照片與白鹿傳說插畫由業主提供。</p>
   </div>
 </footer>
 
@@ -2137,7 +2148,7 @@ function initMap(){
 function renderMap(){
   if(!map||!markerLayer)return;
   markerLayer.clearLayers();
-  const list=SHOPS.filter(s=>current==="all"||s.group===current);
+  const list=SHOPS.filter(s=>(current==="all"||s.group===current)&&(!query||s.name.includes(query)));
   const pts=[];
   list.forEach(s=>{
     if(typeof s.lat!=="number")return;
@@ -2173,7 +2184,7 @@ function deal(s){
 }
 function card(s,idx){
   const d=deal(s);
-  const claimed=localStorage.getItem(claimKey(s.name));
+  const claimed=localStorage.getItem(claimKey(s.id));
   const action = s.inquiry
     ? `<span class="cpn-inq">優惠洽詢現場</span>`
     : (claimed
@@ -2224,8 +2235,8 @@ function fallbackCopy(txt,cb){const ta=document.createElement("textarea");ta.val
 function fmt(d){const p=n=>String(n).padStart(2,"0");
   return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;}
 function openVoucher(s){
-  let ts=localStorage.getItem(claimKey(s.name));
-  if(!ts){ts=new Date().toISOString();localStorage.setItem(claimKey(s.name),ts);renderFilter();renderGrid();}
+  let ts=localStorage.getItem(claimKey(s.id));
+  if(!ts){ts=new Date().toISOString();localStorage.setItem(claimKey(s.id),ts);renderFilter();renderGrid();}
   $("#vName").textContent=s.name;
   $("#vOffer").textContent=s.offer||"旅展現場優惠";
   $("#vTime").textContent=fmt(new Date(ts));
@@ -2266,7 +2277,7 @@ boot();
 /* 搜尋框 */
 (function(){
   const inp=$("#shopSearch");
-  if(inp) inp.addEventListener("input",e=>{ query=e.target.value; renderGrid(); });
+  if(inp) inp.addEventListener("input",e=>{ query=e.target.value; renderGrid(); renderMap(); });
 })();
 /* 地圖收合 */
 (function(){
