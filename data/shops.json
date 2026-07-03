@@ -48,6 +48,18 @@
     "addr": ""
   },
   {
+    "id": 19,
+    "name": "控制狂立槳",
+    "group": "sup",
+    "area": "",
+    "offer": "旅展現場提供紙本「百元折扣」券、也可以使用此券或截圖拿取店家優惠折扣",
+    "inquiry": false,
+    "lat": 23.842899,
+    "lng": 120.904927,
+    "geo": "manual",
+    "addr": ""
+  },
+  {
     "id": 2,
     "name": "魚人立槳SUP",
     "group": "sup",
@@ -213,18 +225,6 @@
     "lat": 23.858,
     "lng": 120.915,
     "geo": "area",
-    "addr": ""
-  },
-  {
-    "id": 19,
-    "name": "控制狂立槳",
-    "group": "sup",
-    "area": "",
-    "offer": "95折",
-    "inquiry": false,
-    "lat": 23.842899,
-    "lng": 120.904927,
-    "geo": "manual",
     "addr": ""
   },
   {
