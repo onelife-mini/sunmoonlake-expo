@@ -136,6 +136,8 @@ img { display: block; max-width: 100%; }
 .nav-logo { cursor: pointer; }
 .site-nav [data-page].active { color: var(--orange); background: rgba(242,151,0,.12); }
 .nav-links a.active { color: var(--orange); background: rgba(242,151,0,.12); }
+.nav-links a.nav-axes { color: var(--teal); font-weight: 700; }
+.nav-links a.nav-axes:hover { background: rgba(22,168,158,.12); color: var(--teal); }
 @media (max-width: 620px) {
   .site-nav { flex-wrap: wrap; border-radius: 22px; padding: 9px 12px 8px 16px; }
   .nav-logo { font-size: 14px; order: 1; }
@@ -1597,6 +1599,7 @@ footer .disc {
 <nav class="site-nav" role="navigation" aria-label="主選單">
   <div class="nav-logo" data-page="home" role="button" tabindex="0">逐路<span>船騎</span></div>
   <div class="nav-links">
+    <a href="portal.html" class="nav-axes">◧ 四大軸線</a>
     <a href="#home" data-page="home">首頁</a>
     <a href="#exp" data-page="exp">體驗亮點</a>
     <a href="#route" data-page="route">兩日遊</a>
