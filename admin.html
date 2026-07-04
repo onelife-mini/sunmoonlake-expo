@@ -94,7 +94,7 @@ header h1 b{color:var(--gold)}
 .statsOverlay{position:fixed;inset:0;background:rgba(20,20,35,.55);z-index:200;display:none;
   align-items:flex-start;justify-content:center;padding:34px 16px;overflow-y:auto}
 .statsOverlay.show{display:flex}
-.statsBox{background:var(--bg);width:100%;max-width:760px;border-radius:14px;overflow:hidden;
+.statsBox{background:var(--bg);width:100%;max-width:900px;border-radius:14px;overflow:hidden;
   box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .statsHd{background:var(--ink);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
 .statsHd h2{font-size:17px;margin:0;flex:1}
@@ -118,6 +118,35 @@ header h1 b{color:var(--gold)}
 .statsTbl td{padding:8px 12px;border-top:1px solid var(--line)}
 .statsTbl td:last-child{font-weight:700;color:var(--ink)}
 .statsTbl tr:hover td{background:#f8f9f7}
+
+/* 日期區間 */
+.statsRange{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:space-between;margin-bottom:16px}
+.rangeQuick{display:flex;gap:6px;flex-wrap:wrap}
+.qbtn{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;
+  font-family:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
+.qbtn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.rangePick{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.rangePick input{padding:6px 8px;border:1px solid var(--line);border-radius:7px;font-family:inherit;font-size:13px}
+/* 尖峰摘要 */
+.statsPeak{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 4px}
+.peakChip{background:#eef4f1;border:1px solid #d8e6df;border-radius:10px;padding:8px 14px;font-size:13px;color:#2a5646}
+.peakChip b{color:var(--green-d);font-size:15px}
+/* 圖表 */
+.statsSub .lgd{font-weight:400;font-size:12px;color:var(--muted);margin-left:10px}
+.lgd .dot{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin-right:3px}
+.lgd .dot.v{background:var(--gold)} .lgd .dot.c{background:var(--green)}
+.chart{display:flex;align-items:flex-end;gap:8px;height:170px;background:var(--card);border:1px solid var(--line);
+  border-radius:12px;padding:14px 14px 8px;overflow-x:auto}
+.chart.hours{gap:3px}
+.bar{flex:1 0 auto;min-width:26px;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.chart.hours .bar{min-width:20px}
+.bar .cols{display:flex;align-items:flex-end;gap:3px;height:100%;width:100%;justify-content:center}
+.bar .col{width:12px;border-radius:4px 4px 0 0;min-height:2px;transition:height .3s}
+.chart.hours .bar .col{width:7px}
+.bar .col.v{background:var(--gold)} .bar .col.c{background:var(--green)}
+.bar .col:hover{opacity:.75}
+.bar .blab{font-size:10.5px;color:var(--muted);white-space:nowrap;line-height:1.2;text-align:center}
+.bar .bval{font-size:10px;font-weight:700;color:var(--ink)}
 </style>
 </head>
 <body>
@@ -149,20 +178,43 @@ header h1 b{color:var(--gold)}
         <p class="statsHint" id="statsMsg"></p>
       </div>
       <div id="statsResult" style="display:none">
+        <!-- 日期區間 -->
+        <div class="statsRange">
+          <div class="rangeQuick" id="rangeQuick">
+            <button class="qbtn on" data-q="all">全部</button>
+            <button class="qbtn" data-q="today">今天</button>
+            <button class="qbtn" data-q="7d">近7天</button>
+            <button class="qbtn" data-q="expo">旅展 7/17–20</button>
+          </div>
+          <div class="rangePick">
+            <input type="date" id="dFrom"> <span>～</span> <input type="date" id="dTo">
+            <button class="tbtn gold" id="dApply">套用</button>
+          </div>
+        </div>
+        <!-- KPI -->
         <div class="statsCards">
           <div class="statCard"><div class="sv" id="svVisitors">—</div><div class="sl">進站手機數<span>不重複裝置</span></div></div>
           <div class="statCard gold"><div class="sv" id="svClaimers">—</div><div class="sl">按過兌換的手機數<span>不重複裝置</span></div></div>
           <div class="statCard"><div class="sv" id="svRate">—</div><div class="sl">兌換轉換率<span>兌換手機 ÷ 進站手機</span></div></div>
           <div class="statCard"><div class="sv" id="svEvents">—</div><div class="sl">領取券別總數<span>同手機跨店分別計</span></div></div>
         </div>
+        <!-- 尖峰摘要 -->
+        <div class="statsPeak" id="statsPeak"></div>
+        <!-- 每日趨勢 -->
+        <h3 class="statsSub">每日趨勢<span class="lgd"><i class="dot v"></i>進站手機　<i class="dot c"></i>兌換手機</span></h3>
+        <div class="chart" id="chartDay"></div>
+        <!-- 時段分布 -->
+        <h3 class="statsSub">時段分布（台灣時間，看哪個時段人最多）<span class="lgd"><i class="dot v"></i>進站　<i class="dot c"></i>兌換</span></h3>
+        <div class="chart hours" id="chartHour"></div>
+        <!-- 各店家 -->
+        <h3 class="statsSub">各店家兌換排行</h3>
+        <table class="statsTbl"><thead><tr><th>#</th><th>店家</th><th>類別</th><th style="text-align:right">兌換手機數</th><th style="text-align:right">領取次數</th></tr></thead><tbody id="statsRows"></tbody></table>
         <div class="statsToolsbar">
           <span class="statsHint" id="statsUpdated"></span>
           <span class="sp"></span>
           <button class="tbtn ghost" id="statsRefresh">↻ 重新整理</button>
           <button class="tbtn ghost" id="statsForget" title="清除本機記住的金鑰">清除金鑰</button>
         </div>
-        <h3 class="statsSub">各店家「按過兌換」的手機數</h3>
-        <table class="statsTbl"><thead><tr><th>#</th><th>店家</th><th>類別</th><th style="text-align:right">兌換手機數</th></tr></thead><tbody id="statsRows"></tbody></table>
       </div>
     </div>
   </div>
@@ -399,36 +451,77 @@ load();
    ANALYTICS_URL 與前台 index.html 同一個 worker 網址；部署後填入。*/
 const ANALYTICS_URL="https://sunmoonlake-expo-stats.onelifemini.workers.dev";
 const SK="lcq:statskey";
+let statsRange={from:null,to:null}; // null = 全部
 function openStats(){ $("#statsOverlay").classList.add("show"); if(localStorage.getItem(SK)){ $("#statsKey").value=localStorage.getItem(SK); loadStats(); } }
 function closeStats(){ $("#statsOverlay").classList.remove("show"); }
+function ymd(dt){ const p=n=>String(n).padStart(2,"0"); return dt.getFullYear()+"-"+p(dt.getMonth()+1)+"-"+p(dt.getDate()); }
 async function loadStats(){
   const key=($("#statsKey").value||"").trim();
   if(!key){ $("#statsMsg").textContent="請輸入金鑰"; return; }
-  if(!ANALYTICS_URL){ $("#statsMsg").textContent="尚未設定 ANALYTICS_URL（worker 部署後填入 admin.html 與 index.html）。"; return; }
+  if(!ANALYTICS_URL){ $("#statsMsg").textContent="尚未設定 ANALYTICS_URL。"; return; }
   $("#statsMsg").textContent="讀取中…";
   try{
-    const r=await fetch(ANALYTICS_URL+"/stats?key="+encodeURIComponent(key));
+    let q=ANALYTICS_URL+"/stats?key="+encodeURIComponent(key);
+    if(statsRange.from) q+="&from="+statsRange.from;
+    if(statsRange.to) q+="&to="+statsRange.to;
+    const r=await fetch(q);
     if(r.status===401){ $("#statsMsg").textContent="金鑰錯誤"; return; }
     if(!r.ok) throw new Error(r.status);
     const d=await r.json();
     localStorage.setItem(SK,key);
     $("#statsSetup").style.display="none"; $("#statsResult").style.display="block";
+    // KPI
     $("#svVisitors").textContent=(d.visitors||0).toLocaleString();
     $("#svClaimers").textContent=(d.claimers||0).toLocaleString();
-    $("#svEvents").textContent=(d.claimEvents||0).toLocaleString();
+    $("#svEvents").textContent=(d.claims||0).toLocaleString();
     $("#svRate").textContent=d.visitors?((d.claimers/d.visitors*100).toFixed(1)+"%"):"—";
+    // 日期輸入框預設帶入資料範圍
+    if(d.dataMinDate&&!$("#dFrom").value) $("#dFrom").value=statsRange.from||d.dataMinDate;
+    if(d.dataMaxDate&&!$("#dTo").value) $("#dTo").value=statsRange.to||d.dataMaxDate;
+    // 尖峰摘要
+    const byDay=d.byDay||[], byHour=d.byHour||[];
+    const peakDay=byDay.slice().sort((a,b)=>b.visitors-a.visitors)[0];
+    const peakHour=byHour.slice().sort((a,b)=>b.visits-a.visits)[0];
+    const avgCoupon=d.claimers?(d.claims/d.claimers).toFixed(1):"0";
+    const chips=[];
+    if(peakDay) chips.push(`<div class="peakChip">最熱門日 <b>${peakDay.d.slice(5)}</b>（${peakDay.visitors} 台進站）</div>`);
+    if(peakHour) chips.push(`<div class="peakChip">尖峰時段 <b>${String(peakHour.h).padStart(2,"0")}:00</b>（${peakHour.visits} 次進站）</div>`);
+    chips.push(`<div class="peakChip">每台平均領 <b>${avgCoupon}</b> 張券</div>`);
+    $("#statsPeak").innerHTML=chips.join("");
+    // 每日圖
+    const maxDayV=Math.max(1,...byDay.map(x=>Math.max(x.visitors,x.claimers)));
+    $("#chartDay").innerHTML=byDay.length?byDay.map(x=>{
+      const hv=Math.round(x.visitors/maxDayV*100), hc=Math.round(x.claimers/maxDayV*100);
+      return `<div class="bar"><div class="cols"><div class="col v" style="height:${hv}%" title="進站 ${x.visitors}"></div><div class="col c" style="height:${hc}%" title="兌換 ${x.claimers}"></div></div><div class="bval">${x.visitors}</div><div class="blab">${x.d.slice(5)}</div></div>`;
+    }).join(""):`<div style="color:#999;margin:auto">此區間沒有資料</div>`;
+    // 時段圖（0-23 補滿）
+    const hourMap={}; byHour.forEach(x=>hourMap[x.h]=x);
+    const maxHourV=Math.max(1,...byHour.map(x=>Math.max(x.visits,x.claims)));
+    let hoursHtml="";
+    for(let h=0;h<24;h++){ const x=hourMap[h]||{visits:0,claims:0};
+      const hv=Math.round(x.visits/maxHourV*100), hc=Math.round(x.claims/maxHourV*100);
+      hoursHtml+=`<div class="bar"><div class="cols"><div class="col v" style="height:${hv}%" title="${h}時 進站 ${x.visits}"></div><div class="col c" style="height:${hc}%" title="${h}時 兌換 ${x.claims}"></div></div><div class="blab">${h}</div></div>`;
+    }
+    $("#chartHour").innerHTML=hoursHtml;
+    // 各店家表
     const byId={}; SHOPS.forEach(s=>byId[String(s.id)]=s);
     const CAT={sup:"SUP",eat:"食",stay:"住",bike:"單車",play:"樂/手作"};
     const rows=(d.perShop||[]).map((p,i)=>{
       const s=byId[String(p.shop_id)];
-      const nm=s?s.name:("（id "+p.shop_id+"）");
-      const cat=s?(CAT[s.group]||s.group):"—";
-      return `<tr><td>${i+1}</td><td>${nm}</td><td>${cat}</td><td style="text-align:right">${p.n}</td></tr>`;
+      return `<tr><td>${i+1}</td><td>${s?s.name:("（id "+p.shop_id+"）")}</td><td>${s?(CAT[s.group]||s.group):"—"}</td><td style="text-align:right">${p.devices}</td><td style="text-align:right">${p.claims}</td></tr>`;
     }).join("");
-    $("#statsRows").innerHTML=rows||`<tr><td colspan="4" style="color:#999;padding:14px">目前還沒有兌換記錄</td></tr>`;
-    const t=new Date(d.generatedAt||Date.now());
-    $("#statsUpdated").textContent="更新於 "+t.toLocaleString("zh-TW");
+    $("#statsRows").innerHTML=rows||`<tr><td colspan="5" style="color:#999;padding:14px">此區間還沒有兌換記錄</td></tr>`;
+    $("#statsUpdated").textContent="更新於 "+new Date(d.generatedAt||Date.now()).toLocaleString("zh-TW")+(d.range&&(d.range.from||d.range.to)?`　區間 ${d.range.from||"最早"}～${d.range.to||"最新"}`:"　區間：全部");
   }catch(e){ $("#statsMsg").textContent="讀取失敗："+e.message; }
+}
+function setQuick(q){
+  document.querySelectorAll("#rangeQuick .qbtn").forEach(b=>b.classList.toggle("on",b.dataset.q===q));
+  const today=new Date();
+  if(q==="all"){ statsRange={from:null,to:null}; $("#dFrom").value=""; $("#dTo").value=""; }
+  else if(q==="today"){ const t=ymd(today); statsRange={from:t,to:t}; $("#dFrom").value=t; $("#dTo").value=t; }
+  else if(q==="7d"){ const f=new Date(today); f.setDate(f.getDate()-6); statsRange={from:ymd(f),to:ymd(today)}; $("#dFrom").value=ymd(f); $("#dTo").value=ymd(today); }
+  else if(q==="expo"){ statsRange={from:"2026-07-17",to:"2026-07-20"}; $("#dFrom").value="2026-07-17"; $("#dTo").value="2026-07-20"; }
+  loadStats();
 }
 $("#btnStats").onclick=openStats;
 $("#statsClose").onclick=closeStats;
@@ -437,6 +530,13 @@ $("#statsRefresh").onclick=loadStats;
 $("#statsKey").addEventListener("keydown",e=>{ if(e.key==="Enter") loadStats(); });
 $("#statsForget").onclick=()=>{ localStorage.removeItem(SK); $("#statsKey").value=""; $("#statsResult").style.display="none"; $("#statsSetup").style.display="block"; $("#statsMsg").textContent="已清除本機金鑰"; };
 $("#statsOverlay").addEventListener("click",e=>{ if(e.target.id==="statsOverlay") closeStats(); });
+document.querySelectorAll("#rangeQuick .qbtn").forEach(b=>b.onclick=()=>setQuick(b.dataset.q));
+$("#dApply").onclick=()=>{
+  const f=$("#dFrom").value||null, t=$("#dTo").value||null;
+  statsRange={from:f,to:t};
+  document.querySelectorAll("#rangeQuick .qbtn").forEach(b=>b.classList.remove("on"));
+  loadStats();
+};
 </script>
 </body>
 </html>

@@ -17,3 +17,13 @@ CREATE TABLE IF NOT EXISTS claims (
 );
 
 CREATE INDEX IF NOT EXISTS idx_claims_shop ON claims(shop_id);
+
+-- 事件時間軸（每一次進站/兌換都記一筆，供日期/時段/區間分析；台灣時區於查詢時 +8h 換算）
+CREATE TABLE IF NOT EXISTS events (
+  ts        INTEGER,   -- epoch ms（UTC）
+  type      TEXT,      -- 'visit' | 'claim'
+  device_id TEXT,
+  shop_id   TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);
+CREATE INDEX IF NOT EXISTS idx_events_type_ts ON events(type, ts);

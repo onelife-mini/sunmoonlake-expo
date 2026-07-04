@@ -1,11 +1,13 @@
 // 台北旅展 逐路船騎 — 流量/兌換統計 Worker（Cloudflare Workers + D1）
 // 端點：
-//   POST /e     收事件 {t:"visit"|"claim", d:deviceId, s:shopId?}   （匿名，去重）
-//   GET  /stats?key=金鑰   回統計 JSON（給 admin 後台）
+//   POST /e     收事件 {t:"visit"|"claim", d:deviceId, s:shopId?}   （匿名，去重＋時間軸）
+//   GET  /stats?key=金鑰[&from=YYYY-MM-DD&to=YYYY-MM-DD]   回統計 JSON（台灣時區）
 //   GET  /health           健康檢查
-// 隱私：只存匿名隨機 deviceId，不含任何個資。
+// 隱私：只存匿名隨機 deviceId，不含任何個資。時間分析以台灣時間(+8)為準。
 
 const MAX = 64;
+const TZ = "+8 hours";            // SQLite 時區位移（台灣 UTC+8）
+const TZ_OFFSET_MS = 8 * 3600 * 1000;
 const clip = (v) => (v == null ? "" : String(v)).slice(0, MAX);
 
 function cors(origin) {
@@ -17,50 +19,104 @@ function cors(origin) {
   };
 }
 
+// 把「台灣日期 YYYY-MM-DD」轉成 epoch ms 邊界
+function dayStartMs(d) { const t = Date.parse(d + "T00:00:00Z"); return isNaN(t) ? null : t - TZ_OFFSET_MS; }
+function dayEndMs(d)   { const t = Date.parse(d + "T00:00:00Z"); return isNaN(t) ? null : t - TZ_OFFSET_MS + 86400000 - 1; }
+
 export default {
   async fetch(req, env) {
     const url = new URL(req.url);
     const h = cors(req.headers.get("Origin"));
-
     if (req.method === "OPTIONS") return new Response(null, { headers: h });
 
-    // 收事件
+    // ── 收事件 ──
     if (url.pathname === "/e" && req.method === "POST") {
       let b;
       try { b = JSON.parse(await req.text()); } catch { return json({ ok: false }, 400, h); }
       const d = clip(b && b.d);
       if (!d) return json({ ok: false, err: "no id" }, 400, h);
       const now = Date.now();
-      // 每個事件都先確保裝置存在（visit / claim 皆算一次進站）
+      const type = b.t === "claim" ? "claim" : "visit";
+      const s = clip(b.s);
+      // 去重彙總表
       await env.DB.prepare(
-        "INSERT INTO devices(id, first_seen, last_seen) VALUES(?1, ?2, ?2) " +
-        "ON CONFLICT(id) DO UPDATE SET last_seen=?2"
+        "INSERT INTO devices(id, first_seen, last_seen) VALUES(?1, ?2, ?2) ON CONFLICT(id) DO UPDATE SET last_seen=?2"
       ).bind(d, now).run();
-      if (b.t === "claim") {
-        const s = clip(b.s);
+      if (type === "claim") {
         await env.DB.prepare(
           "INSERT OR IGNORE INTO claims(device_id, shop_id, first_ts) VALUES(?, ?, ?)"
         ).bind(d, s, now).run();
       }
+      // 事件時間軸（每次都記，供日期/時段分析）
+      await env.DB.prepare(
+        "INSERT INTO events(ts, type, device_id, shop_id) VALUES(?, ?, ?, ?)"
+      ).bind(now, type, d, type === "claim" ? s : "").run();
       return json({ ok: true }, 200, h);
     }
 
-    // 統計（需金鑰）
+    // ── 統計 ──
     if (url.pathname === "/stats" && req.method === "GET") {
       if (!env.STATS_KEY || url.searchParams.get("key") !== env.STATS_KEY)
         return json({ ok: false, err: "unauthorized" }, 401, h);
-      const visitors = await env.DB.prepare("SELECT COUNT(*) n FROM devices").first("n");
-      const claimers = await env.DB.prepare("SELECT COUNT(DISTINCT device_id) n FROM claims").first("n");
-      const claimEvents = await env.DB.prepare("SELECT COUNT(*) n FROM claims").first("n");
+
+      const fromD = url.searchParams.get("from"); // YYYY-MM-DD（台灣），可省略
+      const toD = url.searchParams.get("to");
+      // 資料涵蓋的最早/最晚日期（也給日期選擇器用）
+      const span = await env.DB.prepare(
+        "SELECT MIN(date(ts/1000,'unixepoch',?1)) minD, MAX(date(ts/1000,'unixepoch',?1)) maxD FROM events"
+      ).bind(TZ).first();
+      // 未指定 from/to → 用資料實際涵蓋的完整範圍（未來/過去皆正確）
+      const lo = fromD ? dayStartMs(fromD) : (span && span.minD ? dayStartMs(span.minD) : 0);
+      const hi = toD ? dayEndMs(toD) : (span && span.maxD ? dayEndMs(span.maxD) : Date.now());
+      const L = lo == null ? 0 : lo, H = hi == null ? Date.now() : hi;
+
+      // 區間 KPI（以事件表計算）
+      const tot = await env.DB.prepare(
+        "SELECT " +
+        "COUNT(DISTINCT CASE WHEN type='visit' THEN device_id END) visitors, " +
+        "COUNT(DISTINCT CASE WHEN type='claim' THEN device_id END) claimers, " +
+        "SUM(CASE WHEN type='visit' THEN 1 ELSE 0 END) visits, " +
+        "SUM(CASE WHEN type='claim' THEN 1 ELSE 0 END) claims " +
+        "FROM events WHERE ts BETWEEN ?1 AND ?2"
+      ).bind(L, H).first();
+
+      // 每日（台灣日）
+      const byDay = await env.DB.prepare(
+        "SELECT date(ts/1000,'unixepoch',?3) d, " +
+        "COUNT(DISTINCT CASE WHEN type='visit' THEN device_id END) visitors, " +
+        "SUM(CASE WHEN type='visit' THEN 1 ELSE 0 END) visits, " +
+        "COUNT(DISTINCT CASE WHEN type='claim' THEN device_id END) claimers, " +
+        "SUM(CASE WHEN type='claim' THEN 1 ELSE 0 END) claims " +
+        "FROM events WHERE ts BETWEEN ?1 AND ?2 GROUP BY d ORDER BY d"
+      ).bind(L, H, TZ).all();
+
+      // 時段（0-23 台灣時）
+      const byHour = await env.DB.prepare(
+        "SELECT CAST(strftime('%H', ts/1000,'unixepoch',?3) AS INTEGER) h, " +
+        "SUM(CASE WHEN type='visit' THEN 1 ELSE 0 END) visits, " +
+        "SUM(CASE WHEN type='claim' THEN 1 ELSE 0 END) claims " +
+        "FROM events WHERE ts BETWEEN ?1 AND ?2 GROUP BY h ORDER BY h"
+      ).bind(L, H, TZ).all();
+
+      // 各店家（區間內）
       const perShop = await env.DB.prepare(
-        "SELECT shop_id, COUNT(DISTINCT device_id) n FROM claims GROUP BY shop_id ORDER BY n DESC"
-      ).all();
+        "SELECT shop_id, COUNT(DISTINCT device_id) devices, COUNT(*) claims " +
+        "FROM events WHERE type='claim' AND ts BETWEEN ?1 AND ?2 GROUP BY shop_id ORDER BY devices DESC, claims DESC"
+      ).bind(L, H).all();
+
       return json({
         ok: true,
         generatedAt: Date.now(),
-        visitors: visitors || 0,        // 不重複進站手機數
-        claimers: claimers || 0,        // 不重複「按過兌換」手機數
-        claimEvents: claimEvents || 0,  // 兌換券別總數（同手機多店家會分別計）
+        tz: "Asia/Taipei (UTC+8)",
+        range: { from: fromD || null, to: toD || null },
+        dataMinDate: (span && span.minD) || null,
+        dataMaxDate: (span && span.maxD) || null,
+        visitors: (tot && tot.visitors) || 0,
+        claimers: (tot && tot.claimers) || 0,
+        visits: (tot && tot.visits) || 0,
+        claims: (tot && tot.claims) || 0,
+        byDay: (byDay && byDay.results) || [],
+        byHour: (byHour && byHour.results) || [],
         perShop: (perShop && perShop.results) || [],
       }, 200, h);
     }
