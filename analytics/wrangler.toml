@@ -7,7 +7,7 @@ compatibility_date = "2026-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "sunmoonlake-expo-stats"
-database_id = "貼上_wrangler_d1_create_回傳的_id"
+database_id = "d13c01a5-65ad-4b9e-8bcd-ffc0cb96d00d"
 
 # STATS_KEY（後台金鑰）請用 secret 設定，不要寫在這裡：
 #   wrangler secret put STATS_KEY

@@ -397,7 +397,7 @@ load();
 
 /* ── 數據儀表板 ─────────────────────────────
    ANALYTICS_URL 與前台 index.html 同一個 worker 網址；部署後填入。*/
-const ANALYTICS_URL=""; // 例：https://sunmoonlake-expo-stats.你的帳號.workers.dev
+const ANALYTICS_URL="https://sunmoonlake-expo-stats.onelifemini.workers.dev";
 const SK="lcq:statskey";
 function openStats(){ $("#statsOverlay").classList.add("show"); if(localStorage.getItem(SK)){ $("#statsKey").value=localStorage.getItem(SK); loadStats(); } }
 function closeStats(){ $("#statsOverlay").classList.remove("show"); }
