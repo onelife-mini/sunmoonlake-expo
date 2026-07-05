@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2f5233">
+<title>桃米生態村 ‧ 青蛙的故鄉｜2026 台北國際夏季旅展優惠導覽</title>
+<meta name="description" content="2026 台北國際夏季旅展｜桃米生態村：青蛙的故鄉，26 家特色民宿住宿 9.5 折、親子景點折扣、10 家在地美食，旅展期間加入桃米休閒農業區官方 LINE（@taomi）即享優惠，期限至 2026/12/31。">
+<link rel="canonical" href="https://onelife-mini.github.io/sunmoonlake-expo/taomi.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="桃米生態村 ‧ 青蛙的故鄉｜2026 台北國際旅展">
+<meta property="og:description" content="濕地、紙教堂、手作體驗——加入桃米休閒農業區官方 LINE（@taomi），26 家特色民宿住宿 9.5 折起，優惠期限至 2026/12/31。">
+<meta property="og:image" content="https://onelife-mini.github.io/sunmoonlake-expo/images/hero.jpg">
+<meta property="og:url" content="https://onelife-mini.github.io/sunmoonlake-expo/taomi.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════
+   DESIGN TOKENS — 桃米：森林濕地生態誌
+════════════════════════════════════════ */
+:root{
+  --green:      #2f5233;
+  --green-dk:   #1f3823;
+  --green-lt:   #e3ead9;
+  --moss:       #6f8f5a;
+  --clay:       #c98a3c;
+  --clay-dk:    #a86b26;
+  --clay-lt:    #f6e5c9;
+  --ink:        #1f2e20;
+  --text:       #33402f;
+  --muted:      #647062;
+  --muted-2:    #98a390;
+  --line:       #dde3d3;
+  --bg:         #f4f1e6;
+  --bg-white:   #fffdf6;
+
+  --fh:"Noto Serif TC","Noto Sans TC","PingFang TC",serif;
+  --fb:"Noto Sans TC","PingFang TC",-apple-system,system-ui,sans-serif;
+
+  --r:    14px;
+  --r-lg: 22px;
+  --tr:   .28s ease;
+
+  --shadow-card: 6px 6px 0 var(--clay);
+  --shadow-soft: 0 8px 32px rgba(31,46,32,.1);
+  --shadow-lg:   0 20px 60px rgba(31,46,32,.2);
+}
+
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{
+  margin:0;
+  font-family:var(--fb);
+  color:var(--text);
+  background:var(--bg);
+  line-height:1.75;
+  overflow-x:clip;
+  -webkit-font-smoothing:antialiased;
+  /* field-journal 網點紙紋理 */
+  background-image:radial-gradient(rgba(47,82,51,.09) 1.2px, transparent 1.2px);
+  background-size:20px 20px;
+}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+ul{margin:0;padding:0;list-style:none}
+
+@keyframes rise{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes ripple{
+  0%{transform:scale(.6);opacity:.9}
+  100%{transform:scale(2.6);opacity:0}
+}
+@keyframes hop{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  30%{transform:translateY(-10px) rotate(-4deg)}
+  55%{transform:translateY(0) rotate(2deg)}
+}
+@keyframes blink{
+  0%,100%{opacity:1}
+  50%{opacity:.35}
+}
+
+/* ════════════════════════════════════════
+   TOP NAV
+════════════════════════════════════════ */
+.site-nav{
+  position:sticky; top:0; z-index:200;
+  background:rgba(244,241,230,.94);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1.5px solid var(--line);
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; padding:14px 22px;
+}
+.nav-back{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--fb); font-weight:700; font-size:13.5px;
+  color:var(--muted); padding:8px 4px; transition:var(--tr);
+}
+.nav-back:hover{color:var(--green)}
+.nav-brand{
+  font-family:var(--fh); font-weight:900; font-size:17px;
+  color:var(--ink); letter-spacing:1px; white-space:nowrap;
+}
+.nav-brand b{color:var(--clay)}
+.nav-cta{
+  flex:0 0 auto; display:inline-flex; align-items:center; gap:7px;
+  background:#06C755; color:#fff; font-family:var(--fb); font-weight:700;
+  font-size:13.5px; padding:9px 18px; border-radius:999px; white-space:nowrap;
+  transition:var(--tr); box-shadow:0 4px 14px rgba(6,199,85,.35);
+}
+.nav-cta:hover{background:#05b34c; transform:translateY(-1px)}
+.nav-cta svg{width:16px;height:16px;flex:0 0 auto}
+@media(max-width:560px){
+  .site-nav{padding:12px 16px}
+  .nav-brand{font-size:15px}
+  .nav-back span.lbl{display:none}
+  .nav-cta{font-size:12.5px;padding:8px 14px}
+}
+
+/* ════════════════════════════════════════
+   HERO — 濕地水紋 + 青蛙
+════════════════════════════════════════ */
+.hero{
+  position:relative;
+  padding:64px 0 84px;
+  overflow:hidden;
+  background:linear-gradient(180deg, var(--green) 0%, var(--green-dk) 100%);
+  color:#fff;
+}
+.hero::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.07) 1.4px, transparent 1.4px);
+  background-size:22px 22px;
+  pointer-events:none;
+}
+.hero-ripples{
+  position:absolute; right:6%; bottom:-40px;
+  width:260px; height:260px;
+  pointer-events:none;
+}
+.hero-ripples .ring{
+  position:absolute; inset:0; margin:auto;
+  border:2px solid rgba(255,255,255,.35);
+  border-radius:50%;
+  animation:ripple 3.6s ease-out infinite;
+}
+.hero-ripples .ring:nth-child(1){width:60px;height:60px;animation-delay:0s}
+.hero-ripples .ring:nth-child(2){width:60px;height:60px;animation-delay:1.2s}
+.hero-ripples .ring:nth-child(3){width:60px;height:60px;animation-delay:2.4s}
+.hero-frog{
+  position:absolute; right:calc(6% + 92px); bottom:36px;
+  width:96px; height:96px;
+  animation:hop 3.6s ease-in-out infinite;
+  filter:drop-shadow(0 10px 14px rgba(0,0,0,.35));
+}
+@media(max-width:720px){
+  .hero-ripples{right:2%;bottom:-60px;width:180px;height:180px}
+  .hero-frog{right:calc(2% + 58px);bottom:14px;width:66px;height:66px}
+}
+@media(max-width:520px){
+  .hero-ripples,.hero-frog{display:none}
+}
+
+.hero .inner{position:relative;z-index:2}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:12px; font-weight:700; letter-spacing:2.5px; text-transform:uppercase;
+  background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.28);
+  padding:8px 18px; border-radius:999px; backdrop-filter:blur(8px);
+  color:rgba(255,255,255,.92); animation:rise .6s ease both;
+}
+.eyebrow-dot{width:7px;height:7px;border-radius:50%;background:var(--clay);animation:blink 2s ease-in-out infinite}
+
+h1{
+  font-family:var(--fh); font-weight:900;
+  font-size:clamp(40px,8vw,64px); line-height:1.12;
+  margin:22px 0 0; color:#fff;
+  animation:rise .7s .05s ease both;
+}
+h1 .sub-en{
+  display:block; font-family:var(--fb); font-weight:700; font-size:clamp(14px,2.6vw,17px);
+  letter-spacing:5px; color:var(--clay-lt); margin-top:12px; text-transform:uppercase;
+}
+.hero .lead{
+  font-size:clamp(15px,2.4vw,17px); color:rgba(255,255,255,.88);
+  max-width:32em; margin:20px 0 0; font-weight:400;
+  animation:rise .7s .1s ease both;
+}
+.hero .cta-row{
+  display:flex; flex-wrap:wrap; gap:14px; margin-top:32px;
+  animation:rise .7s .15s ease both;
+}
+.btn{
+  cursor:pointer; font-family:var(--fb); font-weight:700; font-size:15px;
+  letter-spacing:.4px; padding:15px 28px; border-radius:999px;
+  display:inline-flex; align-items:center; gap:9px;
+  border:2px solid transparent; transition:var(--tr);
+}
+.btn-line{
+  background:#06C755; color:#fff;
+  box-shadow:0 8px 26px rgba(6,199,85,.42), 4px 4px 0 #04a040;
+}
+.btn-line:hover{background:#05b34c; transform:translateY(-3px)}
+.btn-line svg{width:20px;height:20px;flex:0 0 auto}
+.btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+.btn-ghost:hover{background:rgba(255,255,255,.1);border-color:#fff}
+.hero-id{
+  margin-top:16px; font-size:13.5px; color:rgba(255,255,255,.7);
+  animation:rise .7s .2s ease both;
+}
+.hero-id b{color:var(--clay-lt); font-weight:700; letter-spacing:.5px}
+
+/* 有機波浪底邊，代替直角切割 */
+.hero-wave{display:block; position:relative; z-index:2; margin-top:-4px}
+
+/* ════════════════════════════════════════
+   優惠橫幅
+════════════════════════════════════════ */
+.deal-banner{
+  background:#8f5a1f;
+  color:#fff;
+  padding:26px 0;
+  position:relative;
+  overflow:hidden;
+}
+.deal-banner::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image:repeating-linear-gradient(-45deg, transparent, transparent 22px, rgba(255,255,255,.06) 22px, rgba(255,255,255,.06) 23px);
+  pointer-events:none;
+}
+.deal-inner{
+  position:relative; z-index:1;
+  display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  justify-content:space-between;
+}
+.deal-text{flex:1 1 320px; min-width:0}
+.deal-text .tag{
+  display:inline-block; font-size:11.5px; font-weight:800; letter-spacing:2px;
+  text-transform:uppercase; background:rgba(255,255,255,.22); border-radius:999px;
+  padding:4px 12px; margin-bottom:8px;
+}
+.deal-text p{margin:0; font-family:var(--fh); font-weight:700; font-size:16.5px; line-height:1.6}
+.deal-text p b{font-weight:900; text-decoration:underline; text-underline-offset:3px}
+.deal-text .deadline{
+  display:block; font-family:var(--fb); font-weight:600; font-size:13px;
+  margin-top:6px; color:rgba(255,255,255,.88);
+}
+.deal-cta{
+  flex:0 0 auto;
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--ink); color:#fff; font-family:var(--fb); font-weight:700;
+  font-size:14.5px; padding:12px 22px; border-radius:999px;
+  box-shadow:3px 3px 0 rgba(0,0,0,.25); transition:var(--tr);
+}
+.deal-cta:hover{transform:translate(-2px,-2px); box-shadow:5px 5px 0 rgba(0,0,0,.28)}
+.deal-cta svg{width:17px;height:17px}
+@media(max-width:600px){
+  .deal-inner{flex-direction:column; align-items:flex-start}
+  .deal-cta{width:100%; justify-content:center}
+}
+
+/* ════════════════════════════════════════
+   SECTION SHELL
+════════════════════════════════════════ */
+section{padding:68px 0}
+.sec-head{max-width:38em; margin:0 auto 40px}
+.sec-head.center{text-align:center; margin-left:auto; margin-right:auto}
+.kicker{
+  display:inline-block; font-size:11.5px; font-weight:700; letter-spacing:3px;
+  text-transform:uppercase; color:var(--clay-dk); background:var(--clay-lt);
+  padding:6px 16px; border-radius:999px; margin-bottom:16px;
+}
+.kicker.g{color:var(--green); background:var(--green-lt)}
+.sec-head h2{
+  font-family:var(--fh); font-weight:900; font-size:clamp(26px,4.6vw,38px);
+  color:var(--ink); margin:0 0 12px; line-height:1.24;
+}
+.sec-head p{color:var(--muted); font-size:15px; margin:0; line-height:1.8}
+.sec-rule{width:44px;height:4px;background:var(--clay);border-radius:2px;margin:14px 0}
+.sec-rule.center{margin:14px auto}
+
+/* 手繪風分隔線（縫線紙感） */
+.stitch-divider{
+  width:100%; height:1px; border:none; margin:0;
+  background-image:repeating-linear-gradient(to right, var(--muted-2) 0, var(--muted-2) 6px, transparent 6px, transparent 13px);
+  opacity:.55;
+}
+
+/* ════════════════════════════════════════
+   INTRO 介紹
+════════════════════════════════════════ */
+.intro-section{background:var(--bg-white); border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+.intro-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:start}
+.intro-text p{font-size:15.5px; color:var(--text); margin:0 0 16px; line-height:1.9}
+.intro-text p:last-child{margin-bottom:0}
+.intro-text b{color:var(--green); font-weight:700}
+.paperdome{
+  background:var(--green-lt);
+  border:2px solid var(--green);
+  border-radius:var(--r-lg);
+  padding:26px 24px;
+  box-shadow:6px 6px 0 var(--green);
+}
+.paperdome h3{
+  font-family:var(--fh); font-weight:900; font-size:18px; color:var(--green-dk);
+  margin:0 0 12px; display:flex; align-items:center; gap:9px;
+}
+.paperdome ul{display:grid; gap:11px}
+.paperdome li{
+  display:flex; gap:10px; font-size:14px; color:var(--text); line-height:1.6;
+}
+.paperdome li::before{content:"◆"; color:var(--clay); font-size:10px; margin-top:5px; flex:0 0 auto}
+@media(max-width:720px){
+  .intro-grid{grid-template-columns:1fr; gap:26px}
+}
+
+/* ════════════════════════════════════════
+   卡片通用（民宿／體驗／美食）
+════════════════════════════════════════ */
+.card-grid{
+  display:grid; grid-template-columns:repeat(2,1fr); gap:16px;
+}
+@media(min-width:860px){
+  .card-grid.stay{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:640px){
+  .card-grid{grid-template-columns:1fr}
+}
+.shop-card{
+  background:var(--bg-white);
+  border:1.5px solid var(--line);
+  border-radius:16px;
+  padding:18px 18px 16px;
+  display:flex; flex-direction:column; gap:10px;
+  transition:transform var(--tr), box-shadow var(--tr), border-color var(--tr);
+  position:relative;
+}
+.shop-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 26px rgba(31,46,32,.12);
+  border-color:var(--moss);
+}
+.shop-card .sc-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+.shop-card .sc-name{
+  font-family:var(--fh); font-weight:700; font-size:16px; color:var(--ink);
+  line-height:1.4; margin:0;
+}
+.sc-num{
+  flex:0 0 auto; font-family:var(--fh); font-weight:900; font-size:11px;
+  color:var(--muted-2); letter-spacing:1px;
+}
+.sc-badge{
+  align-self:flex-start;
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:12.5px; font-weight:800; color:#fff;
+  background:var(--green); padding:6px 13px; border-radius:999px;
+}
+.sc-badge.clay{background:var(--clay)}
+.sc-badge.line{background:#06C755}
+.sc-badge svg{width:13px;height:13px}
+
+/* 民宿 26 家：緊湊列表卡 */
+.stay .shop-card{padding:15px 16px}
+.stay .sc-name{font-size:15px}
+
+/* 頭圖裝飾條紋（不用照片，用色塊+插畫線條，避免庫存感） */
+.section-decor-strip{
+  height:6px; width:100%;
+  background:repeating-linear-gradient(90deg, var(--green) 0 18px, var(--clay) 18px 36px);
+  opacity:.85; border-radius:3px; margin:0 0 34px;
+}
+
+/* 親子體驗 highlight 卡 */
+.feature-card{
+  display:grid; grid-template-columns:auto 1fr auto; gap:22px; align-items:center;
+  background:var(--bg-white); border:2px solid var(--clay); border-radius:var(--r-lg);
+  padding:26px 28px; box-shadow:6px 6px 0 var(--clay);
+}
+.feature-card .fc-icon{
+  width:64px; height:64px; border-radius:16px; background:var(--clay-lt);
+  display:grid; place-items:center; flex:0 0 auto;
+}
+.feature-card .fc-icon svg{width:34px;height:34px}
+.feature-card .fc-body h3{
+  font-family:var(--fh); font-weight:900; font-size:19px; color:var(--ink); margin:0 0 6px;
+}
+.feature-card .fc-body p{margin:0; font-size:14px; color:var(--muted)}
+.feature-card .fc-price{
+  flex:0 0 auto; text-align:center; background:var(--clay-dk); color:#fff;
+  border-radius:14px; padding:12px 20px; font-family:var(--fh); font-weight:900; font-size:20px;
+  box-shadow:3px 3px 0 #7a4d1c;
+}
+@media(max-width:600px){
+  .feature-card{grid-template-columns:auto 1fr; row-gap:16px}
+  .feature-card .fc-price{grid-column:1 / -1; width:100%}
+}
+
+/* 在地美食：加 LINE 享優惠 標籤卡 */
+.food .shop-card{align-items:flex-start}
+.food .sc-note{font-size:13px; color:var(--muted); line-height:1.6; margin:0}
+
+/* ════════════════════════════════════════
+   LINE 大 CTA 區
+════════════════════════════════════════ */
+.line-section{
+  background:var(--green);
+  color:#fff;
+  padding:76px 0;
+  position:relative;
+  overflow:hidden;
+}
+.line-section::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.09) 1.5px, transparent 1.5px);
+  background-size:24px 24px;
+  pointer-events:none;
+}
+.line-inner{position:relative; z-index:1; text-align:center; max-width:560px; margin:0 auto}
+.line-inner .kicker{background:rgba(255,255,255,.16); color:#fff}
+.line-inner h2{
+  font-family:var(--fh); font-weight:900; color:#fff;
+  font-size:clamp(26px,5vw,36px); margin:16px 0 14px; line-height:1.3;
+}
+.line-inner p{color:rgba(255,255,255,.88); font-size:15px; margin:0 0 30px}
+.line-idcard{
+  display:inline-flex; align-items:center; gap:14px;
+  background:rgba(255,255,255,.1); border:1.5px solid rgba(255,255,255,.35);
+  border-radius:16px; padding:16px 24px; margin-bottom:26px;
+  backdrop-filter:blur(6px);
+}
+.line-idcard .li-label{font-size:12px; color:rgba(255,255,255,.7); letter-spacing:1px}
+.line-idcard .li-id{font-family:var(--fh); font-weight:900; font-size:22px; color:#fff}
+
+/* ════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════ */
+footer{
+  background:var(--ink); color:rgba(255,255,255,.85);
+  padding:52px 0 44px; position:relative; overflow:hidden;
+}
+footer::before{
+  content:""; position:absolute; inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.06) 1.5px, transparent 1.5px);
+  background-size:22px 22px; pointer-events:none;
+}
+footer .inner{position:relative; z-index:1}
+footer .fgold{color:var(--clay-lt); font-size:11px; letter-spacing:4px; text-transform:uppercase; font-weight:700}
+footer .fh{font-family:var(--fh); color:#fff; font-size:24px; font-weight:900; margin:8px 0 14px}
+footer p{margin:5px 0; font-size:13.5px; opacity:.82}
+footer .disc{
+  font-size:12px; opacity:.5; margin-top:20px; line-height:1.8;
+  border-top:1px solid rgba(255,255,255,.12); padding-top:16px;
+}
+footer a.footer-back{color:var(--clay-lt); font-weight:700}
+
+/* ════════════════════════════════════════
+   LINE 浮鈕
+════════════════════════════════════════ */
+.line-fab{
+  position:fixed; right:18px; bottom:20px; z-index:90;
+  display:inline-flex; align-items:center; gap:9px;
+  background:#06C755; color:#fff; padding:14px 22px; border-radius:999px;
+  font-family:var(--fb); font-weight:700; font-size:15px;
+  box-shadow:0 8px 24px rgba(6,199,85,.45), 3px 3px 0 #04a040;
+  transition:var(--tr);
+}
+.line-fab:hover{background:#05b34c; transform:translate(-2px,-2px); box-shadow:0 12px 30px rgba(6,199,85,.5), 5px 5px 0 #04a040}
+.line-fab svg{width:23px;height:23px;flex:0 0 auto}
+@media(max-width:600px){
+  .line-fab{padding:13px 18px; font-size:14px; right:14px; bottom:16px}
+}
+
+/* Skip-to-content for a11y */
+.skip-link{
+  position:absolute; left:-999px; top:0; background:#fff; color:var(--ink);
+  padding:10px 16px; z-index:999; border-radius:0 0 10px 0;
+}
+.skip-link:focus{left:0}
+
+/* focus visibility */
+a:focus-visible, button:focus-visible{outline:3px solid var(--clay); outline-offset:2px}
+
+@media(max-width:600px){
+  section{padding:52px 0}
+  .line-section{padding:60px 0}
+}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">跳到主內容</a>
+
+<!-- ===== TOP NAV ===== -->
+<nav class="site-nav" role="navigation" aria-label="主選單">
+  <a class="nav-back" href="portal.html"><span aria-hidden="true">←</span><span class="lbl">四大軸線</span></a>
+  <div class="nav-brand">桃米<b>生態村</b></div>
+  <a class="nav-cta" href="https://line.me/R/ti/p/%40taomi" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3z"/></svg>
+    加 LINE 享優惠
+  </a>
+</nav>
+
+<main id="main">
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="wrap inner">
+    <span class="eyebrow">
+      <span class="eyebrow-dot" aria-hidden="true"></span>
+      2026 台北國際夏季旅展 ‧ 南投埔里
+    </span>
+    <h1>
+      桃米生態村
+      <span class="sub-en">青蛙的故鄉 ‧ Taomi Eco Village</span>
+    </h1>
+    <p class="lead">紙教堂旁的濕地聚落，白天聽鳥、夜裡數蛙鳴。從921地震後的社區重建，走出一條用生態與手作說故事的路——特色民宿、濕地生態導覽、手作體驗，都藏在埔里山城的巷弄與田埂之間。</p>
+    <div class="cta-row">
+      <a class="btn btn-line" href="https://line.me/R/ti/p/%40taomi" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3zM8.13 13.32H6.18a.51.51 0 0 1-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.26h1.43c.29 0 .52.23.52.51s-.23.51-.52.51zm2.02-.51c0 .28-.23.51-.51.51s-.51-.23-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm4.56 0a.51.51 0 0 1-.35.49.5.5 0 0 1-.58-.18l-1.95-2.66v2.35c0 .28-.23.51-.52.51a.51.51 0 0 1-.51-.51V9.04c0-.22.14-.42.35-.49a.51.51 0 0 1 .58.19l1.96 2.66V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm3.06-2.39c.28 0 .51.23.51.52s-.23.51-.51.51h-1.43v.85h1.43c.28 0 .51.23.51.51s-.23.52-.51.52h-1.95a.51.51 0 0 1-.51-.52V9.04c0-.28.23-.51.51-.51h1.95c.28 0 .51.23.51.51s-.23.52-.51.52h-1.43v.85h1.43z"/></svg>
+        加 LINE 享旅展優惠
+      </a>
+      <a class="btn btn-ghost" href="#stay">看民宿優惠 ↓</a>
+    </div>
+    <p class="hero-id">官方 LINE 搜尋 ID：<b>@taomi</b>（前面有 @ 符號）</p>
+  </div>
+
+  <!-- 青蛙躍水漣漪裝飾 -->
+  <div class="hero-ripples" aria-hidden="true">
+    <span class="ring"></span><span class="ring"></span><span class="ring"></span>
+  </div>
+  <svg class="hero-frog" viewBox="0 0 100 100" aria-hidden="true">
+    <ellipse cx="50" cy="66" rx="34" ry="22" fill="#6f8f5a"/>
+    <ellipse cx="50" cy="60" rx="28" ry="18" fill="#8bab74"/>
+    <circle cx="30" cy="38" r="12" fill="#6f8f5a"/>
+    <circle cx="70" cy="38" r="12" fill="#6f8f5a"/>
+    <circle cx="30" cy="38" r="6" fill="#1f2e20"/>
+    <circle cx="70" cy="38" r="6" fill="#1f2e20"/>
+    <circle cx="27" cy="35" r="1.6" fill="#fff"/>
+    <circle cx="67" cy="35" r="1.6" fill="#fff"/>
+    <path d="M36 66 Q50 76 64 66" stroke="#1f2e20" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <ellipse cx="20" cy="72" rx="9" ry="5" fill="#8bab74"/>
+    <ellipse cx="80" cy="72" rx="9" ry="5" fill="#8bab74"/>
+  </svg>
+
+  <!-- 有機波浪底邊 -->
+  <svg class="hero-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,32 C240,58 480,4 720,26 C960,48 1200,10 1440,30 L1440,60 L0,60 Z" fill="#f4f1e6"/>
+  </svg>
+</header>
+
+<!-- ===== 優惠橫幅 ===== -->
+<div class="deal-banner">
+  <div class="wrap deal-inner">
+    <div class="deal-text">
+      <span class="tag">旅展限定條件</span>
+      <p>旅展期間加入 <b>桃米休閒農業區官方 LINE（ID：@taomi）</b>才享優惠</p>
+      <span class="deadline">優惠期限至 2026/12/31，逾期恕不適用</span>
+    </div>
+    <a class="deal-cta" href="https://line.me/R/ti/p/%40taomi" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3z"/></svg>
+      立即加入 @taomi
+    </a>
+  </div>
+</div>
+
+<!-- ===== 介紹 ===== -->
+<section class="intro-section">
+  <div class="wrap">
+    <div class="intro-grid">
+      <div class="intro-text">
+        <span class="kicker g">About Taomi ‧ 認識桃米</span>
+        <h2 style="font-family:var(--fh);font-weight:900;font-size:clamp(24px,4vw,32px);color:var(--ink);margin:0 0 16px;line-height:1.3">從震後重建走出來的生態聚落</h2>
+        <p>桃米里位於南投埔里近郊，因921地震重創後，居民選擇以<b>濕地生態</b>作為社區重生的起點——復育出台灣近六成的蛙類與豐富的蜻蜓、鳥類生態，成為全台知名的生態旅遊示範村。</p>
+        <p>村子裡藏著知名地標<b>紙教堂 Paper Dome</b>，由日本阪神地震重建的紙管教堂移築而來，象徵兩地災後重生的緣分；周邊散布著手作工坊、濕地步道與一間間各具風格的特色民宿，晚上還能參加青蛙導覽，聽滿山蛙鳴大合唱。</p>
+        <p>距離埔里市區車程僅約 10–15 分鐘，也是安排日月潭旅程時，順遊放慢腳步、貼近自然的最佳中繼站。</p>
+      </div>
+      <div class="paperdome">
+        <h3>桃米三件事</h3>
+        <ul>
+          <li>台灣蛙類密度最高的生態聚落之一，夜間賞蛙、濕地生態導覽全年皆宜</li>
+          <li>紙教堂 Paper Dome 就在里內，是全台唯一以紙管建構的地震紀念建築</li>
+          <li>26 家特色民宿風格各異，從山居、渡假莊園到親子主題應有盡有</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 特色民宿 ===== -->
+<section id="stay">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="kicker">Stay ‧ 特色民宿</span>
+      <h2>26 家特色民宿，住宿享 9.5 折</h2>
+      <div class="sec-rule center"></div>
+      <p>加入官方 LINE（@taomi）出示畫面，入住桃米在地民宿即享 9.5 折優惠，期限至 2026/12/31。</p>
+    </div>
+    <div class="section-decor-strip" aria-hidden="true"></div>
+    <div id="stayGrid" class="card-grid stay"></div>
+  </div>
+</section>
+
+<hr class="stitch-divider">
+
+<!-- ===== 親子體驗 ===== -->
+<section id="play">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="kicker">Play ‧ 親子體驗</span>
+      <h2>甜蜜城堡，親子同遊首選</h2>
+      <div class="sec-rule center"></div>
+    </div>
+    <div id="playList"></div>
+  </div>
+</section>
+
+<!-- ===== 在地美食 ===== -->
+<section id="food" style="background:var(--bg-white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="kicker g">Eat ‧ 在地美食</span>
+      <h2>10 家在地美食，加 LINE 享優惠</h2>
+      <div class="sec-rule center"></div>
+      <p>優惠內容以現場出示官方 LINE 好友畫面為準，各店家優惠詳情請於加入後於 LINE 官方帳號查詢或現場詢問。</p>
+    </div>
+    <div id="foodGrid" class="card-grid food"></div>
+  </div>
+</section>
+
+<!-- ===== LINE 大 CTA ===== -->
+<section class="line-section" id="joinline">
+  <div class="wrap line-inner">
+    <span class="kicker">Join Us ‧ 立即行動</span>
+    <h2>加入桃米休閒農業區官方 LINE<br>解鎖全區旅展優惠</h2>
+    <p>民宿 9.5 折、甜蜜城堡折扣、在地美食優惠，通通只要加 LINE 就能享有。優惠期限至 2026/12/31。</p>
+    <div class="line-idcard">
+      <div>
+        <div class="li-label">官方帳號 ID</div>
+        <div class="li-id">@taomi</div>
+      </div>
+    </div>
+    <div>
+      <a class="btn btn-line" href="https://line.me/R/ti/p/%40taomi" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3z"/></svg>
+        立即加入官方 LINE
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap inner">
+    <div class="fgold">Taomi ‧ Nantou Puli</div>
+    <h4 class="fh">桃米生態村 ‧ 青蛙的故鄉</h4>
+    <p>地點：南投埔里桃米里（近紙教堂 Paper Dome）</p>
+    <p>2026 台北國際夏季旅展 ‧ 7/17–7/20 ‧ 台北世貿一館</p>
+    <p>回到 <a class="footer-back" href="portal.html">日月潭旅展 ‧ 四大軸線</a></p>
+    <p class="disc">所有優惠使用期限至 2026/12/31。優惠內容以桃米休閒農業區官方 LINE（@taomi）公告及各店家現場公告為準，本頁店家清單與折扣資訊如有異動，以店家實際提供為準，恕不負保證與兌換責任。</p>
+    <p>2026 台北國際旅展現場專用導覽 ‧ 網站製作：<b>OneLife 玩生活</b></p>
+  </div>
+</footer>
+
+<!-- ===== LINE 聯絡浮鈕 ===== -->
+<a class="line-fab" href="https://line.me/R/ti/p/%40taomi" target="_blank" rel="noopener" aria-label="加桃米官方 LINE 好友 @taomi">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3zM8.13 13.32H6.18a.51.51 0 0 1-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.26h1.43c.29 0 .52.23.52.51s-.23.51-.52.51zm2.02-.51c0 .28-.23.51-.51.51s-.51-.23-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm4.56 0a.51.51 0 0 1-.35.49.5.5 0 0 1-.58-.18l-1.95-2.66v2.35c0 .28-.23.51-.52.51a.51.51 0 0 1-.51-.51V9.04c0-.22.14-.42.35-.49a.51.51 0 0 1 .58.19l1.96 2.66V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm3.06-2.39c.28 0 .51.23.51.52s-.23.51-.51.51h-1.43v.85h1.43c.28 0 .51.23.51.51s-.23.52-.51.52h-1.95a.51.51 0 0 1-.51-.52V9.04c0-.28.23-.51.51-.51h1.95c.28 0 .51.23.51.51s-.23.52-.51.52h-1.43v.85h1.43z"/></svg>
+  加 LINE 好友
+</a>
+
+<script>
+/* ====== 桃米店家資料（頁內硬編碼，避免 fetch/file:// 問題） ====== */
+const STAY = [
+  "布拉姆索鄉村民宿","埔里天籟休閒民宿","歐香渡假民宿","三茅屋民宿","埔里幸福童話親子民宿",
+  "熊麋鹿了幸福手作民宿","樂象島","紅瓦厝山居民宿","綠屋民宿","桃米松民宿",
+  "景上景民宿","漫漫耕恬民","慧來農莊民宿","外大坪觀星民宿","淘米露民宿",
+  "佳園渡假山莊民宿","水泥角生態民宿","藍屋頂民宿","草本生活家餐廳民宿","禾題休閒渡假民宿",
+  "挑米農庄民宿","石上清泉渡假民宿","江山樂活民宿","念念桃米民宿","稻湘村渡假民宿","普莫里行旅"
+];
+
+const PLAY = [
+  { name:"妮娜巧克力夢想城堡", offer:"折 50 元", desc:"甜蜜夢幻的巧克力城堡，親子共遊的人氣景點，加官方 LINE 出示畫面即享折扣。" }
+];
+
+const FOOD = [
+  "草本食堂","綠屋食堂","秀卿的灶咖","黑豆園","樹蛙亭",
+  "水上餐廳","有水居","草湳濕地農場餐廳","山上山下","佩蓉小吃"
+];
+
+const ICON_LEAF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-4 3-7 9-11 6 4 9 7 9 11a7 7 0 0 1-7 7c-1 0-2-.5-2-.5"/><path d="M12 12c-2 2-3 5-3 8"/></svg>';
+const ICON_LINE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3z"/></svg>';
+const ICON_CASTLE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V10l3-2 3 2v-2l3-2 3 2v2l3-2 3 2v11"/><path d="M3 21h18"/><path d="M9 21v-4h6v4"/></svg>';
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderStay(){
+  const el = document.getElementById('stayGrid');
+  el.innerHTML = STAY.map((name, i) => `
+    <div class="shop-card">
+      <div class="sc-top">
+        <h3 class="sc-name">${esc(name)}</h3>
+        <span class="sc-num">${String(i+1).padStart(2,'0')}</span>
+      </div>
+      <span class="sc-badge">${ICON_LEAF} 住宿 9.5 折</span>
+    </div>
+  `).join('');
+}
+
+function renderPlay(){
+  const el = document.getElementById('playList');
+  el.innerHTML = PLAY.map(p => `
+    <div class="feature-card">
+      <div class="fc-icon">${ICON_CASTLE}</div>
+      <div class="fc-body">
+        <h3>${esc(p.name)}</h3>
+        <p>${esc(p.desc)}</p>
+      </div>
+      <div class="fc-price">${esc(p.offer)}</div>
+    </div>
+  `).join('');
+}
+
+function renderFood(){
+  const el = document.getElementById('foodGrid');
+  el.innerHTML = FOOD.map((name, i) => `
+    <div class="shop-card">
+      <div class="sc-top">
+        <h3 class="sc-name">${esc(name)}</h3>
+        <span class="sc-num">${String(i+1).padStart(2,'0')}</span>
+      </div>
+      <span class="sc-badge line">${ICON_LINE} 加 LINE 享優惠</span>
+      <p class="sc-note">優惠內容請加官方 LINE（@taomi）後於帳號內查詢或現場出示畫面詢問店家。</p>
+    </div>
+  `).join('');
+}
+
+renderStay();
+renderPlay();
+renderFood();
+</script>
+
+</body>
+</html>
