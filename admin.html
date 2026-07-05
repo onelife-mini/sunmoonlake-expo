@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>店家位置後台｜逐路船騎 日月潭</title>
+<title>後台管理｜逐路船騎 日月潭</title>
 <meta name="robots" content="noindex,nofollow,noarchive">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -11,132 +11,266 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>
-:root{--green:#1a6b4a;--green-d:#134f37;--gold:#d4a843;--gold-d:#c29a3a;--ink:#1a1a2e;
-  --text:#333;--muted:#777;--line:#e3e3e3;--bg:#f5f6f4;--card:#fff;
-  --ok:#1a6b4a;--warn:#c2703a;--area:#9a9a9a;}
+:root{
+  --green:#1a6b4a;--green-d:#134f37;--green-l:#e6f1ea;
+  --gold:#d4a843;--gold-d:#c29a3a;
+  --ink:#1a1a2e;--ink-2:#242440;--ink-3:#2d2d4d;
+  --text:#2b2b2b;--muted:#767a86;--line:#e5e6ea;--bg:#f5f6f4;--card:#fff;
+  --ok:#1a6b4a;--warn:#c2703a;--bad:#c0392b;--area:#9a9a9a;
+  --radius:12px;--radius-sm:8px;
+  --sidebar-w:236px;
+  --dur:.2s;
+}
 *{box-sizing:border-box}
+html,body{height:100%}
 body{margin:0;font-family:"Noto Sans TC","PingFang TC",system-ui,sans-serif;color:var(--text);
-  background:var(--bg);font-size:14px;line-height:1.6}
-header{background:var(--ink);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:16px;
-  flex-wrap:wrap;position:sticky;top:0;z-index:50}
-header h1{font-size:17px;margin:0;font-weight:700}
-header h1 b{color:var(--gold)}
-.prog{font-size:13px;color:#cfd6d2}
-.prog b{color:var(--gold)}
-.sp{flex:1}
-.tbtn{background:#2d3050;color:#fff;border:1px solid #3a3e60;border-radius:8px;padding:8px 14px;
-  font-family:inherit;font-weight:600;font-size:13px;cursor:pointer}
-.tbtn:hover{background:#3a3e60}
-.tbtn.gold{background:var(--gold);color:#3a2a00;border-color:var(--gold)}
-.tbtn.gold:hover{background:#e0b652}
-.tbtn.ghost{background:transparent}
-.wrap{display:grid;grid-template-columns:380px 1fr;gap:0;height:calc(100vh - 56px)}
-@media(max-width:860px){.wrap{grid-template-columns:1fr;height:auto}}
+  background:var(--bg);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit}
+::selection{background:var(--gold);color:#3a2a00}
+a{color:inherit}
 
-/* list */
-.list{border-right:1px solid var(--line);background:var(--card);overflow-y:auto;height:100%}
-@media(max-width:860px){.list{height:auto;max-height:46vh}}
-.lfilter{position:sticky;top:0;background:var(--card);padding:12px;border-bottom:1px solid var(--line);z-index:2}
-.lfilter input{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13.5px}
-.cats{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.cat{font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;border:1px solid var(--line);
-  background:#fff;cursor:pointer;color:#555}
-.cat.on{background:var(--green);color:#fff;border-color:var(--green)}
-.row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid #f0f0f0;cursor:pointer}
-.row:hover{background:#f7f9f7}
-.row.sel{background:#eef6f1;box-shadow:inset 3px 0 0 var(--green)}
-.row .nm{flex:1;min-width:0}
-.row .nm b{display:block;font-weight:600;font-size:14px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .nm span{font-size:11.5px;color:var(--muted)}
-.dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
-.badge{font-size:10.5px;font-weight:700;padding:3px 7px;border-radius:999px;white-space:nowrap}
+/* ───────── scrollbar (subtle) ───────── */
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:#d3d5cf;border-radius:99px}
+::-webkit-scrollbar-track{background:transparent}
+
+/* ───────── Login screen ───────── */
+.loginWrap{min-height:100vh;display:grid;place-items:center;background:
+  radial-gradient(circle at 15% 12%, #234a3a 0%, transparent 45%),
+  radial-gradient(circle at 85% 88%, #2a2350 0%, transparent 50%),
+  var(--ink);padding:20px}
+.loginCard{background:var(--card);width:100%;max-width:380px;border-radius:16px;
+  padding:36px 32px 30px;box-shadow:0 30px 80px rgba(0,0,0,.35);
+  animation:riseIn .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes riseIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+.loginBrand{display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.loginBrand .mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--green),var(--green-d));
+  display:grid;place-items:center;color:var(--gold);font-weight:900;font-size:17px;flex:0 0 auto}
+.loginBrand .tt{font-size:15px;font-weight:800;color:var(--ink);line-height:1.3}
+.loginBrand .tt span{display:block;font-size:11.5px;font-weight:600;color:var(--muted);margin-top:1px}
+.loginCard h2{font-size:18px;margin:0 0 6px;color:var(--ink);font-weight:800}
+.loginCard p.desc{margin:0 0 20px;color:var(--muted);font-size:12.5px}
+.loginField{margin-bottom:14px}
+.loginField input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:var(--radius-sm);
+  font-size:14.5px;transition:border-color var(--dur)}
+.loginField input:focus{outline:none;border-color:var(--green)}
+.loginBtn{width:100%;padding:12px 14px;border:0;border-radius:var(--radius-sm);background:var(--ink);color:#fff;
+  font-weight:700;font-size:14.5px;cursor:pointer;transition:background var(--dur), transform var(--dur)}
+.loginBtn:hover{background:var(--ink-3)}
+.loginBtn:active{transform:scale(.98)}
+.loginBtn:disabled{opacity:.6;cursor:default}
+.loginErr{margin-top:12px;background:#fdecea;color:var(--bad);border:1px solid #f6cfc9;border-radius:var(--radius-sm);
+  padding:9px 12px;font-size:12.5px;font-weight:600;display:none}
+.loginErr.show{display:block;animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* ───────── App shell ───────── */
+.app{display:none;min-height:100vh}
+.app.show{display:flex}
+
+/* sidebar */
+.sidebar{width:var(--sidebar-w);flex:0 0 auto;background:var(--ink);color:#e8e9ef;
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;z-index:60}
+.sbBrand{padding:20px 18px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sbBrand .mark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--green-d));
+  display:grid;place-items:center;color:var(--gold);font-weight:900;font-size:15px;flex:0 0 auto}
+.sbBrand .tt{font-size:13.5px;font-weight:800;color:#fff;line-height:1.35}
+.sbBrand .tt span{display:block;font-size:10.5px;font-weight:600;color:#9a9db0;margin-top:1px}
+.sbNav{flex:1;padding:14px 10px;overflow-y:auto}
+.sbItem{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:9px;cursor:pointer;
+  color:#c4c6d4;font-weight:600;font-size:13.5px;margin-bottom:3px;transition:background var(--dur),color var(--dur);
+  border:1px solid transparent}
+.sbItem .ic{font-size:16px;width:20px;text-align:center;flex:0 0 auto}
+.sbItem:hover{background:rgba(255,255,255,.06);color:#fff}
+.sbItem.on{background:rgba(212,168,67,.14);color:#fff;border-color:rgba(212,168,67,.3)}
+.sbItem.on .ic{color:var(--gold)}
+.sbFoot{padding:14px 10px;border-top:1px solid rgba(255,255,255,.08)}
+.sbLogout{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;
+  background:transparent;border:1px solid rgba(255,255,255,.14);color:#c4c6d4;font-weight:600;font-size:12.5px;
+  cursor:pointer;transition:background var(--dur)}
+.sbLogout:hover{background:rgba(255,255,255,.08);color:#fff}
+
+/* mobile topbar */
+.topbar{display:none;position:sticky;top:0;z-index:70;background:var(--ink);color:#fff;
+  padding:12px 14px;align-items:center;gap:12px}
+.topbar .tt{font-weight:800;font-size:14.5px;flex:1}
+.hamburger{background:transparent;border:0;color:#fff;font-size:20px;cursor:pointer;padding:4px 8px;line-height:1}
+.sbOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:55}
+.sbOverlay.show{display:block}
+
+@media(max-width:900px){
+  .topbar{display:flex}
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform var(--dur);box-shadow:4px 0 30px rgba(0,0,0,.3)}
+  .sidebar.open{transform:translateX(0)}
+}
+
+/* main */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topHead{background:var(--card);border-bottom:1px solid var(--line);padding:16px 26px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:40}
+@media(max-width:900px){.topHead{position:static}}
+.topHead h1{font-size:18px;margin:0;color:var(--ink);font-weight:800}
+.topHead .sub{font-size:12.5px;color:var(--muted)}
+.topHead .sp{flex:1}
+.view{display:none;padding:24px 26px 60px;animation:fadeUp .35s cubic-bezier(.2,.8,.2,1)}
+.view.on{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(max-width:640px){.view{padding:18px 14px 50px}.topHead{padding:14px 16px}}
+
+/* ───────── shared components ───────── */
+.btn{border:0;border-radius:var(--radius-sm);padding:9px 16px;font-family:inherit;font-weight:700;
+  font-size:13px;cursor:pointer;transition:background var(--dur),transform var(--dur),box-shadow var(--dur);
+  display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-ink:hover{background:var(--ink-3)}
+.btn-gold{background:var(--gold);color:#3a2a00}
+.btn-gold:hover{background:#e0b652}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:var(--green-d)}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn-ghost:hover{background:#f0f1ee}
+.btn-danger{background:#fdecea;color:var(--bad)}
+.btn-danger:hover{background:#fbdbd7}
+.btn:disabled{opacity:.55;cursor:default;transform:none}
+.btn-sm{padding:6px 11px;font-size:12px}
+.btn-icon{padding:7px 9px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+.cardHd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.cardHd h3{margin:0;font-size:14.5px;font-weight:800;color:var(--ink)}
+.cardHd .sp{flex:1}
+.grid{display:grid;gap:16px}
+.tip{background:#fffaf0;border:1px solid #f0e2c0;color:#7a5c18;font-size:12px;padding:10px 13px;
+  border-radius:var(--radius-sm);margin:0 0 14px;line-height:1.6}
+.tip.blue{background:#eef4fb;border-color:#cfe0f2;color:#2b567f}
+.hint{font-size:11.5px;color:var(--muted);font-weight:400}
+.badge{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap;display:inline-block}
 .b-precise{background:#e6f1ea;color:var(--ok)}
 .b-area{background:#efefef;color:var(--area)}
 .b-manual{background:#fbeede;color:var(--warn)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);
+  color:#fff;padding:11px 20px;border-radius:999px;font-weight:600;font-size:13.5px;opacity:0;
+  pointer-events:none;transition:.25s;z-index:300;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* editor */
-.edit{padding:0;display:flex;flex-direction:column;height:100%;overflow:hidden}
-@media(max-width:860px){.edit{height:auto}}
-.ehd{padding:14px 18px;border-bottom:1px solid var(--line);background:var(--card)}
-.ehd .nm{font-size:18px;font-weight:700;color:var(--ink)}
-.ehd .meta{font-size:12.5px;color:var(--muted);margin-top:2px}
-#amap{flex:1;min-height:300px;background:#e8eef0}
-@media(max-width:860px){#amap{height:340px;flex:none}}
-.tools{padding:14px 18px;background:var(--card);border-top:1px solid var(--line);overflow-y:auto;max-height:42vh}
-.fld{margin-bottom:12px}
+/* ───────── 總覽 ───────── */
+.kpiGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:22px}
+@media(max-width:1100px){.kpiGrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.kpiGrid{grid-template-columns:1fr 1fr}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:17px 16px;
+  position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green)}
+.kpi.gold::before{background:var(--gold)}
+.kpi .kv{font-size:26px;font-weight:900;color:var(--ink);line-height:1.15}
+.kpi .kl{font-size:12px;color:var(--muted);margin-top:5px;font-weight:600}
+.ov2col{display:grid;grid-template-columns:1.3fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:900px){.ov2col{grid-template-columns:1fr}}
+.progWrap{margin:6px 0 2px}
+.progBar{height:10px;border-radius:99px;background:#eceee9;overflow:hidden;margin-top:8px}
+.progBar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--green-d));border-radius:99px;
+  transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.progNum{font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
+.progNum b{color:var(--ink);font-size:15px}
+.rankList{list-style:none;margin:0;padding:0}
+.rankList li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0f0ec}
+.rankList li:last-child{border-bottom:0}
+.rankNo{width:22px;height:22px;border-radius:6px;background:#eef1ee;color:var(--muted);font-size:11.5px;font-weight:800;
+  display:grid;place-items:center;flex:0 0 auto}
+.rankList li:nth-child(1) .rankNo{background:var(--gold);color:#3a2a00}
+.rankList li:nth-child(2) .rankNo{background:#dcdfe5;color:#333}
+.rankList li:nth-child(3) .rankNo{background:#e8d3b0;color:#5a3d10}
+.rankNm{flex:1;font-weight:600;font-size:13px;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rankVal{font-weight:800;color:var(--green-d);font-size:13.5px;flex:0 0 auto}
+.quickGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:760px){.quickGrid{grid-template-columns:1fr 1fr}}
+.quickBtn{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 14px;
+  cursor:pointer;text-align:left;transition:border-color var(--dur),transform var(--dur),box-shadow var(--dur)}
+.quickBtn:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.06)}
+.quickBtn .ic{font-size:20px}
+.quickBtn .tt{font-weight:700;font-size:13px;color:var(--ink);margin-top:8px}
+.quickBtn .ds{font-size:11.5px;color:var(--muted);margin-top:2px}
+
+/* ───────── 店家管理 ───────── */
+.shopWrap{display:grid;grid-template-columns:340px 1fr;gap:18px;align-items:start}
+@media(max-width:1000px){.shopWrap{grid-template-columns:1fr}}
+.shopList{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.lfilter{padding:14px;border-bottom:1px solid var(--line)}
+.lfilter input{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:var(--radius-sm);font-family:inherit;font-size:13.5px}
+.lfilter input:focus{outline:none;border-color:var(--green)}
+.cats{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.cat{font-size:11.5px;font-weight:700;padding:5px 10px;border-radius:999px;border:1px solid var(--line);
+  background:#fff;cursor:pointer;color:#555;transition:background var(--dur),color var(--dur)}
+.cat.on{background:var(--green);color:#fff;border-color:var(--green)}
+#rows{max-height:62vh;overflow-y:auto}
+.row{display:flex;align-items:center;gap:9px;padding:11px 14px;border-bottom:1px solid #f2f2ef;cursor:pointer;position:relative}
+.row:hover{background:#f7f9f7}
+.row.sel{background:#eef6f1;box-shadow:inset 3px 0 0 var(--green)}
+.row .nm{flex:1;min-width:0}
+.row .nm b{display:block;font-weight:600;font-size:13.5px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .nm span{font-size:11px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.reorderBtns{display:flex;flex-direction:column;gap:1px;flex:0 0 auto}
+.reorderBtns button{background:#eef0ec;border:0;width:19px;height:16px;font-size:9px;cursor:pointer;color:#555;border-radius:3px;line-height:1}
+.reorderBtns button:hover{background:var(--green);color:#fff}
+.reorderBtns button:disabled{opacity:.3;cursor:default}
+.reorderBtns button:disabled:hover{background:#eef0ec;color:#555}
+
+.shopEditor{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.ehd{padding:16px 20px;border-bottom:1px solid var(--line)}
+.ehd .nm{font-size:17px;font-weight:800;color:var(--ink)}
+.ehd .meta{font-size:12.5px;color:var(--muted);margin-top:3px}
+#amap{height:300px;background:#e8eef0}
+.etools{padding:18px 20px}
+.fld{margin-bottom:14px}
 .fld label{display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:5px}
-.fld .hint{font-size:11.5px;color:var(--muted);font-weight:400}
+.fld input[type=text],.fld input:not([type]),.fld textarea,.fld select{
+  width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:var(--radius-sm);font-family:inherit;font-size:13.5px}
+.fld input:focus,.fld textarea:focus,.fld select:focus{outline:none;border-color:var(--green)}
+.fld textarea{resize:vertical;min-height:64px;line-height:1.5}
 .irow{display:flex;gap:8px}
-.irow input{flex:1;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13.5px}
-.irow button{padding:9px 14px;border:0;border-radius:8px;background:var(--green);color:#fff;font-family:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
-.irow button:hover{background:var(--green-d)}
-.geores{margin-top:6px;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:none}
+.irow input{flex:1;padding:9px 11px;border:1px solid var(--line);border-radius:var(--radius-sm);font-family:inherit;font-size:13.5px}
+.irow input:focus{outline:none;border-color:var(--green)}
+.geores{margin-top:6px;border:1px solid var(--line);border-radius:var(--radius-sm);overflow:hidden;display:none}
 .geores.show{display:block}
 .geores div{padding:8px 11px;font-size:12.5px;cursor:pointer;border-bottom:1px solid #f0f0f0}
 .geores div:last-child{border-bottom:0}
 .geores div:hover{background:#f2f7f3}
 .coords{display:flex;gap:8px;align-items:center}
-.coords input{width:120px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13px}
-.save{margin-top:6px;display:flex;gap:10px;align-items:center}
-.save button{background:var(--gold);color:#3a2a00;border:0;border-radius:8px;padding:11px 20px;
-  font-family:inherit;font-weight:700;font-size:14px;cursor:pointer}
-.save button:hover{background:#e0b652}
-.save .msg{font-size:12.5px;color:var(--ok);font-weight:600}
-.empty{display:grid;place-items:center;height:100%;color:var(--muted);text-align:center;padding:40px}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);
-  color:#fff;padding:11px 20px;border-radius:999px;font-weight:600;font-size:13.5px;opacity:0;
-  pointer-events:none;transition:.25s;z-index:200}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.tip{background:#fffaf0;border:1px solid #f0e2c0;color:#7a5c18;font-size:12px;padding:9px 12px;
-  border-radius:8px;margin:0 0 12px;line-height:1.6}
+.coords input{width:120px;padding:8px 10px;border:1px solid var(--line);border-radius:var(--radius-sm);font-family:inherit;font-size:13px}
+.fldRow2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:520px){.fldRow2{grid-template-columns:1fr}}
+.chkRow{display:flex;align-items:center;gap:8px;font-size:13px;color:#444;font-weight:600}
+.chkRow input{width:16px;height:16px}
+.saveRow{margin-top:6px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding-top:6px;border-top:1px solid var(--line)}
+.saveMsg{font-size:12.5px;color:var(--ok);font-weight:600}
+.empty{display:grid;place-items:center;min-height:340px;color:var(--muted);text-align:center;padding:40px}
 
-/* 數據儀表板 */
-.statsOverlay{position:fixed;inset:0;background:rgba(20,20,35,.55);z-index:200;display:none;
-  align-items:flex-start;justify-content:center;padding:34px 16px;overflow-y:auto}
-.statsOverlay.show{display:flex}
-.statsBox{background:var(--bg);width:100%;max-width:900px;border-radius:14px;overflow:hidden;
-  box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.statsHd{background:var(--ink);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
-.statsHd h2{font-size:17px;margin:0;flex:1}
-.statsBody{padding:20px}
-.statsSetup p{margin:0 0 10px;color:var(--muted);font-size:13px}
-.irow{display:flex;gap:8px}
-.irow input{flex:1;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:14px}
-.statsHint{font-size:12.5px;color:var(--muted)}
-.statsCards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-@media(max-width:640px){.statsCards{grid-template-columns:1fr 1fr}}
-.statCard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 14px;text-align:center}
+/* ───────── 數據分析 ───────── */
+.statsCards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:760px){.statsCards{grid-template-columns:1fr 1fr}}
+.statCard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 14px;text-align:center}
 .statCard.gold{border-color:var(--gold);background:#fffdf5}
-.statCard .sv{font-size:30px;font-weight:900;color:var(--ink);line-height:1.1}
+.statCard .sv{font-size:28px;font-weight:900;color:var(--ink);line-height:1.1}
 .statCard.gold .sv{color:var(--gold-d)}
 .statCard .sl{font-size:12.5px;color:var(--muted);margin-top:6px;font-weight:600}
 .statCard .sl span{display:block;font-weight:400;font-size:11px;color:#a5a5a5;margin-top:2px}
-.statsToolsbar{display:flex;align-items:center;gap:10px;margin:16px 0 4px}
-.statsSub{font-size:14px;margin:16px 0 8px;color:var(--ink)}
-.statsTbl{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;font-size:13.5px}
-.statsTbl th{background:#eef1ee;text-align:left;padding:9px 12px;color:#555;font-weight:700}
-.statsTbl td{padding:8px 12px;border-top:1px solid var(--line)}
-.statsTbl td:last-child{font-weight:700;color:var(--ink)}
-.statsTbl tr:hover td{background:#f8f9f7}
-
-/* 日期區間 */
 .statsRange{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:space-between;margin-bottom:16px}
 .rangeQuick{display:flex;gap:6px;flex-wrap:wrap}
 .qbtn{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px;
   font-family:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
 .qbtn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.rangePick{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.rangePick{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);flex-wrap:wrap}
 .rangePick input{padding:6px 8px;border:1px solid var(--line);border-radius:7px;font-family:inherit;font-size:13px}
-/* 尖峰摘要 */
-.statsPeak{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 4px}
+.statsPeak{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 18px}
 .peakChip{background:#eef4f1;border:1px solid #d8e6df;border-radius:10px;padding:8px 14px;font-size:13px;color:#2a5646}
 .peakChip b{color:var(--green-d);font-size:15px}
-/* 圖表 */
+.statsSub{font-size:14.5px;margin:22px 0 10px;color:var(--ink);font-weight:800;display:flex;align-items:center;flex-wrap:wrap}
 .statsSub .lgd{font-weight:400;font-size:12px;color:var(--muted);margin-left:10px}
-.lgd .dot{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin-right:3px}
-.lgd .dot.v{background:var(--gold)} .lgd .dot.c{background:var(--green)}
-.chart{display:flex;align-items:flex-end;gap:8px;height:170px;background:var(--card);border:1px solid var(--line);
-  border-radius:12px;padding:14px 14px 8px;overflow-x:auto}
+.lgd .ldot{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin-right:3px}
+.lgd .ldot.v{background:var(--gold)} .lgd .ldot.c{background:var(--green)}
+.chart{display:flex;align-items:flex-end;gap:8px;height:180px;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius);padding:14px 14px 8px;overflow-x:auto}
 .chart.hours{gap:3px}
 .bar{flex:1 0 auto;min-width:26px;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
 .chart.hours .bar{min-width:20px}
@@ -147,37 +281,230 @@ header h1 b{color:var(--gold)}
 .bar .col:hover{opacity:.75}
 .bar .blab{font-size:10.5px;color:var(--muted);white-space:nowrap;line-height:1.2;text-align:center}
 .bar .bval{font-size:10px;font-weight:700;color:var(--ink)}
+.statsTbl{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden;font-size:13.5px;
+  border:1px solid var(--line)}
+.statsTbl th{background:#eef1ee;text-align:left;padding:9px 12px;color:#555;font-weight:700}
+.statsTbl td{padding:8px 12px;border-top:1px solid var(--line)}
+.statsTbl td:last-child{font-weight:700;color:var(--ink)}
+.statsTbl tr:hover td{background:#f8f9f7}
+.statsToolsbar{display:flex;align-items:center;gap:10px;margin:18px 0 4px;flex-wrap:wrap}
+.statsHint{font-size:12.5px;color:var(--muted)}
+.skel{background:linear-gradient(90deg,#eee,#f5f5f5,#eee);background-size:200% 100%;animation:shimmer 1.3s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ───────── 設定 ───────── */
+.settingsGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:900px){.settingsGrid{grid-template-columns:1fr}}
+.keyBox{display:flex;gap:8px;align-items:center}
+.keyBox input{flex:1;padding:9px 11px;border:1px solid var(--line);border-radius:var(--radius-sm);font-family:ui-monospace,monospace;font-size:13px;background:#f7f7f5}
+.linkRow{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #f0f0ec;font-size:13px}
+.linkRow:last-child{border-bottom:0}
+.linkRow a{color:var(--green-d);font-weight:600;text-decoration:none}
+.linkRow a:hover{text-decoration:underline}
+.linkRow .sp{flex:1}
+.msgline{font-size:12.5px;font-weight:600;margin-top:8px}
+.msgline.ok{color:var(--ok)}
+.msgline.err{color:var(--bad)}
 </style>
 </head>
 <body>
-<header>
-  <h1>店家位置<b>後台</b></h1>
-  <span class="prog" id="prog">—</span>
-  <span class="sp"></span>
-  <button class="tbtn ghost" id="btnReload" title="捨棄本機修改，重新從 shops.json 載入">↺ 重載檔案</button>
-  <button class="tbtn" id="btnImport">匯入</button>
-  <input type="file" id="fileInput" accept=".json" hidden>
-  <button class="tbtn gold" id="btnExport">⬇ 匯出 shops.json</button>
-  <button class="tbtn" id="btnStats" title="流量與兌換統計">📊 數據</button>
-</header>
 
-<!-- 數據儀表板 -->
-<div class="statsOverlay" id="statsOverlay">
-  <div class="statsBox">
-    <div class="statsHd">
-      <h2>📊 流量與兌換數據</h2>
-      <button class="tbtn ghost" id="statsClose">✕ 關閉</button>
+<!-- ══════════ 登入畫面 ══════════ -->
+<div class="loginWrap" id="loginWrap">
+  <div class="loginCard">
+    <div class="loginBrand">
+      <div class="mark">逐</div>
+      <div class="tt">逐路船騎 日月潭<span>後台管理系統</span></div>
     </div>
-    <div class="statsBody" id="statsBody">
-      <div class="statsSetup" id="statsSetup">
-        <p>輸入後台金鑰（STATS_KEY）以讀取數據。金鑰只存在這台裝置的瀏覽器，不會外流。</p>
-        <div class="irow">
-          <input type="password" id="statsKey" placeholder="STATS_KEY">
-          <button class="tbtn gold" id="statsLoad">讀取</button>
-        </div>
-        <p class="statsHint" id="statsMsg"></p>
+    <h2>管理員登入</h2>
+    <p class="desc">請輸入後台密碼以繼續。</p>
+    <form id="loginForm" autocomplete="off">
+      <div class="loginField">
+        <input type="password" id="loginPass" placeholder="後台密碼" autocomplete="current-password" required>
       </div>
-      <div id="statsResult" style="display:none">
+      <button class="loginBtn" id="loginBtn" type="submit">登入</button>
+    </form>
+    <div class="loginErr" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ══════════ 後台主體 ══════════ -->
+<div class="app" id="app">
+  <div class="sbOverlay" id="sbOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sbBrand">
+      <div class="mark">逐</div>
+      <div class="tt">逐路船騎 日月潭<span>後台管理系統</span></div>
+    </div>
+    <nav class="sbNav" id="sbNav">
+      <div class="sbItem" data-view="overview"><span class="ic">🏠</span>總覽</div>
+      <div class="sbItem" data-view="shops"><span class="ic">🏪</span>店家管理</div>
+      <div class="sbItem" data-view="stats"><span class="ic">📊</span>數據分析</div>
+      <div class="sbItem" data-view="settings"><span class="ic">⚙️</span>設定</div>
+    </nav>
+    <div class="sbFoot">
+      <button class="sbLogout" id="btnLogout">↩ 登出</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="hamburger" id="hamburger">☰</button>
+      <div class="tt" id="mobileTitle">總覽</div>
+    </div>
+
+    <!-- ───────── 總覽 ───────── -->
+    <section class="view" id="view-overview">
+      <div class="topHead">
+        <h1>總覽</h1>
+        <span class="sub">今日與全期數據摘要</span>
+        <span class="sp"></span>
+        <button class="btn btn-ghost btn-sm" id="ovRefresh">↻ 重新整理</button>
+      </div>
+      <div style="padding:24px 26px 60px" id="ovBody">
+        <div class="kpiGrid">
+          <div class="kpi gold"><div class="kv" id="ovTodayVisit">—</div><div class="kl">今日進站手機</div></div>
+          <div class="kpi gold"><div class="kv" id="ovTodayClaim">—</div><div class="kl">今日兌換手機</div></div>
+          <div class="kpi"><div class="kv" id="ovAllVisit">—</div><div class="kl">全期進站手機</div></div>
+          <div class="kpi"><div class="kv" id="ovAllClaim">—</div><div class="kl">全期兌換手機</div></div>
+          <div class="kpi"><div class="kv" id="ovRate">—</div><div class="kl">兌換轉換率</div></div>
+        </div>
+        <div class="ov2col">
+          <div class="card">
+            <div class="cardHd"><h3>店家定位進度</h3></div>
+            <div class="progWrap">
+              <div class="progNum"><span>已定位家數</span><b id="progText">—</b></div>
+              <div class="progBar"><i id="progBarFill" style="width:0%"></i></div>
+              <div class="progNum" style="margin-top:10px"><span id="progManualText" class="hint"></span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="cardHd"><h3>兌換排行 Top 5</h3></div>
+            <ul class="rankList" id="ovRank"><li class="hint" style="padding:10px 0">尚無資料</li></ul>
+          </div>
+        </div>
+        <div class="cardHd" style="margin-top:6px"><h3>快速前往</h3></div>
+        <div class="quickGrid">
+          <div class="quickBtn" data-goto="shops"><div class="ic">🏪</div><div class="tt">店家管理</div><div class="ds">編輯位置、優惠內容與排序</div></div>
+          <div class="quickBtn" data-goto="stats"><div class="ic">📊</div><div class="tt">數據分析</div><div class="ds">趨勢圖表與各店排行</div></div>
+          <div class="quickBtn" data-goto="settings"><div class="ic">⚙️</div><div class="tt">設定</div><div class="ds">修改密碼、取得金鑰</div></div>
+          <div class="quickBtn" data-goto="shops"><div class="ic">➕</div><div class="tt">新增/調整優惠</div><div class="ds">前往店家管理編輯內容</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── 店家管理 ───────── -->
+    <section class="view" id="view-shops">
+      <div class="topHead">
+        <h1>店家管理</h1>
+        <span class="sub" id="prog">—</span>
+        <span class="sp"></span>
+        <button class="btn btn-ghost btn-sm" id="btnReload" title="捨棄本機修改，重新從 shops.json 載入">↺ 重載檔案</button>
+        <button class="btn btn-ghost btn-sm" id="btnImport">匯入</button>
+        <input type="file" id="fileInput" accept=".json" hidden>
+        <button class="btn btn-gold btn-sm" id="btnExport">⬇ 匯出 shops.json</button>
+      </div>
+      <div style="padding:24px 26px 60px">
+        <div class="shopWrap">
+          <!-- 清單 -->
+          <div class="shopList">
+            <div class="lfilter">
+              <input id="search" placeholder="🔍 搜尋店名…">
+              <div class="cats" id="cats"></div>
+            </div>
+            <div id="rows"></div>
+          </div>
+
+          <!-- 編輯器 -->
+          <div class="shopEditor" id="editor">
+            <div class="empty" id="empty">← 從左側選一家店，開始編輯</div>
+            <div id="editorBody" style="display:none">
+              <div class="ehd" id="ehd">
+                <div class="nm" id="eName">—</div>
+                <div class="meta" id="eMeta">—</div>
+              </div>
+              <div id="amap"></div>
+              <div class="etools">
+                <p class="tip">位置設定方式任選一種：① 下方搜尋地址/店名 ② 直接在地圖上<b>點一下</b>或<b>拖曳紅色圖釘</b> ③ 貼 Google Maps 連結或座標。設定後記得按<b>儲存這家</b>。</p>
+
+                <div class="fld">
+                  <label>① 搜尋地址 / 地標 / 店名 <span class="hint">（OpenStreetMap）</span></label>
+                  <div class="irow">
+                    <input id="geoq" placeholder="例：日月潭水社碼頭 / 南投縣魚池鄉中山路…">
+                    <button class="btn btn-green" id="geoBtn">搜尋</button>
+                  </div>
+                  <div class="geores" id="geores"></div>
+                </div>
+
+                <div class="fld">
+                  <label>③ 貼 Google Maps 連結或「緯度,經度」</label>
+                  <div class="irow">
+                    <input id="gmap" placeholder="貼上 google maps 網址，或 23.864,120.910">
+                    <button class="btn btn-green" id="gmapBtn">解析</button>
+                  </div>
+                </div>
+
+                <div class="fld">
+                  <label>座標（可手動微調）</label>
+                  <div class="coords">
+                    <input id="lat" placeholder="緯度 lat"> <input id="lng" placeholder="經度 lng">
+                    <button class="btn btn-green" id="applyLL">套用到地圖</button>
+                  </div>
+                </div>
+
+                <div class="fld">
+                  <label>地址 / 地標備註 <span class="hint">（選填）</span></label>
+                  <input type="text" id="addr" placeholder="例：日月潭水社碼頭旁">
+                </div>
+
+                <div class="fldRow2">
+                  <div class="fld">
+                    <label>類別</label>
+                    <select id="group">
+                      <option value="sup">船 SUP</option>
+                      <option value="bike">騎 單車</option>
+                      <option value="stay">住 住宿</option>
+                      <option value="eat">食 吃喝</option>
+                      <option value="play">玩買</option>
+                    </select>
+                  </div>
+                  <div class="fld">
+                    <label>區域</label>
+                    <input type="text" id="area" placeholder="例：伊達邵 / 水社">
+                  </div>
+                </div>
+
+                <div class="fld">
+                  <label>優惠內容</label>
+                  <textarea id="offer" placeholder="例：獨木舟、電動船、水上腳踏車7折"></textarea>
+                </div>
+
+                <div class="fld">
+                  <label class="chkRow"><input type="checkbox" id="inquiry"> 優惠洽詢中（前台顯示「優惠洽談中」，暫不顯示 offer 內容）</label>
+                </div>
+
+                <div class="saveRow">
+                  <button class="btn btn-gold" id="saveBtn">💾 儲存這家</button>
+                  <span class="saveMsg" id="saveMsg"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── 數據分析 ───────── -->
+    <section class="view" id="view-stats">
+      <div class="topHead">
+        <h1>數據分析</h1>
+        <span class="sub" id="statsUpdated"></span>
+        <span class="sp"></span>
+        <button class="btn btn-ghost btn-sm" id="statsRefresh">↻ 重新整理</button>
+        <button class="btn btn-gold btn-sm" id="btnExportCsv">⬇ 匯出 CSV</button>
+      </div>
+      <div style="padding:24px 26px 60px">
+        <p class="statsHint" id="statsMsg" style="margin-bottom:12px"></p>
         <!-- 日期區間 -->
         <div class="statsRange">
           <div class="rangeQuick" id="rangeQuick">
@@ -188,7 +515,7 @@ header h1 b{color:var(--gold)}
           </div>
           <div class="rangePick">
             <input type="date" id="dFrom"> <span>～</span> <input type="date" id="dTo">
-            <button class="tbtn gold" id="dApply">套用</button>
+            <button class="btn btn-gold btn-sm" id="dApply">套用</button>
           </div>
         </div>
         <!-- KPI -->
@@ -201,106 +528,191 @@ header h1 b{color:var(--gold)}
         <!-- 尖峰摘要 -->
         <div class="statsPeak" id="statsPeak"></div>
         <!-- 每日趨勢 -->
-        <h3 class="statsSub">每日趨勢<span class="lgd"><i class="dot v"></i>進站手機　<i class="dot c"></i>兌換手機</span></h3>
+        <h3 class="statsSub">每日趨勢<span class="lgd"><i class="ldot v"></i>進站手機　<i class="ldot c"></i>兌換手機</span></h3>
         <div class="chart" id="chartDay"></div>
         <!-- 時段分布 -->
-        <h3 class="statsSub">時段分布（台灣時間，看哪個時段人最多）<span class="lgd"><i class="dot v"></i>進站　<i class="dot c"></i>兌換</span></h3>
+        <h3 class="statsSub">時段分布（台灣時間，看哪個時段人最多）<span class="lgd"><i class="ldot v"></i>進站　<i class="ldot c"></i>兌換</span></h3>
         <div class="chart hours" id="chartHour"></div>
         <!-- 各店家 -->
         <h3 class="statsSub">各店家兌換排行</h3>
         <table class="statsTbl"><thead><tr><th>#</th><th>店家</th><th>類別</th><th style="text-align:right">兌換手機數</th><th style="text-align:right">領取次數</th></tr></thead><tbody id="statsRows"></tbody></table>
-        <div class="statsToolsbar">
-          <span class="statsHint" id="statsUpdated"></span>
-          <span class="sp"></span>
-          <button class="tbtn ghost" id="statsRefresh">↻ 重新整理</button>
-          <button class="tbtn ghost" id="statsForget" title="清除本機記住的金鑰">清除金鑰</button>
+      </div>
+    </section>
+
+    <!-- ───────── 設定 ───────── -->
+    <section class="view" id="view-settings">
+      <div class="topHead">
+        <h1>設定</h1>
+        <span class="sub">帳號安全與前台連結</span>
+      </div>
+      <div style="padding:24px 26px 60px">
+        <div class="settingsGrid">
+          <div class="card">
+            <div class="cardHd"><h3>修改後台密碼</h3></div>
+            <form id="passForm">
+              <div class="fld"><label>舊密碼</label><input type="password" id="oldPass" autocomplete="current-password" required></div>
+              <div class="fld"><label>新密碼 <span class="hint">（至少 4 碼）</span></label><input type="password" id="newPass" autocomplete="new-password" required></div>
+              <div class="fld"><label>確認新密碼</label><input type="password" id="newPass2" autocomplete="new-password" required></div>
+              <button class="btn btn-ink" type="submit">更新密碼</button>
+              <div class="msgline" id="passMsg"></div>
+            </form>
+          </div>
+
+          <div class="grid" style="gap:18px">
+            <div class="card">
+              <div class="cardHd"><h3>數據金鑰 statsKey</h3></div>
+              <p class="hint" style="margin:0 0 10px">此金鑰用於讀取統計數據，已隨登入自動取得，無需手動輸入。</p>
+              <div class="keyBox">
+                <input type="text" id="statsKeyDisplay" readonly>
+                <button class="btn btn-ghost btn-sm" id="btnCopyKey">複製</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="cardHd"><h3>前台連結</h3></div>
+              <div class="linkRow"><span>主網站</span><span class="sp"></span><a href="https://onelife-mini.github.io/sunmoonlake-expo/" target="_blank" rel="noopener">onelife-mini.github.io/sunmoonlake-expo</a></div>
+              <div class="linkRow"><span>旅展入口頁</span><span class="sp"></span><a href="portal.html" target="_blank" rel="noopener">portal.html</a></div>
+              <p class="hint" style="margin-top:10px">可將以上連結貼到線上 QR Code 產生器製作看板用 QR Code。</p>
+            </div>
+
+            <div class="card">
+              <div class="cardHd"><h3>數據歸零</h3></div>
+              <p class="hint" style="margin:0">如需將統計數據歸零，請聯繫工程端處理（此後台不提供歸零功能，避免誤觸造成資料無法復原）。</p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   </div>
 </div>
 
-<div class="wrap">
-  <!-- 左：店家清單 -->
-  <div class="list">
-    <div class="lfilter">
-      <input id="search" placeholder="🔍 搜尋店名…">
-      <div class="cats" id="cats"></div>
-    </div>
-    <div id="rows"></div>
-  </div>
-
-  <!-- 右：編輯器 -->
-  <div class="edit" id="editor">
-    <div class="empty" id="empty">← 從左側選一家店，開始設定位置</div>
-    <div class="ehd" id="ehd" style="display:none">
-      <div class="nm" id="eName">—</div>
-      <div class="meta" id="eMeta">—</div>
-    </div>
-    <div id="amap" style="display:none"></div>
-    <div class="tools" id="tools" style="display:none">
-      <p class="tip">設定方式任選一種：① 下方搜尋地址/店名 ② 直接在地圖上<b>點一下</b>或<b>拖曳紅色圖釘</b> ③ 貼 Google Maps 連結或座標。設定後記得按<b>儲存這家</b>。</p>
-
-      <div class="fld">
-        <label>① 搜尋地址 / 地標 / 店名 <span class="hint">（OpenStreetMap）</span></label>
-        <div class="irow">
-          <input id="geoq" placeholder="例：日月潭水社碼頭 / 南投縣魚池鄉中山路…">
-          <button id="geoBtn">搜尋</button>
-        </div>
-        <div class="geores" id="geores"></div>
-      </div>
-
-      <div class="fld">
-        <label>③ 貼 Google Maps 連結或「緯度,經度」</label>
-        <div class="irow">
-          <input id="gmap" placeholder="貼上 google maps 網址，或 23.864,120.910">
-          <button id="gmapBtn">解析</button>
-        </div>
-      </div>
-
-      <div class="fld">
-        <label>座標（可手動微調）</label>
-        <div class="coords">
-          <input id="lat" placeholder="緯度 lat"> <input id="lng" placeholder="經度 lng">
-          <button class="tbtn" id="applyLL" style="background:var(--green);border:0">套用到地圖</button>
-        </div>
-      </div>
-
-      <div class="fld">
-        <label>地址 / 地標備註 <span class="hint">（選填，會存進資料）</span></label>
-        <input id="addr" style="width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:13.5px" placeholder="例：日月潭水社碼頭旁">
-      </div>
-
-      <div class="save">
-        <button id="saveBtn">💾 儲存這家</button>
-        <span class="msg" id="saveMsg"></span>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="toast" id="toast"></div>
 
 <script>
+(function(){
+"use strict";
 const $=s=>document.querySelector(s);
+const ANALYTICS_URL="https://sunmoonlake-expo-stats.onelifemini.workers.dev";
+const AUTH_LS="lcq:admin:auth";
+const LS="lcq:admin:shops:v1";
 const CATNAME={sup:"船 SUP",bike:"騎 單車",stay:"住 住宿",eat:"食 吃喝",play:"玩買"};
 const GCOLOR={sup:"#2E7DA1",bike:"#1a6b4a",stay:"#b5853f",eat:"#c2703a",play:"#6d5a8c"};
 const GROUPS=[["all","全部"],["sup","船 SUP"],["bike","騎 單車"],["stay","住 住宿"],["eat","食 吃喝"],["play","玩買"]];
-const LS="lcq:admin:shops:v1";
+const VIEW_TITLE={overview:"總覽",shops:"店家管理",stats:"數據分析",settings:"設定"};
+
 let SHOPS=[], cur=-1, filterG="all", q="";
 let map=null, marker=null;
+let statsKey="";
+let statsRange={from:null,to:null};
+let lastStatsData=null;
+let curView="overview";
 
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),1700);}
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+/* ══════════════ 登入 / Auth ══════════════ */
+function getAuth(){
+  try{ return JSON.parse(localStorage.getItem(AUTH_LS)||"null"); }catch(e){ return null; }
+}
+function setAuth(a){ localStorage.setItem(AUTH_LS, JSON.stringify(a)); }
+function clearAuth(){ localStorage.removeItem(AUTH_LS); }
+
+async function apiPost(path, body){
+  const r=await fetch(ANALYTICS_URL+path,{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify(body||{})});
+  let data=null; try{ data=await r.json(); }catch(e){}
+  return {status:r.status, ok:r.ok, data:data||{}};
+}
+
+function showApp(){
+  $("#loginWrap").style.display="none";
+  $("#app").classList.add("show");
+  boot();
+}
+function showLogin(){
+  $("#app").classList.remove("show");
+  $("#loginWrap").style.display="grid";
+}
+
+$("#loginForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const pass=$("#loginPass").value;
+  const btn=$("#loginBtn");
+  const err=$("#loginErr");
+  err.classList.remove("show");
+  btn.disabled=true; btn.textContent="登入中…";
+  try{
+    const res=await apiPost("/login",{pass});
+    if(res.status===200 && res.data.ok){
+      statsKey=res.data.statsKey||"";
+      setAuth({pass, statsKey, ts:Date.now()});
+      $("#loginPass").value="";
+      showApp();
+    }else{
+      err.textContent = res.status===401 ? "密碼錯誤，請再試一次。" : "登入失敗，請稍後再試。";
+      err.classList.add("show");
+    }
+  }catch(ex){
+    err.textContent="連線失敗，請確認網路連線後再試。";
+    err.classList.add("show");
+  }
+  btn.disabled=false; btn.textContent="登入";
+});
+
+$("#btnLogout").onclick=()=>{
+  if(!confirm("確定要登出嗎？"))return;
+  clearAuth(); statsKey=""; lastStatsData=null;
+  showLogin();
+};
+
+/* ══════════════ Sidebar / 路由 ══════════════ */
+function switchView(name){
+  curView=name;
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
+  const v=$("#view-"+name); if(v)v.classList.add("on");
+  document.querySelectorAll(".sbItem").forEach(it=>it.classList.toggle("on", it.dataset.view===name));
+  $("#mobileTitle").textContent=VIEW_TITLE[name]||"";
+  closeSidebar();
+  if(name==="overview") loadOverview();
+  if(name==="stats" && !lastStatsData) loadStats();
+  if(name==="settings") $("#statsKeyDisplay").value=statsKey||"（未取得）";
+}
+document.querySelectorAll(".sbItem").forEach(it=>it.onclick=()=>switchView(it.dataset.view));
+document.querySelectorAll(".quickBtn").forEach(b=>b.onclick=()=>switchView(b.dataset.goto));
+
+function openSidebar(){ $("#sidebar").classList.add("open"); $("#sbOverlay").classList.add("show"); }
+function closeSidebar(){ $("#sidebar").classList.remove("open"); $("#sbOverlay").classList.remove("show"); }
+$("#hamburger").onclick=openSidebar;
+$("#sbOverlay").onclick=closeSidebar;
+
+/* ══════════════ 啟動 ══════════════ */
+function boot(){
+  loadShopsData().then(()=>{
+    renderCats(); renderRows(); renderProg();
+    switchView("overview");
+  });
+}
+
+(function init(){
+  const a=getAuth();
+  if(a && a.statsKey!==undefined){
+    statsKey=a.statsKey||"";
+    showApp();
+  }else{
+    showLogin();
+  }
+})();
+
+/* ══════════════ 店家資料（沿用原邏輯）══════════════ */
 function geoLabel(g){return g==="precise"?"精準":g==="manual"?"已設定":"區域示意";}
 function geoBadge(g){return g==="precise"?"b-precise":g==="manual"?"b-manual":"b-area";}
 
-async function load(){
+async function loadShopsData(){
   const saved=localStorage.getItem(LS);
   if(saved){ try{ SHOPS=JSON.parse(saved); }catch(e){ SHOPS=[]; } }
   if(!SHOPS.length){
     try{ const r=await fetch("data/shops.json",{cache:"no-store"}); SHOPS=await r.json(); }
     catch(e){ alert("無法載入 data/shops.json，請透過伺服器或部署後的網址開啟此後台。"); return; }
   }
-  renderCats(); renderRows(); renderProg();
 }
 function persist(){ localStorage.setItem(LS, JSON.stringify(SHOPS)); renderProg(); }
 function renderProg(){
@@ -317,10 +729,25 @@ function renderRows(){
   $("#rows").innerHTML=list.map(o=>`
     <div class="row ${o.i===cur?'sel':''}" data-i="${o.i}">
       <span class="dot" style="background:${GCOLOR[o.s.group]}"></span>
-      <span class="nm"><b>${o.s.name}</b><span>${CATNAME[o.s.group]||""}${o.s.area?' ‧ '+o.s.area:''}</span></span>
+      <span class="nm"><b>${esc(o.s.name)}</b><span>${CATNAME[o.s.group]||""}${o.s.area?' ‧ '+esc(o.s.area):''}</span></span>
       <span class="badge ${geoBadge(o.s.geo)}">${geoLabel(o.s.geo)}</span>
+      <span class="reorderBtns">
+        <button data-up="${o.i}" ${o.i===0?"disabled":""} title="上移">▲</button>
+        <button data-down="${o.i}" ${o.i===SHOPS.length-1?"disabled":""} title="下移">▼</button>
+      </span>
     </div>`).join("") || `<div style="padding:20px;color:#999;text-align:center">沒有符合的店家</div>`;
-  $("#rows").querySelectorAll(".row").forEach(r=>r.onclick=()=>select(+r.dataset.i));
+  $("#rows").querySelectorAll(".row .nm, .row .dot, .row .badge").forEach(el=>{
+    el.onclick=()=>{ const row=el.closest(".row"); select(+row.dataset.i); };
+  });
+  $("#rows").querySelectorAll("[data-up]").forEach(b=>b.onclick=(e)=>{e.stopPropagation();moveShop(+b.dataset.up,-1);});
+  $("#rows").querySelectorAll("[data-down]").forEach(b=>b.onclick=(e)=>{e.stopPropagation();moveShop(+b.dataset.down,1);});
+}
+function moveShop(i,dir){
+  const j=i+dir; if(j<0||j>=SHOPS.length)return;
+  const tmp=SHOPS[i]; SHOPS[i]=SHOPS[j]; SHOPS[j]=tmp;
+  if(cur===i)cur=j; else if(cur===j)cur=i;
+  persist(); renderRows();
+  toast("已調整排序");
 }
 $("#search").oninput=e=>{q=e.target.value.trim();renderRows();};
 
@@ -330,18 +757,25 @@ function ensureMap(){
   L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:20,subdomains:"abcd",detectRetina:true,attribution:"© OpenStreetMap、© CARTO"}).addTo(map);
   map.on("click",e=>setLatLng(e.latlng.lat,e.latlng.lng,true));
 }
+const SUNMOONLAKE_CENTER=[23.864,120.915];
 function select(i){
   cur=i; const s=SHOPS[i];
   $("#empty").style.display="none";
-  $("#ehd").style.display="block"; $("#amap").style.display="block"; $("#tools").style.display="block";
+  $("#editorBody").style.display="block";
   $("#eName").textContent=s.name;
-  $("#eMeta").innerHTML=`${CATNAME[s.group]||""}${s.area?' ‧ '+s.area:''}　目前：<b style="color:${s.geo==='manual'?'#c2703a':s.geo==='precise'?'#1a6b4a':'#999'}">${geoLabel(s.geo)}</b>`;
-  $("#lat").value=s.lat; $("#lng").value=s.lng; $("#addr").value=s.addr||"";
+  const hasLL = Number.isFinite(+s.lat) && Number.isFinite(+s.lng);
+  const noGeoHint = hasLL ? "" : '　<b style="color:#c0392b">尚未定位</b>';
+  $("#eMeta").innerHTML=`${CATNAME[s.group]||""}${s.area?' ‧ '+esc(s.area):''}　目前：<b style="color:${s.geo==='manual'?'#c2703a':s.geo==='precise'?'#1a6b4a':'#999'}">${geoLabel(s.geo)}</b>${noGeoHint}`;
+  const lat0 = hasLL ? +s.lat : SUNMOONLAKE_CENTER[0];
+  const lng0 = hasLL ? +s.lng : SUNMOONLAKE_CENTER[1];
+  $("#lat").value=hasLL?s.lat:""; $("#lng").value=hasLL?s.lng:""; $("#addr").value=s.addr||"";
+  $("#group").value=s.group||"sup"; $("#area").value=s.area||""; $("#offer").value=s.offer||"";
+  $("#inquiry").checked=!!s.inquiry;
   $("#geoq").value=""; $("#gmap").value=""; $("#geores").classList.remove("show"); $("#saveMsg").textContent="";
   ensureMap();
   setTimeout(()=>map.invalidateSize(),60);
-  placeMarker(s.lat,s.lng,false);
-  map.setView([s.lat,s.lng], s.geo==="area"?13:16);
+  placeMarker(lat0,lng0,false);
+  map.setView([lat0,lng0], hasLL && s.geo!=="area" ? 16 : 13);
   renderRows();
 }
 function placeMarker(lat,lng,pan){
@@ -375,7 +809,7 @@ async function doGeocode(){
     const box=$("#geores");
     if(!data.length){box.innerHTML='<div style="cursor:default;color:#999">查無結果，試試更完整的地址，或直接在地圖上點選。</div>';box.classList.add("show");}
     else{
-      box.innerHTML=data.map(d=>`<div data-lat="${d.lat}" data-lon="${d.lon}">${d.display_name}</div>`).join("");
+      box.innerHTML=data.map(d=>`<div data-lat="${d.lat}" data-lon="${d.lon}">${esc(d.display_name)}</div>`).join("");
       box.classList.add("show");
       box.querySelectorAll("div[data-lat]").forEach(el=>el.onclick=()=>{
         setLatLng(el.dataset.lat,el.dataset.lon,true); map.setView([+el.dataset.lat,+el.dataset.lon],16);
@@ -415,8 +849,11 @@ $("#saveBtn").onclick=()=>{
   }
   const s=SHOPS[cur];
   s.lat=+lat.toFixed(6); s.lng=+lng.toFixed(6); s.addr=$("#addr").value.trim(); s.geo="manual";
+  s.group=$("#group").value; s.area=$("#area").value.trim(); s.offer=$("#offer").value.trim();
+  s.inquiry=$("#inquiry").checked;
   persist(); renderRows();
-  $("#eMeta").innerHTML=`${CATNAME[s.group]||""}${s.area?' ‧ '+s.area:''}　目前：<b style="color:#c2703a">已設定</b>`;
+  $("#eName").textContent=s.name;
+  $("#eMeta").innerHTML=`${CATNAME[s.group]||""}${s.area?' ‧ '+esc(s.area):''}　目前：<b style="color:#c2703a">已設定</b>`;
   $("#saveMsg").textContent="✓ 已儲存（記得最後匯出 shops.json）";
   toast("已儲存 "+s.name);
 };
@@ -431,54 +868,110 @@ $("#btnExport").onclick=()=>{
 };
 $("#btnImport").onclick=()=>$("#fileInput").click();
 $("#fileInput").onchange=e=>{
-  const f=e.target.files[0]; if(!f)return;
+  const f=e.target.files[0]; if(!f){ e.target.value=""; return; }
   const rd=new FileReader();
-  rd.onload=()=>{ try{ SHOPS=JSON.parse(rd.result); persist(); cur=-1;
-    $("#empty").style.display="grid";$("#ehd").style.display="none";$("#amap").style.display="none";$("#tools").style.display="none";
-    renderRows(); toast("已匯入"); }catch(err){alert("檔案格式錯誤");} };
+  rd.onload=()=>{
+    try{
+      const parsed=JSON.parse(rd.result);
+      if(!Array.isArray(parsed)){ alert("檔案格式錯誤：內容必須是店家陣列（JSON array）。"); return; }
+      SHOPS=parsed; persist(); cur=-1;
+      $("#empty").style.display="grid";$("#editorBody").style.display="none";
+      renderRows(); toast("已匯入");
+    }catch(err){ alert("檔案格式錯誤"); }
+    finally{ e.target.value=""; }
+  };
   rd.readAsText(f);
 };
 $("#btnReload").onclick=async()=>{
   if(!confirm("這會捨棄本機尚未匯出的修改，重新從 data/shops.json 載入。確定？"))return;
   localStorage.removeItem(LS); SHOPS=[]; cur=-1;
-  $("#empty").style.display="grid";$("#ehd").style.display="none";$("#amap").style.display="none";$("#tools").style.display="none";
-  await load(); toast("已重載");
+  $("#empty").style.display="grid";$("#editorBody").style.display="none";
+  await loadShopsData(); renderCats(); renderRows(); renderProg();
+  toast("已重載");
 };
 
-load();
-
-/* ── 數據儀表板 ─────────────────────────────
-   ANALYTICS_URL 與前台 index.html 同一個 worker 網址；部署後填入。*/
-const ANALYTICS_URL="https://sunmoonlake-expo-stats.onelifemini.workers.dev";
-const SK="lcq:statskey";
-let statsRange={from:null,to:null}; // null = 全部
-function openStats(){ $("#statsOverlay").classList.add("show"); if(localStorage.getItem(SK)){ $("#statsKey").value=localStorage.getItem(SK); loadStats(); } }
-function closeStats(){ $("#statsOverlay").classList.remove("show"); }
+/* ══════════════ 總覽 ══════════════ */
 function ymd(dt){ const p=n=>String(n).padStart(2,"0"); return dt.getFullYear()+"-"+p(dt.getMonth()+1)+"-"+p(dt.getDate()); }
+function todayTaipei(){
+  // 用 Intl 取台灣當地日期，避免瀏覽器時區誤差
+  const parts=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Taipei",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+  const o={}; parts.forEach(p=>o[p.type]=p.value);
+  return `${o.year}-${o.month}-${o.day}`;
+}
+function addDaysToYmd(ymdStr, delta){
+  // 以 UTC 正午為錨點運算，避免日光節約 / 本地時區造成日期偏移
+  const [y,m,d]=ymdStr.split("-").map(Number);
+  const dt=new Date(Date.UTC(y, m-1, d, 12));
+  dt.setUTCDate(dt.getUTCDate()+delta);
+  return ymd(new Date(dt.getUTCFullYear(), dt.getUTCMonth(), dt.getUTCDate()));
+}
+async function fetchStats(from,to){
+  let u=ANALYTICS_URL+"/stats?key="+encodeURIComponent(statsKey);
+  if(from)u+="&from="+from; if(to)u+="&to="+to;
+  const r=await fetch(u);
+  if(r.status===401) throw new Error("UNAUTHORIZED");
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  return r.json();
+}
+async function loadOverview(){
+  if(!statsKey){ renderShopStuffOnly(); return; }
+  $("#ovTodayVisit").textContent="…"; $("#ovTodayClaim").textContent="…";
+  $("#ovAllVisit").textContent="…"; $("#ovAllClaim").textContent="…"; $("#ovRate").textContent="…";
+  renderOverviewGeoAndShops();
+  try{
+    const t=todayTaipei();
+    const [all, today]=await Promise.all([fetchStats(null,null), fetchStats(t,t)]);
+    $("#ovTodayVisit").textContent=(today.visitors||0).toLocaleString();
+    $("#ovTodayClaim").textContent=(today.claimers||0).toLocaleString();
+    $("#ovAllVisit").textContent=(all.visitors||0).toLocaleString();
+    $("#ovAllClaim").textContent=(all.claimers||0).toLocaleString();
+    $("#ovRate").textContent=all.visitors?((all.claimers/all.visitors*100).toFixed(1)+"%"):"—";
+    // 兌換排行 top5（用全期資料）
+    const byId={}; SHOPS.forEach(s=>byId[String(s.id)]=s);
+    const top=(all.perShop||[]).slice(0,5);
+    $("#ovRank").innerHTML=top.length? top.map(p=>{
+      const s=byId[String(p.shop_id)];
+      return `<li><span class="rankNo"></span><span class="rankNm">${s?esc(s.name):("id "+esc(p.shop_id))}</span><span class="rankVal">${p.devices} 台</span></li>`;
+    }).join("") : `<li class="hint" style="padding:10px 0">尚無兌換資料</li>`;
+    // fix rankNo numbering (CSS uses nth-child so leave blank text, insert number)
+    $("#ovRank").querySelectorAll(".rankNo").forEach((el,i)=>el.textContent=i+1);
+  }catch(ex){
+    $("#ovTodayVisit").textContent="—"; $("#ovTodayClaim").textContent="—";
+    $("#ovAllVisit").textContent="—"; $("#ovAllClaim").textContent="—"; $("#ovRate").textContent="—";
+    if(ex.message==="UNAUTHORIZED"){ handleAuthFailure(); return; }
+    toast("讀取總覽數據失敗");
+  }
+}
+function handleAuthFailure(){
+  toast("金鑰失效，請重新登入");
+  clearAuth(); statsKey=""; lastStatsData=null;
+  showLogin();
+}
+function renderOverviewGeoAndShops(){
+  const done=SHOPS.filter(s=>s.geo==="precise"||s.geo==="manual").length;
+  const man=SHOPS.filter(s=>s.geo==="manual").length;
+  const pct=SHOPS.length? Math.round(done/SHOPS.length*100):0;
+  $("#progText").innerHTML=`${done} / ${SHOPS.length}`;
+  $("#progBarFill").style.width=pct+"%";
+  $("#progManualText").textContent=`其中手動修正 ${man} 家　‧　完成度 ${pct}%`;
+}
+function renderShopStuffOnly(){ renderOverviewGeoAndShops(); }
+$("#ovRefresh").onclick=loadOverview;
+
+/* ══════════════ 數據分析 ══════════════ */
 async function loadStats(){
-  const key=($("#statsKey").value||"").trim();
-  if(!key){ $("#statsMsg").textContent="請輸入金鑰"; return; }
-  if(!ANALYTICS_URL){ $("#statsMsg").textContent="尚未設定 ANALYTICS_URL。"; return; }
+  if(!statsKey){ $("#statsMsg").textContent="尚未取得金鑰，請重新登入。"; return; }
   $("#statsMsg").textContent="讀取中…";
   try{
-    let q=ANALYTICS_URL+"/stats?key="+encodeURIComponent(key);
-    if(statsRange.from) q+="&from="+statsRange.from;
-    if(statsRange.to) q+="&to="+statsRange.to;
-    const r=await fetch(q);
-    if(r.status===401){ $("#statsMsg").textContent="金鑰錯誤"; return; }
-    if(!r.ok) throw new Error(r.status);
-    const d=await r.json();
-    localStorage.setItem(SK,key);
-    $("#statsSetup").style.display="none"; $("#statsResult").style.display="block";
-    // KPI
+    const d=await fetchStats(statsRange.from, statsRange.to);
+    lastStatsData=d;
+    $("#statsMsg").textContent="";
     $("#svVisitors").textContent=(d.visitors||0).toLocaleString();
     $("#svClaimers").textContent=(d.claimers||0).toLocaleString();
     $("#svEvents").textContent=(d.claims||0).toLocaleString();
     $("#svRate").textContent=d.visitors?((d.claimers/d.visitors*100).toFixed(1)+"%"):"—";
-    // 日期輸入框預設帶入資料範圍
     if(d.dataMinDate&&!$("#dFrom").value) $("#dFrom").value=statsRange.from||d.dataMinDate;
     if(d.dataMaxDate&&!$("#dTo").value) $("#dTo").value=statsRange.to||d.dataMaxDate;
-    // 尖峰摘要
     const byDay=d.byDay||[], byHour=d.byHour||[];
     const peakDay=byDay.slice().sort((a,b)=>b.visitors-a.visitors)[0];
     const peakHour=byHour.slice().sort((a,b)=>b.visits-a.visits)[0];
@@ -488,13 +981,11 @@ async function loadStats(){
     if(peakHour) chips.push(`<div class="peakChip">尖峰時段 <b>${String(peakHour.h).padStart(2,"0")}:00</b>（${peakHour.visits} 次進站）</div>`);
     chips.push(`<div class="peakChip">每台平均領 <b>${avgCoupon}</b> 張券</div>`);
     $("#statsPeak").innerHTML=chips.join("");
-    // 每日圖
     const maxDayV=Math.max(1,...byDay.map(x=>Math.max(x.visitors,x.claimers)));
     $("#chartDay").innerHTML=byDay.length?byDay.map(x=>{
       const hv=Math.round(x.visitors/maxDayV*100), hc=Math.round(x.claimers/maxDayV*100);
       return `<div class="bar"><div class="cols"><div class="col v" style="height:${hv}%" title="進站 ${x.visitors}"></div><div class="col c" style="height:${hc}%" title="兌換 ${x.claimers}"></div></div><div class="bval">${x.visitors}</div><div class="blab">${x.d.slice(5)}</div></div>`;
     }).join(""):`<div style="color:#999;margin:auto">此區間沒有資料</div>`;
-    // 時段圖（0-23 補滿）
     const hourMap={}; byHour.forEach(x=>hourMap[x.h]=x);
     const maxHourV=Math.max(1,...byHour.map(x=>Math.max(x.visits,x.claims)));
     let hoursHtml="";
@@ -503,33 +994,28 @@ async function loadStats(){
       hoursHtml+=`<div class="bar"><div class="cols"><div class="col v" style="height:${hv}%" title="${h}時 進站 ${x.visits}"></div><div class="col c" style="height:${hc}%" title="${h}時 兌換 ${x.claims}"></div></div><div class="blab">${h}</div></div>`;
     }
     $("#chartHour").innerHTML=hoursHtml;
-    // 各店家表
     const byId={}; SHOPS.forEach(s=>byId[String(s.id)]=s);
     const CAT={sup:"SUP",eat:"食",stay:"住",bike:"單車",play:"樂/手作"};
     const rows=(d.perShop||[]).map((p,i)=>{
       const s=byId[String(p.shop_id)];
-      return `<tr><td>${i+1}</td><td>${s?s.name:("（id "+p.shop_id+"）")}</td><td>${s?(CAT[s.group]||s.group):"—"}</td><td style="text-align:right">${p.devices}</td><td style="text-align:right">${p.claims}</td></tr>`;
+      return `<tr><td>${i+1}</td><td>${s?esc(s.name):("（id "+esc(p.shop_id)+"）")}</td><td>${s?(CAT[s.group]||s.group):"—"}</td><td style="text-align:right">${p.devices}</td><td style="text-align:right">${p.claims}</td></tr>`;
     }).join("");
     $("#statsRows").innerHTML=rows||`<tr><td colspan="5" style="color:#999;padding:14px">此區間還沒有兌換記錄</td></tr>`;
     $("#statsUpdated").textContent="更新於 "+new Date(d.generatedAt||Date.now()).toLocaleString("zh-TW")+(d.range&&(d.range.from||d.range.to)?`　區間 ${d.range.from||"最早"}～${d.range.to||"最新"}`:"　區間：全部");
-  }catch(e){ $("#statsMsg").textContent="讀取失敗："+e.message; }
+  }catch(e){
+    if(e.message==="UNAUTHORIZED"){ handleAuthFailure(); return; }
+    $("#statsMsg").textContent = "讀取失敗："+e.message;
+  }
 }
-function setQuick(q){
-  document.querySelectorAll("#rangeQuick .qbtn").forEach(b=>b.classList.toggle("on",b.dataset.q===q));
-  const today=new Date();
-  if(q==="all"){ statsRange={from:null,to:null}; $("#dFrom").value=""; $("#dTo").value=""; }
-  else if(q==="today"){ const t=ymd(today); statsRange={from:t,to:t}; $("#dFrom").value=t; $("#dTo").value=t; }
-  else if(q==="7d"){ const f=new Date(today); f.setDate(f.getDate()-6); statsRange={from:ymd(f),to:ymd(today)}; $("#dFrom").value=ymd(f); $("#dTo").value=ymd(today); }
-  else if(q==="expo"){ statsRange={from:"2026-07-17",to:"2026-07-20"}; $("#dFrom").value="2026-07-17"; $("#dTo").value="2026-07-20"; }
+function setQuick(qv){
+  document.querySelectorAll("#rangeQuick .qbtn").forEach(b=>b.classList.toggle("on",b.dataset.q===qv));
+  if(qv==="all"){ statsRange={from:null,to:null}; $("#dFrom").value=""; $("#dTo").value=""; }
+  else if(qv==="today"){ const t=todayTaipei(); statsRange={from:t,to:t}; $("#dFrom").value=t; $("#dTo").value=t; }
+  else if(qv==="7d"){ const t=todayTaipei(); const f=addDaysToYmd(t,-6); statsRange={from:f,to:t}; $("#dFrom").value=f; $("#dTo").value=t; }
+  else if(qv==="expo"){ statsRange={from:"2026-07-17",to:"2026-07-20"}; $("#dFrom").value="2026-07-17"; $("#dTo").value="2026-07-20"; }
   loadStats();
 }
-$("#btnStats").onclick=openStats;
-$("#statsClose").onclick=closeStats;
-$("#statsLoad").onclick=loadStats;
 $("#statsRefresh").onclick=loadStats;
-$("#statsKey").addEventListener("keydown",e=>{ if(e.key==="Enter") loadStats(); });
-$("#statsForget").onclick=()=>{ localStorage.removeItem(SK); $("#statsKey").value=""; $("#statsResult").style.display="none"; $("#statsSetup").style.display="block"; $("#statsMsg").textContent="已清除本機金鑰"; };
-$("#statsOverlay").addEventListener("click",e=>{ if(e.target.id==="statsOverlay") closeStats(); });
 document.querySelectorAll("#rangeQuick .qbtn").forEach(b=>b.onclick=()=>setQuick(b.dataset.q));
 $("#dApply").onclick=()=>{
   const f=$("#dFrom").value||null, t=$("#dTo").value||null;
@@ -537,6 +1023,67 @@ $("#dApply").onclick=()=>{
   document.querySelectorAll("#rangeQuick .qbtn").forEach(b=>b.classList.remove("on"));
   loadStats();
 };
+
+/* CSV 匯出 */
+function csvCell(v){
+  const s=String(v==null?"":v);
+  return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+}
+function downloadCsv(filename, rows){
+  const content=rows.map(r=>r.map(csvCell).join(",")).join("\r\n");
+  const blob=new Blob(["﻿"+content],{type:"text/csv;charset=utf-8;"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=filename; a.click();
+}
+$("#btnExportCsv").onclick=()=>{
+  if(!lastStatsData){ toast("尚無數據可匯出，請先讀取"); return; }
+  const d=lastStatsData;
+  const byId={}; SHOPS.forEach(s=>byId[String(s.id)]=s);
+  const CAT={sup:"SUP",eat:"食",stay:"住",bike:"單車",play:"樂/手作"};
+  const dayRows=[["日期","進站手機數","進站次數","兌換手機數","兌換次數"]];
+  (d.byDay||[]).forEach(x=>dayRows.push([x.d,x.visitors,x.visits,x.claimers,x.claims]));
+  const shopRows=[["排名","店家","類別","兌換手機數","領取次數"]];
+  (d.perShop||[]).forEach((p,i)=>{
+    const s=byId[String(p.shop_id)];
+    shopRows.push([i+1, s?s.name:("id "+p.shop_id), s?(CAT[s.group]||s.group):"", p.devices, p.claims]);
+  });
+  const rangeLabel=(statsRange.from||statsRange.to)?`${statsRange.from||"最早"}_${statsRange.to||"最新"}`:"全部區間";
+  downloadCsv(`每日數據_${rangeLabel}.csv`, dayRows);
+  downloadCsv(`各店家數據_${rangeLabel}.csv`, shopRows);
+  toast("已匯出 2 份 CSV");
+};
+
+/* ══════════════ 設定 ══════════════ */
+$("#btnCopyKey").onclick=async()=>{
+  if(!statsKey){ toast("尚無金鑰"); return; }
+  try{ await navigator.clipboard.writeText(statsKey); toast("已複製金鑰"); }
+  catch(e){ $("#statsKeyDisplay").select(); document.execCommand("copy"); toast("已複製金鑰"); }
+};
+
+$("#passForm").addEventListener("submit", async(e)=>{
+  e.preventDefault();
+  const oldPass=$("#oldPass").value, newPass=$("#newPass").value, newPass2=$("#newPass2").value;
+  const msg=$("#passMsg"); msg.className="msgline"; msg.textContent="";
+  if(newPass.length<4){ msg.classList.add("err"); msg.textContent="新密碼至少需要 4 碼。"; return; }
+  if(newPass!==newPass2){ msg.classList.add("err"); msg.textContent="兩次輸入的新密碼不一致。"; return; }
+  try{
+    const res=await apiPost("/change-pass",{pass:oldPass,newPass});
+    if(res.status===200 && res.data.ok){
+      msg.classList.add("ok"); msg.textContent="✓ 密碼已更新，下次請使用新密碼登入。";
+      const a=getAuth()||{}; a.pass=newPass; setAuth(a);
+      $("#passForm").reset();
+    }else if(res.status===401){
+      msg.classList.add("err"); msg.textContent="舊密碼錯誤。";
+    }else if(res.status===400){
+      msg.classList.add("err"); msg.textContent="新密碼格式不符（至少 4 碼）。";
+    }else{
+      msg.classList.add("err"); msg.textContent="更新失敗，請稍後再試。";
+    }
+  }catch(ex){
+    msg.classList.add("err"); msg.textContent="連線失敗，請稍後再試。";
+  }
+});
+
+})();
 </script>
 </body>
 </html>

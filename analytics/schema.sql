@@ -27,3 +27,9 @@ CREATE TABLE IF NOT EXISTS events (
 );
 CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);
 CREATE INDEX IF NOT EXISTS idx_events_type_ts ON events(type, ts);
+
+-- 後台設定（key/value）：目前存 admin_pass_hash（後台密碼的 SHA-256 雜湊）
+CREATE TABLE IF NOT EXISTS settings (
+  k TEXT PRIMARY KEY,
+  v TEXT
+);

@@ -21,9 +21,15 @@ wrangler d1 create sunmoonlake-expo-stats
 # 3) 建表
 wrangler d1 execute sunmoonlake-expo-stats --remote --file schema.sql
 
-# 4) 設定後台金鑰（自己想一組密碼，記起來，admin 後台要用）
+# 4) 設定數據金鑰 STATS_KEY（統計 API 用；與登入密碼不同）
 wrangler secret put STATS_KEY
 #    → 貼上你的金鑰後 Enter
+
+# 4b) 設定後台登入密碼（雜湊存 D1 settings 表；登入後可在後台「設定」自行更改）
+#     把 <你的密碼> 換掉，算出 SHA-256 後寫入：
+HASH=$(printf '%s' "<你的密碼>" | shasum -a 256 | cut -d' ' -f1)
+wrangler d1 execute sunmoonlake-expo-stats --remote \
+  --command "INSERT INTO settings(k,v) VALUES('admin_pass_hash','$HASH') ON CONFLICT(k) DO UPDATE SET v=excluded.v;"
 
 # 5) 部署
 wrangler deploy

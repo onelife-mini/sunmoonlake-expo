@@ -19,6 +19,14 @@ function cors(origin) {
   };
 }
 
+async function sha256hex(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+async function getSetting(env, k) {
+  return await env.DB.prepare("SELECT v FROM settings WHERE k=?").bind(k).first("v");
+}
+
 // 把「台灣日期 YYYY-MM-DD」轉成 epoch ms 邊界
 function dayStartMs(d) { const t = Date.parse(d + "T00:00:00Z"); return isNaN(t) ? null : t - TZ_OFFSET_MS; }
 function dayEndMs(d)   { const t = Date.parse(d + "T00:00:00Z"); return isNaN(t) ? null : t - TZ_OFFSET_MS + 86400000 - 1; }
@@ -36,8 +44,9 @@ export default {
       const d = clip(b && b.d);
       if (!d) return json({ ok: false, err: "no id" }, 400, h);
       const now = Date.now();
-      const type = b.t === "claim" ? "claim" : "visit";
       const s = clip(b.s);
+      // claim 必須帶 shop_id，否則視為無效（避免污染排行）→ 只當進站
+      const type = (b.t === "claim" && s) ? "claim" : "visit";
       // 去重彙總表
       await env.DB.prepare(
         "INSERT INTO devices(id, first_seen, last_seen) VALUES(?1, ?2, ?2) ON CONFLICT(id) DO UPDATE SET last_seen=?2"
@@ -119,6 +128,29 @@ export default {
         byHour: (byHour && byHour.results) || [],
         perShop: (perShop && perShop.results) || [],
       }, 200, h);
+    }
+
+    // ── 後台登入（驗密碼 → 回數據金鑰）──
+    if (url.pathname === "/login" && req.method === "POST") {
+      let b; try { b = JSON.parse(await req.text()); } catch { return json({ ok: false }, 400, h); }
+      const stored = await getSetting(env, "admin_pass_hash");
+      if (!stored) return json({ ok: false, err: "not-setup" }, 500, h);
+      const hh = await sha256hex(String((b && b.pass) || ""));
+      if (hh !== stored) return json({ ok: false, err: "wrong" }, 401, h);
+      return json({ ok: true, statsKey: env.STATS_KEY || "" }, 200, h);
+    }
+
+    // ── 改後台密碼（驗舊 → 更新）──
+    if (url.pathname === "/change-pass" && req.method === "POST") {
+      let b; try { b = JSON.parse(await req.text()); } catch { return json({ ok: false }, 400, h); }
+      const stored = await getSetting(env, "admin_pass_hash");
+      const oldh = await sha256hex(String((b && b.pass) || ""));
+      if (!stored || oldh !== stored) return json({ ok: false, err: "wrong-old" }, 401, h);
+      const np = String((b && b.newPass) || "");
+      if (np.length < 4) return json({ ok: false, err: "too-short" }, 400, h);
+      const nh = await sha256hex(np);
+      await env.DB.prepare("INSERT INTO settings(k,v) VALUES('admin_pass_hash',?) ON CONFLICT(k) DO UPDATE SET v=excluded.v").bind(nh).run();
+      return json({ ok: true }, 200, h);
     }
 
     if (url.pathname === "/health") return json({ ok: true }, 200, h);
