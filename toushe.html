@@ -342,6 +342,67 @@ section{padding:68px 0}
 .combo-note{font-size:12px; color:var(--muted); margin:10px 0 0; line-height:1.7; font-style:italic}
 
 /* ════════════════════════════════════════
+   頭社玩法 & 四季（三大亮點體驗 + 四季這樣玩）
+════════════════════════════════════════ */
+.highlight-grid{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:18px;
+}
+@media(max-width:860px){
+  .highlight-grid{grid-template-columns:1fr}
+}
+.highlight-card{
+  background:var(--bg-white);
+  border:1.5px solid var(--line);
+  border-radius:var(--r-lg);
+  padding:24px 22px 22px;
+  display:flex; flex-direction:column; gap:12px;
+  transition:transform var(--tr), box-shadow var(--tr), border-color var(--tr);
+}
+.highlight-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 30px rgba(58,47,28,.14);
+  border-color:var(--paddy);
+}
+.highlight-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+.highlight-icon{
+  width:52px; height:52px; border-radius:14px; background:var(--gold-lt);
+  display:grid; place-items:center; flex:0 0 auto;
+  font-family:var(--fh); font-weight:900; font-size:20px; color:var(--gold-dk);
+}
+.highlight-badge{
+  flex:0 0 auto; font-size:11.5px; font-weight:800; color:var(--paddy-dk);
+  background:var(--paddy-lt); padding:5px 12px; border-radius:999px; white-space:nowrap;
+}
+.highlight-name{font-family:var(--fh); font-weight:900; font-size:18px; color:var(--ink); margin:0; line-height:1.35}
+.highlight-list{display:grid; gap:9px; margin:2px 0 0}
+.highlight-list li{display:flex; gap:8px; font-size:13.5px; color:var(--text); line-height:1.65}
+.highlight-list li::before{content:"◆"; color:var(--gold); font-size:9px; margin-top:5px; flex:0 0 auto}
+
+.season-head{margin:48px 0 20px; text-align:center}
+.season-head h3{font-family:var(--fh); font-weight:900; font-size:19px; color:var(--ink); margin:10px 0 0}
+
+.season-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+@media(max-width:860px){.season-grid{grid-template-columns:repeat(2,1fr)}}
+.season-card{
+  background:var(--bg-white); border:1.5px solid var(--line); border-radius:16px;
+  padding:20px 16px; text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:9px;
+  transition:transform var(--tr), box-shadow var(--tr), border-color var(--tr);
+}
+.season-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 26px rgba(58,47,28,.14);
+  border-color:var(--paddy);
+}
+.season-glyph{
+  width:44px; height:44px; border-radius:50%; background:var(--paddy-lt); color:var(--paddy-dk);
+  font-family:var(--fh); font-weight:900; font-size:18px; display:grid; place-items:center;
+}
+.season-name{font-family:var(--fh); font-weight:900; font-size:15px; color:var(--ink); margin:0}
+.season-range{font-size:11.5px; font-weight:700; color:var(--gold-dk); letter-spacing:.5px}
+.season-items{font-size:12.5px; color:var(--muted); line-height:1.7; margin:0}
+
+/* ════════════════════════════════════════
    在地美食（8 家，卡片列表，無折扣僅列出）
 ════════════════════════════════════════ */
 .card-grid{
@@ -583,6 +644,24 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--gold); outline-off
   </div>
 </section>
 
+<!-- ===== 頭社玩法 & 四季 ===== -->
+<section id="highlights" style="background:var(--bg-white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="kicker g">Highlights ‧ 玩法 & 四季</span>
+      <h2>頭社玩法 & 四季</h2>
+      <div class="sec-rule center"></div>
+      <p>從活盆地地質、金針花海到聚落手作，頭社的玩法不只一種；跟著四季走，每個月都有不同風景。</p>
+    </div>
+    <div id="highlightGrid" class="highlight-grid"></div>
+    <div class="season-head">
+      <span class="kicker">Seasons ‧ 四季這樣玩</span>
+      <h3>四季這樣玩</h3>
+    </div>
+    <div id="seasonGrid" class="season-grid"></div>
+  </div>
+</section>
+
 <!-- ===== 在地美食 ===== -->
 <section id="stay-food" style="background:var(--bg-white);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
   <div class="wrap">
@@ -680,6 +759,28 @@ const FOOD = [
   "真食廚房","哇啦蜜冰店","散步的雲－日月潭生態民宿","四季時光民宿"
 ];
 
+const HIGHLIGHTS = [
+  {
+    name:"地質水域動態", badge:"地質 ‧ 水域", glyph:"地",
+    items:["泥炭土活盆地活體地質導覽","羊角村大排獨木舟（專業教練帶領）"]
+  },
+  {
+    name:"四季花海觀景", badge:"花海 ‧ 觀景", glyph:"花",
+    items:["日月潭金針花園區（5–8月金黃花海）","絲瓜觀景台（5–9月俯瞰聚落）"]
+  },
+  {
+    name:"農村人文手作", badge:"人文 ‧ 手作", glyph:"作",
+    items:["頭社彩繪聚落漫步","三大歷史洗衣場","澳洲茶樹DIY","廚娘手作絲瓜烙"]
+  }
+];
+
+const SEASONS = [
+  { name:"春", range:"3–5月", items:["賞螢","生態觀察"] },
+  { name:"夏", range:"6–8月", items:["絲瓜季","金針花季"] },
+  { name:"秋", range:"9–11月", items:["單車旅行","農村體驗"] },
+  { name:"冬", range:"12–2月", items:["星空旅行","聚落慢遊"] }
+];
+
 const ICON_LEAF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-4 3-7 9-11 6 4 9 7 9 11a7 7 0 0 1-7 7c-1 0-2-.5-2-.5"/><path d="M12 12c-2 2-3 5-3 8"/></svg>';
 
 function esc(s){
@@ -736,8 +837,37 @@ function renderFood(){
   `).join('');
 }
 
+function renderHighlights(){
+  const el = document.getElementById('highlightGrid');
+  el.innerHTML = HIGHLIGHTS.map(h => `
+    <div class="highlight-card">
+      <div class="highlight-top">
+        <div class="highlight-icon">${esc(h.glyph)}</div>
+        <span class="highlight-badge">${esc(h.badge)}</span>
+      </div>
+      <h3 class="highlight-name">${esc(h.name)}</h3>
+      <ul class="highlight-list">
+        ${h.items.map(it => `<li>${esc(it)}</li>`).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
+function renderSeasons(){
+  const el = document.getElementById('seasonGrid');
+  el.innerHTML = SEASONS.map(s => `
+    <div class="season-card">
+      <div class="season-glyph">${esc(s.name)}</div>
+      <h4 class="season-name">${esc(s.name)}季 ‧ ${esc(s.range)}</h4>
+      <p class="season-items">${s.items.map(esc).join(' ‧ ')}</p>
+    </div>
+  `).join('');
+}
+
 renderExperiences();
 renderFood();
+renderHighlights();
+renderSeasons();
 
 /* 匿名進站統計（與主站同一 worker；只送隨機裝置ID，無個資）*/
 (function(){

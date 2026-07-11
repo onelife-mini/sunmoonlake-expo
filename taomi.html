@@ -410,6 +410,42 @@ section{padding:68px 0}
 .food .sc-note{font-size:13px; color:var(--muted); line-height:1.6; margin:0}
 
 /* ════════════════════════════════════════
+   桃米體驗遊程
+════════════════════════════════════════ */
+.tour-grid{
+  display:grid; grid-template-columns:repeat(2,1fr); gap:18px;
+}
+@media(max-width:720px){
+  .tour-grid{grid-template-columns:1fr}
+}
+.tour-card{
+  background:var(--bg-white);
+  border:1.5px solid var(--line);
+  border-radius:var(--r-lg);
+  padding:22px 22px 20px;
+  display:flex; flex-direction:column; gap:12px;
+  transition:transform var(--tr), box-shadow var(--tr), border-color var(--tr);
+}
+.tour-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 14px 30px rgba(31,46,32,.14);
+  border-color:var(--moss);
+}
+.tour-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+.tour-name{
+  font-family:var(--fh); font-weight:900; font-size:16.5px; color:var(--ink);
+  margin:0; line-height:1.45;
+}
+.tour-month{
+  flex:0 0 auto; font-size:11.5px; font-weight:800; color:#fff;
+  background:var(--moss); padding:5px 12px; border-radius:999px; white-space:nowrap;
+}
+.tour-month.all{background:var(--clay-dk)}
+.tour-flow{font-size:13.5px; color:var(--muted); line-height:1.95; margin:0}
+.tour-flow .step{color:var(--text)}
+.tour-flow .arrow{color:var(--clay); font-weight:700; margin:0 3px}
+
+/* ════════════════════════════════════════
    LINE 大 CTA 區
 ════════════════════════════════════════ */
 .line-section{
@@ -638,6 +674,19 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--clay); outline-off
   </div>
 </section>
 
+<!-- ===== 桃米體驗遊程 ===== -->
+<section id="tours">
+  <div class="wrap">
+    <div class="sec-head center">
+      <span class="kicker">Tours ‧ 體驗遊程</span>
+      <h2>桃米體驗遊程</h2>
+      <div class="sec-rule center"></div>
+      <p>於桃米休閒農業區遊客中心集合，全年皆有不同主題梯次，詳細場次、費用與預約請洽官方 LINE（@taomi）或現場詢問。</p>
+    </div>
+    <div id="tourGrid" class="tour-grid"></div>
+  </div>
+</section>
+
 <!-- ===== LINE 大 CTA ===== -->
 <section class="line-section" id="joinline">
   <div class="wrap line-inner">
@@ -698,6 +747,18 @@ const FOOD = [
   "水上餐廳","有水居","草湳濕地農場餐廳","山上山下","佩蓉小吃"
 ];
 
+const TOURS = [
+  { name:"最佳筍友‧生態步道健行", month:"6–10月", steps:["麻竹筍農事體驗(挖筍/DIY/品嘗)","麻竹筍DIY餐＋竹筒飯","桃米→澀水(經水上瀑布)健行"] },
+  { name:"桃米百香美人腿‧一日農夫", month:"7–9月", steps:["百香果採果(現吃＋帶走1公斤)","百香果鳳梨果醬DIY","黑豆園用餐","茭白筍田體驗(帶走1台斤)","桃米親水公園玩水"] },
+  { name:"溪流與生態池生態教育", month:"全年", steps:["生態互動遊戲","蝴蝶食草復育","驅除外來種觀察","蝴蝶食草便當(紙教堂)","中路坑濕地環境教育"] },
+  { name:"桃米生態探索‧蛙鳴蝶舞", month:"全年", steps:["黃金青蛙粿DIY","紙教堂賞蝶＆藝文導覽","魚蝦生態探索","秀卿ㄟ灶腳特色餐","中路坑溪夜間溯溪賞蛙"] },
+  { name:"桃米遠足‧走進巧克力夢想城堡", month:"全年", steps:["遠足餐盒食材DIY","桃米生態村導覽","遠足野餐","妮娜巧克力城堡導覽","巧克力DIY"] },
+  { name:"百香農夫農事體驗", month:"7–12月", steps:["百香果採果(現吃＋帶走1公斤)","百香果鳳梨果醬DIY"] },
+  { name:"桃米遠足體驗", month:"全年", steps:["遠足餐盒食材DIY(2食材＋1餐盒)","生態村導覽","遠足野餐"] },
+  { name:"桃米巧克力手作", month:"全年", steps:["可可青蛙粿DIY(現場食用)","妮娜巧克力夢想城堡導覽"] },
+  { name:"桃米遊戲書‧蛙ㄟ保衛戰", month:"全年", steps:["遊戲書講故事","桃源國小闖關","桃米小徑解說闖關","成就分享"] }
+];
+
 const ICON_LEAF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-4 3-7 9-11 6 4 9 7 9 11a7 7 0 0 1-7 7c-1 0-2-.5-2-.5"/><path d="M12 12c-2 2-3 5-3 8"/></svg>';
 const ICON_LINE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3z"/></svg>';
 const ICON_CASTLE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V10l3-2 3 2v-2l3-2 3 2v2l3-2 3 2v11"/><path d="M3 21h18"/><path d="M9 21v-4h6v4"/></svg>';
@@ -747,9 +808,23 @@ function renderFood(){
   `).join('');
 }
 
+function renderTours(){
+  const el = document.getElementById('tourGrid');
+  el.innerHTML = TOURS.map((t, i) => `
+    <div class="tour-card">
+      <div class="tour-top">
+        <h3 class="tour-name">${String(i+1).padStart(2,'0')} ‧ ${esc(t.name)}</h3>
+        <span class="tour-month${t.month === '全年' ? ' all' : ''}">${esc(t.month)}</span>
+      </div>
+      <p class="tour-flow">${t.steps.map(s => `<span class="step">${esc(s)}</span>`).join(' <span class="arrow">→</span> ')}</p>
+    </div>
+  `).join('');
+}
+
 renderStay();
 renderPlay();
 renderFood();
+renderTours();
 
 /* 匿名進站統計（與主站同一 worker；只送隨機裝置ID，無個資）*/
 (function(){
