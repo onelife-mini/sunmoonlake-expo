@@ -60,6 +60,18 @@
     "addr": ""
   },
   {
+    "id": 17,
+    "name": "滑人水上俱樂部",
+    "group": "sup",
+    "area": "",
+    "offer": "請於本頁線上領取「百元折扣」券，到店出示截圖即可折抵。",
+    "inquiry": false,
+    "lat": 23.864396,
+    "lng": 120.907062,
+    "geo": "manual",
+    "addr": ""
+  },
+  {
     "id": 2,
     "name": "魚人立槳SUP",
     "group": "sup",
@@ -200,18 +212,6 @@
     "inquiry": false,
     "lat": 23.84931,
     "lng": 120.930371,
-    "geo": "manual",
-    "addr": ""
-  },
-  {
-    "id": 17,
-    "name": "滑人水上俱樂部",
-    "group": "sup",
-    "area": "",
-    "offer": "請於本頁線上領取「百元折扣」券，到店出示截圖即可折抵。",
-    "inquiry": false,
-    "lat": 23.864396,
-    "lng": 120.907062,
     "geo": "manual",
     "addr": ""
   },
