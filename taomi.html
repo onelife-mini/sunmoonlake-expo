@@ -120,10 +120,14 @@ ul{margin:0;padding:0;list-style:none}
 }
 .nav-cta:hover{background:#05b34c; transform:translateY(-1px)}
 .nav-cta svg{width:16px;height:16px;flex:0 0 auto}
+@media (prefers-reduced-motion: reduce){
+  .hero-ripples .ring, .hero-frog, .eyebrow-dot, .hero-copy, .hero-copy .eyebrow, .hero-copy h1, .hero-copy .sub, .hero-cta{ animation:none !important; }
+}
 @media(max-width:560px){
   .site-nav{padding:12px 16px}
   .nav-brand{font-size:15px}
   .nav-back span.lbl{display:none}
+  .nav-back{padding:12px 15px;min-height:44px;min-width:44px;justify-content:center}
   .nav-cta{font-size:12.5px;padding:8px 14px}
 }
 
@@ -541,7 +545,7 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--clay); outline-off
 
 <!-- ===== TOP NAV ===== -->
 <nav class="site-nav" role="navigation" aria-label="主選單">
-  <a class="nav-back" href="portal.html"><span aria-hidden="true">←</span><span class="lbl">四大軸線</span></a>
+  <a class="nav-back" href="/"><span aria-hidden="true">←</span><span class="lbl">四大軸線</span></a>
   <div class="nav-brand">桃米<b>生態村</b></div>
   <a class="nav-cta" href="https://line.me/R/ti/p/%40taomi" target="_blank" rel="noopener">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3z"/></svg>
@@ -718,7 +722,7 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--clay); outline-off
     <h4 class="fh">桃米生態村 ‧ 青蛙的故鄉</h4>
     <p>地點：南投埔里桃米里（近紙教堂 Paper Dome）</p>
     <p>2026 台北國際夏季旅展 ‧ 7/17–7/20 ‧ 台北世貿一館</p>
-    <p>回到 <a class="footer-back" href="portal.html">日月潭旅展 ‧ 四大軸線</a></p>
+    <p>回到 <a class="footer-back" href="/"><span class="nb">日月潭活動專頁</span> ‧ <span class="nb">四大軸線</span></a></p>
     <p class="disc">所有優惠使用期限至 2026/12/31。優惠內容以桃米休閒農業區官方 LINE（@taomi）公告及各店家現場公告為準，本頁店家清單與折扣資訊如有異動，以店家實際提供為準，恕不負保證與兌換責任。</p>
     <p>2026 台北國際旅展現場專用導覽 ‧ 網站製作：<b>OneLife 玩生活</b></p>
   </div>

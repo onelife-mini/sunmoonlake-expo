@@ -15,7 +15,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preload" as="image" href="images/hero.jpg">
+<link rel="preload" as="image" href="images/hero.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&family=Rubik:ital,wght@0,700;0,900;1,900&display=swap" rel="stylesheet">
@@ -1566,9 +1566,9 @@ footer .disc {
 <header class="hero">
   <!-- 背景輪播 -->
   <div class="hero-slider" id="heroSlider">
-    <div class="hero-slide active" style="background-image:url('images/hero.jpg')"></div>
-    <div class="hero-slide" data-bg="images/hero2.jpg"></div>
-    <div class="hero-slide" data-bg="images/hero3.jpg"></div>
+    <div class="hero-slide active" style="background-image:url('images/hero.webp')"></div>
+    <div class="hero-slide" data-bg="images/hero2.webp"></div>
+    <div class="hero-slide" data-bg="images/hero3.webp"></div>
   </div>
 
   <!-- 遮罩 -->
@@ -1724,7 +1724,7 @@ footer .disc {
 
     <article class="legend">
       <div class="legend-img">
-        <img src="images/deer.jpg" alt="邵族白鹿傳說 ‧ 日月潭" loading="lazy">
+        <img src="images/deer.webp" alt="邵族白鹿傳說 ‧ 日月潭" loading="lazy">
         <span class="tag">邵族 ‧ 白鹿傳說</span>
       </div>
       <div class="legend-body">
@@ -1747,7 +1747,7 @@ footer .disc {
     <div class="exp-grid">
       <!-- 磚 1：SUP -->
       <div class="exp-tile">
-        <img src="images/sup.jpg" alt="月牙灣 SUP 立槳" loading="lazy">
+        <img src="images/sup.webp" alt="月牙灣 SUP 立槳" loading="lazy">
         <div class="exp-tile-overlay">
           <span class="exp-tile-tag">水上活動</span>
           <h3>月牙灣 ‧ SUP 立槳</h3>
@@ -1761,7 +1761,7 @@ footer .disc {
       </div>
       <!-- 磚 2：單車 -->
       <div class="exp-tile">
-        <img src="images/bike.jpg" alt="環湖單車" loading="lazy">
+        <img src="images/bike.webp" alt="環湖單車" loading="lazy">
         <div class="exp-tile-overlay">
           <span class="exp-tile-tag">湖岸騎行</span>
           <h3>環湖單車 ‧ 最美湖岸線</h3>
@@ -1774,7 +1774,7 @@ footer .disc {
       </div>
       <!-- 磚 3：茶廠 -->
       <div class="exp-tile">
-        <img src="images/tea.jpg" alt="日月老茶廠" loading="lazy">
+        <img src="images/tea.webp" alt="日月老茶廠" loading="lazy">
         <div class="exp-tile-overlay">
           <span class="exp-tile-tag">文化體驗</span>
           <h3>日月老茶廠 ‧ 認識紅茶</h3>
@@ -1787,7 +1787,7 @@ footer .disc {
       </div>
       <!-- 磚 4：氣球 -->
       <div class="exp-tile">
-        <img src="images/balloon.jpg" alt="薰衣草森林氦氣球公園" loading="lazy">
+        <img src="images/balloon.webp" alt="薰衣草森林氦氣球公園" loading="lazy">
         <div class="exp-tile-overlay">
           <span class="exp-tile-tag">回程亮點</span>
           <h3>薰衣草森林氦氣球公園</h3>
@@ -1824,7 +1824,7 @@ footer .disc {
 
     <div class="tourcard">
       <div class="timg">
-        <img src="images/hero.jpg" alt="逐路船騎兩日遊 日月潭" loading="lazy">
+        <img src="images/hero.webp" alt="逐路船騎兩日遊 日月潭" loading="lazy">
         <span class="tbadge">★ 招牌主推</span>
         <span class="tdur">🗓 2 天 ‧ 2 人成行</span>
         <span class="tprice">
@@ -2100,7 +2100,7 @@ function card(s,idx){
     <div class="cpn-body">
       <div class="cpn-top"><h4 class="cpn-name">${esc(s.name)}</h4><span class="cpn-cat">${CATNAME[s.group]||""}</span></div>
       <div class="cpn-area">📍 ${esc(s.area||"日月潭周邊")}</div>
-      <div class="cpn-offer">${s.inquiry?"店家優惠洽談中，請洽旅展攤位或店家現場":esc(s.offer)}</div>
+      <div class="cpn-offer">${s.inquiry?"店家優惠洽談中，請洽旅展攤位或店家現場":offerHtml(s.offer).replaceAll("<br>"," ")}</div>
       <div class="cpn-acts">
         ${action}
         <a class="cpn-link" href="${mapUrl(s)}" target="_blank" rel="noopener">🧭 導航</a>
