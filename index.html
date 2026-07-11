@@ -20,10 +20,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&family=Rubik:ital,wght@0,700;0,900;1,900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>
 /* ════════════════════════════════════════
    DESIGN TOKENS
@@ -1028,42 +1024,6 @@ section { padding: 72px 0; }
 }
 .chip.on .n { opacity: .85; }
 
-/* 地圖 */
-.mapwrap {
-  margin-top: 28px;
-  border-radius: var(--r-lg);
-  overflow: hidden;
-  border: 2px solid var(--ink);
-  box-shadow: 6px 6px 0 var(--teal);
-  position: relative;
-}
-#map { height: 380px; width: 100%; background: #e0e8ec; z-index: 1; }
-.maplegend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  justify-content: center;
-  padding: 14px 16px;
-  background: var(--bg-white);
-  border-top: 1px solid var(--line);
-  font-size: 12.5px;
-  color: var(--muted);
-}
-.maplegend .lg { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
-.maplegend .dot {
-  width: 11px; height: 11px;
-  border-radius: 50%;
-  border: 2px solid #fff;
-  box-shadow: 0 0 0 1px rgba(0,0,0,.15);
-}
-.mapnote {
-  font-size: 12px;
-  color: var(--muted-2);
-  text-align: center;
-  margin: 10px 0 0;
-  font-style: italic;
-}
-
 /* 店家卡片（立體 offset shadow）*/
 #grid { display: block; margin-top: 22px; }
 /* 依類別分組的橫向滑動列 */
@@ -1091,10 +1051,6 @@ section { padding: 72px 0; }
 .shop-search .si{ font-size:15px; opacity:.55; }
 .shop-search input{ flex:1; border:0; outline:0; background:none; font-family:var(--fb); font-size:15px; color:var(--ink); }
 .shop-search input::placeholder{ color:var(--muted-2); }
-.map-toggle{ display:inline-flex; align-items:center; gap:7px; background:#fff; border:1.5px solid var(--teal); color:var(--teal); font-family:var(--fb); font-weight:700; font-size:14px; border-radius:999px; padding:9px 18px; cursor:pointer; margin:2px 0 4px; transition:var(--tr); }
-.map-toggle:hover{ background:#e1f3f1; }
-.mapwrap[hidden]{ display:none; }
-#mapWrap{ margin:12px 0 6px; }
 
 .cpn-group{ margin-top:24px; }
 .cpn-grouphd{ display:flex; align-items:center; gap:9px; font-family:var(--fh); font-size:18px; font-weight:900; color:var(--ink); margin:0 2px 13px; }
@@ -1249,29 +1205,6 @@ section { padding: 72px 0; }
 .g-stay { --gc: #b5853f; }
 .g-eat  { --gc: #c2703a; }
 .g-play { --gc: #6d5a8c; }
-
-/* Leaflet popup */
-.leaflet-popup-content { font-family: var(--fb); margin: 13px 15px; line-height: 1.55; }
-.leaflet-popup-content .pn { font-family: var(--fh); font-size: 16px; font-weight: 700; color: var(--ink); }
-.leaflet-popup-content .pa { font-size: 12px; color: var(--muted); margin: 2px 0 7px; }
-.leaflet-popup-content .po {
-  font-size: 13px; color: #3f3f3f;
-  background: var(--orange-lt);
-  border-left: 3px solid var(--orange);
-  padding: 7px 9px; border-radius: 6px; margin-bottom: 8px;
-}
-.leaflet-popup-content .po.inq { border-left-color: var(--muted-2); color: var(--muted); background: #f4f4f5; }
-.leaflet-popup-content .pg { display: inline-block; font-size: 11px; color: var(--muted-2); margin-bottom: 8px; }
-.leaflet-popup-content a.pnav {
-  display: inline-block;
-  background: var(--teal);
-  color: #fff;
-  font-weight: 700;
-  font-size: 13px;
-  padding: 7px 14px;
-  border-radius: 8px;
-  text-decoration: none;
-}
 
 /* ════════════════════════════════════════
    FAQ
@@ -1751,7 +1684,7 @@ footer .disc {
           </svg>
         </div>
         <h3>一頁全收</h3>
-        <div class="key-bubble">遊程、優惠、地圖、核銷打卡，掃碼即用。</div>
+        <div class="key-bubble">遊程、優惠、核銷打卡，掃碼即用。</div>
       </div>
     </div>
     <div class="deco-arrows">«« 出發！»»</div>
@@ -1940,13 +1873,6 @@ footer .disc {
 
     <div class="filter"><div class="row" id="filterRow"></div></div>
 
-    <button class="map-toggle" id="mapToggle" type="button">🗺️ 看地圖</button>
-    <div class="mapwrap" id="mapWrap" hidden>
-      <div id="map"></div>
-      <div class="maplegend" id="maplegend"></div>
-      <p class="mapnote">標示「區域示意」者為近似位置，精確地點請點導航。</p>
-    </div>
-
     <div id="grid"></div>
   </div>
 </section>
@@ -1973,8 +1899,8 @@ footer .disc {
         <div class="a">原價 $8,990，<b>旅展現場報名 2 人 $5,990</b>（現省 $3,000）。可到攤位或加 LINE 洽詢報名。</div>
       </details>
       <details>
-        <summary>地圖上的位置不太準？</summary>
-        <div class="a">部分店家標示「<b>區域示意</b>」為近似位置，請點卡片或圖釘的「<b>導航</b>」以店名搜尋實際地點。</div>
+        <summary>導航找不到正確位置？</summary>
+        <div class="a">部分店家的「<b>導航</b>」是以店名搜尋，可能與實際地點略有出入，請以店家現場公告的地址為準。</div>
       </details>
       <details>
         <summary>還有其他問題？</summary>
@@ -2028,7 +1954,7 @@ footer .disc {
     <p>網站製作：OneLife 玩生活 ‧ 魚人帶路</p>
     <p>地點：南投日月潭（水社 ‧ 月牙灣 ‧ 伊達邵 ‧ 魚池）</p>
     <p>2026 台北國際夏季旅展 ‧ 7/17–7/20 ‧ 台北世貿一館</p>
-    <p class="disc">所有優惠使用期限至 2026/12/31。優惠內容以各店家現場公告為準，部分店家優惠尚在洽談中（標示「優惠洽詢現場」）。「領優惠」核銷紀錄僅存於本手機瀏覽器，供現場出示店家辨識，非官方電子票券，恕不負保證與兌換責任。地圖導航以店名搜尋為主，請以實際地址為準。</p>
+    <p class="disc">所有優惠使用期限至 2026/12/31。優惠內容以各店家現場公告為準，部分店家優惠尚在洽談中（標示「優惠洽詢現場」）。「領優惠」核銷紀錄僅存於本手機瀏覽器，供現場出示店家辨識，非官方電子票券，恕不負保證與兌換責任。導航以店名搜尋為主，請以實際地址為準。</p>
     <p class="disc">照片與插畫來源：日月潭日出／湖景 © rheins、Ken Marshall、M. Weitzel（CC BY，Wikimedia Commons）；SUP © Guillaume Bonastre（CC BY）；日月潭湖景 © ironypoisoning（CC BY-SA）；日月老茶廠 © Pbdragonwang（CC BY-SA）；氦氣球照片與白鹿傳說插畫由業主提供。</p>
   </div>
 </footer>
@@ -2124,50 +2050,7 @@ function renderFilter(){
     return `<button class="chip ${g.key===current?'on':''}" data-g="${g.key}">
       ${g.emoji} ${g.label} <span class="n">${n}</span></button>`;
   }).join("");
-  $("#filterRow").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{current=b.dataset.g;renderFilter();renderGrid();renderMap();});
-}
-
-/* ====== 地圖 ====== */
-let map=null, markerLayer=null;
-function initMap(){
-  if(typeof L==="undefined"){return;}
-  map=L.map("map",{scrollWheelZoom:false}).setView([23.864,120.915],13);
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{
-    maxZoom:19, subdomains:"abcd", detectRetina:true,
-    attribution:'© OpenStreetMap、© CARTO'}).addTo(map);
-  markerLayer=L.layerGroup().addTo(map);
-  // 圖例
-  $("#maplegend").innerHTML=GROUPS.filter(g=>g.key!=="all").map(g=>
-    `<span class="lg"><span class="dot" style="background:${GCOLOR[g.key]}"></span>${g.label}</span>`).join("");
-  renderMap();
-  // 進入視野時重算尺寸，避免初次載入有灰格未填滿
-  setTimeout(()=>{map.invalidateSize();renderMap();},300);
-  if("IntersectionObserver" in window){
-    const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){map.invalidateSize();}}),{threshold:.1});
-    io.observe(document.getElementById("map"));
-  }
-}
-function renderMap(){
-  if(!map||!markerLayer)return;
-  markerLayer.clearLayers();
-  const list=SHOPS.filter(s=>(current==="all"||s.group===current)&&(!query||s.name.includes(query)));
-  const pts=[];
-  list.forEach(s=>{
-    if(typeof s.lat!=="number")return;
-    const m=L.circleMarker([s.lat,s.lng],{radius:8,color:"#fff",weight:2,
-      fillColor:GCOLOR[s.group]||"#888",fillOpacity:1});
-    const offer=s.inquiry
-      ? `<div class="po inq">🕓 優惠洽詢現場</div>`
-      : `<div class="po">✦ ${esc(s.offer)}</div>`;
-    const geoNote=s.geo==="area"?`<span class="pg">📍 區域示意位置</span>`:"";
-    m.bindPopup(`<div class="pn">${esc(s.name)}</div>
-      <div class="pa">${esc(CATNAME[s.group]||"")} ‧ ${esc(s.area||"日月潭周邊")}</div>
-      ${offer}${geoNote}<br>
-      <a class="pnav" href="${mapUrl(s)}" target="_blank" rel="noopener">🧭 開啟導航</a>`);
-    markerLayer.addLayer(m);
-    pts.push([s.lat,s.lng]);
-  });
-  if(pts.length){map.fitBounds(pts,{padding:[40,40],maxZoom:14});}
+  $("#filterRow").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{current=b.dataset.g;renderFilter();renderGrid();});
 }
 
 function mapUrl(s){
@@ -2257,19 +2140,6 @@ function openVoucher(s){
 $("#vClose").onclick=()=>$("#overlay").classList.remove("show");
 $("#overlay").onclick=e=>{if(e.target.id==="overlay")$("#overlay").classList.remove("show");};
 
-// 對仍為「區域示意」的點做散佈，避免重疊；精準／手動點維持原座標
-function applyDisplayJitter(list){
-  const groups={};
-  list.forEach(s=>{ if(s.geo==="area"){ const k=s.lat+","+s.lng; (groups[k]=groups[k]||[]).push(s);} });
-  Object.keys(groups).forEach(k=>{
-    const arr=groups[k]; if(arr.length<2)return;
-    arr.forEach((s,i)=>{ const ring=Math.floor(i/8), r=0.0032+0.0016*ring,
-      ang=2*Math.PI*(i%8)/Math.min(8,arr.length)+ring*0.4;
-      s.lat=+(s.lat+r*Math.cos(ang)).toFixed(6);
-      s.lng=+(s.lng+r*Math.sin(ang)/Math.cos(s.lat*Math.PI/180)).toFixed(6);
-    });
-  });
-}
 /* ── 匿名流量/兌換統計（Cloudflare Worker）───────────────────────
    只送匿名裝置ID，不含個資。ANALYTICS_URL 部署 worker 後填入即可啟用；留空則完全不送。*/
 const ANALYTICS_URL="https://sunmoonlake-expo-stats.onelifemini.workers.dev";
@@ -2310,9 +2180,8 @@ async function boot(){
     $("#grid").innerHTML=`<p style="color:#888;text-align:center;padding:20px">店家資料載入失敗（請透過伺服器或部署後的網址開啟，勿用 file:// 直接雙擊）。</p>`;
     $("#total").textContent="0"; return;
   }
-  applyDisplayJitter(SHOPS);
   $("#total").textContent=SHOPS.length;
-  renderFilter();renderGrid();initMap();
+  renderFilter();renderGrid();
   if(typeof syncPage==="function") syncPage();
 }
 boot();
@@ -2320,18 +2189,7 @@ boot();
 /* 搜尋框 */
 (function(){
   const inp=$("#shopSearch");
-  if(inp) inp.addEventListener("input",e=>{ query=e.target.value; renderGrid(); renderMap(); });
-})();
-/* 地圖收合 */
-(function(){
-  const btn=$("#mapToggle"), w=$("#mapWrap");
-  if(!btn||!w) return;
-  btn.addEventListener("click",()=>{
-    const open=w.hasAttribute("hidden");
-    if(open){ w.removeAttribute("hidden"); btn.textContent="🗺️ 收起地圖";
-      if(typeof map!=="undefined"&&map){ setTimeout(()=>{ map.invalidateSize(); if(typeof renderMap==="function") renderMap(); },60); } }
-    else { w.setAttribute("hidden",""); btn.textContent="🗺️ 看地圖"; }
-  });
+  if(inp) inp.addEventListener("input",e=>{ query=e.target.value; renderGrid(); });
 })();
 
 /* ===== 多分頁切換（非一頁式）===== */
@@ -2352,7 +2210,6 @@ function showPage(p){
   document.body.classList.toggle("pg-inner", p!=="home");
   document.querySelectorAll(".site-nav [data-page]").forEach(a=>a.classList.toggle("active", a.dataset.page===p));
   window.scrollTo(0,0);
-  if(p==="shops" && typeof map!=="undefined" && map){ setTimeout(()=>{ map.invalidateSize(); if(typeof renderMap==="function") renderMap(); },80); }
   try{ history.replaceState(null,"", p==="home"?(location.pathname+location.search):("#"+p)); }catch(e){}
 }
 function syncPage(){ showPage(currentPage); }
