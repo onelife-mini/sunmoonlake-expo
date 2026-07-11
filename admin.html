@@ -533,6 +533,11 @@ a{color:inherit}
                 </div>
 
                 <div class="fld">
+                  <label>店家連結（官網 / LINE / FB，填了前台卡片會出現「🔗 店家連結」）</label>
+                  <input type="text" id="slink" placeholder="例：https://lin.ee/xxxx 或 https://www.facebook.com/…">
+                </div>
+
+                <div class="fld">
                   <label class="chkRow"><input type="checkbox" id="inquiry"> 優惠洽詢中（前台顯示「優惠洽談中」，暫不顯示 offer 內容）</label>
                 </div>
 
@@ -900,7 +905,7 @@ function select(i){
   const lng0 = hasLL ? +s.lng : SUNMOONLAKE_CENTER[1];
   $("#fname").value=s.name||"";
   $("#lat").value=hasLL?s.lat:""; $("#lng").value=hasLL?s.lng:""; $("#addr").value=s.addr||"";
-  $("#group").value=s.group||"sup"; $("#area").value=s.area||""; $("#offer").value=s.offer||"";
+  $("#group").value=s.group||"sup"; $("#area").value=s.area||""; $("#offer").value=s.offer||""; $("#slink").value=s.link||"";
   $("#inquiry").checked=!!s.inquiry;
   $("#geoq").value=""; $("#gmap").value=""; $("#geores").classList.remove("show"); $("#saveMsg").textContent="";
   ensureMap();
@@ -984,7 +989,7 @@ $("#saveBtn").onclick=()=>{
   const s=SHOPS[cur];
   s.name=nameVal;
   s.lat=+lat.toFixed(6); s.lng=+lng.toFixed(6); s.addr=$("#addr").value.trim(); s.geo="manual";
-  s.group=$("#group").value; s.area=$("#area").value.trim(); s.offer=$("#offer").value.trim();
+  s.group=$("#group").value; s.area=$("#area").value.trim(); s.offer=$("#offer").value.trim(); s.link=$("#slink").value.trim();
   s.inquiry=$("#inquiry").checked;
   persist(); renderRows();
   $("#eName").textContent=s.name;
@@ -1062,7 +1067,7 @@ $("#modalOverlay").addEventListener("click", e=>{ if(e.target.id==="modalOverlay
 
 /* ══════════════ 草稿 vs 線上差異 ══════════════ */
 const PAGE_NAME={lake:"日月潭‧逐路船騎", taomi:"桃米", toushe:"頭社"};
-const DIFF_FIELD_LABELS={name:"店名",group:"類別",area:"區域",offer:"優惠內容",inquiry:"洽詢中",lat:"緯度",lng:"經度",geo:"定位狀態",addr:"地址備註"};
+const DIFF_FIELD_LABELS={name:"店名",group:"類別",area:"區域",offer:"優惠內容",link:"店家連結",inquiry:"洽詢中",lat:"緯度",lng:"經度",geo:"定位狀態",addr:"地址備註"};
 async function fetchRemoteShops(){
   try{
     const r=await fetch(ANALYTICS_URL+"/shops",{cache:"no-store"});
@@ -1084,7 +1089,7 @@ function computeDiff(remote){
   const added=[], removed=[], changed=[];
   SHOPS.forEach(s=>{ if(!remoteById[String(s.id)]) added.push(s); });
   (remote||[]).forEach(s=>{ if(!localById[String(s.id)]) removed.push(s); });
-  const fields=["name","group","area","offer","inquiry","lat","lng","geo","addr"];
+  const fields=["name","group","area","offer","link","inquiry","lat","lng","geo","addr"];
   SHOPS.forEach(s=>{
     const r=remoteById[String(s.id)]; if(!r)return;
     const diffFields=[];

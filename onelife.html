@@ -2104,7 +2104,7 @@ function card(s,idx){
       <div class="cpn-acts">
         ${action}
         <a class="cpn-link" href="${mapUrl(s)}" target="_blank" rel="noopener">🧭 導航</a>
-        <button class="cpn-link" data-copy="${idx}" title="複製" aria-label="複製店家資訊">📋</button>
+        ${s.link?`<a class="cpn-link" href="${esc(s.link)}" target="_blank" rel="noopener">🔗 店家連結</a>`:""}
       </div>
     </div>
   </div>`;
@@ -2123,19 +2123,9 @@ function renderGrid(){
   });
   if(!html) html=`<p class="no-result">找不到符合「${esc(q)}」的店家，換個關鍵字試試。</p>`;
   $("#grid").innerHTML=html;
-  $("#grid").querySelectorAll("[data-copy]").forEach(b=>b.onclick=()=>copyShop(SHOPS[+b.dataset.copy]));
   $("#grid").querySelectorAll(".cpn-claim[data-i]").forEach(b=>b.onclick=()=>openVoucher(SHOPS[+b.dataset.i]));
 }
 
-function copyShop(s){
-  const txt=`${s.name}\n${s.inquiry?'優惠洽詢現場':('旅展優惠：'+s.offer)}\n${mapUrl(s)}`;
-  const done=()=>toast("已複製店家資訊");
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done).catch(()=>fallbackCopy(txt,done));}
-  else fallbackCopy(txt,done);
-}
-function fallbackCopy(txt,cb){const ta=document.createElement("textarea");ta.value=txt;
-  ta.style.position="fixed";ta.style.opacity="0";document.body.appendChild(ta);ta.select();
-  try{document.execCommand("copy");cb();}catch(e){toast("複製失敗，請手動選取");}document.body.removeChild(ta);}
 
 function fmt(d){const p=n=>String(n).padStart(2,"0");
   return `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;}
