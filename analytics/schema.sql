@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS events (
   ts        INTEGER,   -- epoch ms（UTC）
   type      TEXT,      -- 'visit' | 'claim'
   device_id TEXT,
-  shop_id   TEXT
+  shop_id   TEXT,
+  page      TEXT       -- 頁面/軸線：lake(日月潭)/taomi(桃米)/toushe(頭社)…
 );
 CREATE INDEX IF NOT EXISTS idx_events_ts ON events(ts);
 CREATE INDEX IF NOT EXISTS idx_events_type_ts ON events(type, ts);

@@ -33,8 +33,18 @@ function dayEndMs(d)   { const t = Date.parse(d + "T00:00:00Z"); return isNaN(t)
 
 export default {
   async fetch(req, env) {
-    const url = new URL(req.url);
     const h = cors(req.headers.get("Origin"));
+    try {
+      return await handle(req, env, h);
+    } catch (e) {
+      // 單一查詢失敗不應拖垮整個端點
+      return json({ ok: false, err: "server" }, 500, h);
+    }
+  },
+};
+
+async function handle(req, env, h) {
+    const url = new URL(req.url);
     if (req.method === "OPTIONS") return new Response(null, { headers: h });
 
     // ── 收事件 ──
@@ -45,6 +55,7 @@ export default {
       if (!d) return json({ ok: false, err: "no id" }, 400, h);
       const now = Date.now();
       const s = clip(b.s);
+      const p = clip(b.p) || "lake"; // 頁面/軸線標記（歷史資料只有日月潭頁有埋點）
       // claim 必須帶 shop_id，否則視為無效（避免污染排行）→ 只當進站
       const type = (b.t === "claim" && s) ? "claim" : "visit";
       // 去重彙總表
@@ -58,8 +69,8 @@ export default {
       }
       // 事件時間軸（每次都記，供日期/時段分析）
       await env.DB.prepare(
-        "INSERT INTO events(ts, type, device_id, shop_id) VALUES(?, ?, ?, ?)"
-      ).bind(now, type, d, type === "claim" ? s : "").run();
+        "INSERT INTO events(ts, type, device_id, shop_id, page) VALUES(?, ?, ?, ?, ?)"
+      ).bind(now, type, d, type === "claim" ? s : "", p).run();
       return json({ ok: true }, 200, h);
     }
 
@@ -113,6 +124,15 @@ export default {
         "FROM events WHERE type='claim' AND ts BETWEEN ?1 AND ?2 GROUP BY shop_id ORDER BY devices DESC, claims DESC"
       ).bind(L, H).all();
 
+      // 各頁面/軸線分流（區間內；歷史無 page 的視為日月潭頁）
+      const byPage = await env.DB.prepare(
+        "SELECT COALESCE(NULLIF(page,''),'lake') pg, " +
+        "COUNT(DISTINCT CASE WHEN type='visit' THEN device_id END) visitors, " +
+        "SUM(CASE WHEN type='visit' THEN 1 ELSE 0 END) visits " +
+        "FROM events WHERE ts BETWEEN ?1 AND ?2 GROUP BY pg " +
+        "HAVING SUM(CASE WHEN type='visit' THEN 1 ELSE 0 END) > 0 ORDER BY visitors DESC"
+      ).bind(L, H).all();
+
       return json({
         ok: true,
         generatedAt: Date.now(),
@@ -127,7 +147,43 @@ export default {
         byDay: (byDay && byDay.results) || [],
         byHour: (byHour && byHour.results) || [],
         perShop: (perShop && perShop.results) || [],
+        byPage: (byPage && byPage.results) || [],
       }, 200, h);
+    }
+
+    // ── 店家資料：公開讀取（前台用；未發佈過回 404，前台退回靜態 shops.json）──
+    if (url.pathname === "/shops" && req.method === "GET") {
+      const v = await getSetting(env, "shops_json");
+      if (!v) return json({ ok: false, err: "not-published" }, 404, h);
+      const at = await getSetting(env, "shops_published_at");
+      return new Response('{"ok":true,"publishedAt":' + (at || 0) + ',"shops":' + v + "}", {
+        status: 200,
+        headers: { ...h, "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" },
+      });
+    }
+
+    // ── 店家資料：發佈（後台用；statsKey 驗證）──
+    if (url.pathname === "/shops" && req.method === "POST") {
+      let b; try { b = JSON.parse(await req.text()); } catch { return json({ ok: false }, 400, h); }
+      if (!env.STATS_KEY || (b && b.key) !== env.STATS_KEY)
+        return json({ ok: false, err: "unauthorized" }, 401, h);
+      const shops = b && b.shops;
+      if (!Array.isArray(shops) || !shops.length || shops.length > 500)
+        return json({ ok: false, err: "bad-shops" }, 400, h);
+      for (const s of shops) {
+        if (!s || typeof s !== "object" || s.id == null || !s.name)
+          return json({ ok: false, err: "bad-shop-item" }, 400, h);
+        if ((s.lat != null && !Number.isFinite(+s.lat)) || (s.lng != null && !Number.isFinite(+s.lng)))
+          return json({ ok: false, err: "bad-coords: " + s.name }, 400, h);
+      }
+      const now = Date.now();
+      await env.DB.prepare(
+        "INSERT INTO settings(k,v) VALUES('shops_json',?1) ON CONFLICT(k) DO UPDATE SET v=?1"
+      ).bind(JSON.stringify(shops)).run();
+      await env.DB.prepare(
+        "INSERT INTO settings(k,v) VALUES('shops_published_at',?1) ON CONFLICT(k) DO UPDATE SET v=?1"
+      ).bind(String(now)).run();
+      return json({ ok: true, publishedAt: now, count: shops.length }, 200, h);
     }
 
     // ── 後台登入（驗密碼 → 回數據金鑰）──
@@ -155,8 +211,7 @@ export default {
 
     if (url.pathname === "/health") return json({ ok: true }, 200, h);
     return json({ ok: false, err: "not found" }, 404, h);
-  },
-};
+}
 
 function json(obj, status, h) {
   return new Response(JSON.stringify(obj), {

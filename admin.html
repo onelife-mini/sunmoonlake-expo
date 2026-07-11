@@ -10,6 +10,7 @@
   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.5.0/qrcode.min.js" defer></script>
 <style>
 :root{
   --green:#1a6b4a;--green-d:#134f37;--green-l:#e6f1ea;
@@ -305,6 +306,41 @@ a{color:inherit}
 .msgline{font-size:12.5px;font-weight:600;margin-top:8px}
 .msgline.ok{color:var(--ok)}
 .msgline.err{color:var(--bad)}
+
+/* ───────── 編輯器頭 / 刪除 ───────── */
+.ehdRow{display:flex;align-items:flex-start;gap:10px}
+.ehdRow .txt{flex:1;min-width:0}
+
+/* ───────── 通用 Modal ───────── */
+.modalOverlay{display:none;position:fixed;inset:0;background:rgba(20,20,30,.55);z-index:400;
+  align-items:center;justify-content:center;padding:20px}
+.modalOverlay.show{display:flex}
+.modalCard{background:var(--card);border-radius:16px;max-width:480px;width:100%;max-height:82vh;
+  display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.35);
+  animation:riseIn .3s cubic-bezier(.2,.8,.2,1)}
+.modalHd{padding:18px 22px 14px;border-bottom:1px solid var(--line);font-size:16px;font-weight:800;color:var(--ink)}
+.modalBody{padding:16px 22px;overflow-y:auto;font-size:13.5px;line-height:1.7;color:var(--text)}
+.modalBody p{margin:0 0 8px}
+.modalFt{padding:14px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px}
+
+/* ───────── 現場看板 Kiosk ───────── */
+.kioskOverlay{display:none;position:fixed;inset:0;background:var(--ink);z-index:500;color:#fff;
+  flex-direction:column;align-items:center;justify-content:center;gap:36px}
+.kioskOverlay.show{display:flex}
+.kioskClose{position:absolute;top:22px;right:26px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);
+  color:#fff;width:44px;height:44px;border-radius:50%;font-size:18px;cursor:pointer;transition:background var(--dur)}
+.kioskClose:hover{background:rgba(255,255,255,.22)}
+.kioskGrid{display:flex;gap:56px;flex-wrap:wrap;justify-content:center;padding:0 20px}
+.kioskItem{text-align:center}
+.kioskItem .kv{font-size:min(16vw,130px);font-weight:900;color:var(--gold);line-height:1;font-variant-numeric:tabular-nums}
+.kioskItem .kl{font-size:19px;font-weight:700;color:#c4c6d4;margin-top:12px}
+.kioskUpdated{font-size:13px;color:#8a8da0;position:absolute;bottom:22px;left:0;right:0;text-align:center}
+@media(max-width:640px){.kioskGrid{gap:26px}.kioskItem .kl{font-size:13px}}
+
+/* ───────── QR ───────── */
+.qrBtn{margin-left:8px}
+.linkRow{flex-wrap:wrap}
+#qrResult canvas{max-width:100%;image-rendering:pixelated;border:1px solid var(--line);border-radius:8px}
 </style>
 </head>
 <body>
@@ -383,6 +419,10 @@ a{color:inherit}
             <ul class="rankList" id="ovRank"><li class="hint" style="padding:10px 0">尚無資料</li></ul>
           </div>
         </div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="cardHd"><h3>四大軸線流量</h3><span class="sp"></span><span class="hint">全期資料</span></div>
+          <div id="ovPages"><p class="hint" style="padding:6px 0">尚無資料</p></div>
+        </div>
         <div class="cardHd" style="margin-top:6px"><h3>快速前往</h3></div>
         <div class="quickGrid">
           <div class="quickBtn" data-goto="shops"><div class="ic">🏪</div><div class="tt">店家管理</div><div class="ds">編輯位置、優惠內容與排序</div></div>
@@ -398,11 +438,15 @@ a{color:inherit}
       <div class="topHead">
         <h1>店家管理</h1>
         <span class="sub" id="prog">—</span>
+        <span class="hint" id="publishedAtHint" style="margin-left:6px"></span>
         <span class="sp"></span>
+        <button class="btn btn-green btn-sm" id="btnAddShop">＋ 新增店家</button>
+        <button class="btn btn-ghost btn-sm" id="btnDiff">🔍 檢視差異</button>
         <button class="btn btn-ghost btn-sm" id="btnReload" title="捨棄本機修改，重新從 shops.json 載入">↺ 重載檔案</button>
         <button class="btn btn-ghost btn-sm" id="btnImport">匯入</button>
         <input type="file" id="fileInput" accept=".json" hidden>
-        <button class="btn btn-gold btn-sm" id="btnExport">⬇ 匯出 shops.json</button>
+        <button class="btn btn-ghost btn-sm" id="btnExport">⬇ 備份 JSON</button>
+        <button class="btn btn-gold btn-sm" id="btnPublish">🚀 發佈上線</button>
       </div>
       <div style="padding:24px 26px 60px">
         <div class="shopWrap">
@@ -420,11 +464,20 @@ a{color:inherit}
             <div class="empty" id="empty">← 從左側選一家店，開始編輯</div>
             <div id="editorBody" style="display:none">
               <div class="ehd" id="ehd">
-                <div class="nm" id="eName">—</div>
-                <div class="meta" id="eMeta">—</div>
+                <div class="ehdRow">
+                  <div class="txt">
+                    <div class="nm" id="eName">—</div>
+                    <div class="meta" id="eMeta">—</div>
+                  </div>
+                  <button class="btn btn-danger btn-sm" id="btnDeleteShop" title="刪除這家店">🗑 刪除這家</button>
+                </div>
               </div>
               <div id="amap"></div>
               <div class="etools">
+                <div class="fld">
+                  <label>店名</label>
+                  <input type="text" id="fname" placeholder="店家名稱">
+                </div>
                 <p class="tip">位置設定方式任選一種：① 下方搜尋地址/店名 ② 直接在地圖上<b>點一下</b>或<b>拖曳紅色圖釘</b> ③ 貼 Google Maps 連結或座標。設定後記得按<b>儲存這家</b>。</p>
 
                 <div class="fld">
@@ -500,6 +553,8 @@ a{color:inherit}
         <h1>數據分析</h1>
         <span class="sub" id="statsUpdated"></span>
         <span class="sp"></span>
+        <label class="chkRow" style="font-size:12.5px" id="autoRefreshWrap"><input type="checkbox" id="autoRefreshChk"> 自動更新（60秒）</label>
+        <button class="btn btn-ink btn-sm" id="btnKiosk">📺 現場看板</button>
         <button class="btn btn-ghost btn-sm" id="statsRefresh">↻ 重新整理</button>
         <button class="btn btn-gold btn-sm" id="btnExportCsv">⬇ 匯出 CSV</button>
       </div>
@@ -527,8 +582,14 @@ a{color:inherit}
         </div>
         <!-- 尖峰摘要 -->
         <div class="statsPeak" id="statsPeak"></div>
+        <!-- 指標切換 -->
+        <div class="rangeQuick" id="metricToggleWrap" style="margin:0 0 8px">
+          <span class="hint" style="align-self:center;margin-right:2px">圖表指標：</span>
+          <button class="qbtn on" data-metric="devices">不重複手機</button>
+          <button class="qbtn" data-metric="count">次數</button>
+        </div>
         <!-- 每日趨勢 -->
-        <h3 class="statsSub">每日趨勢<span class="lgd"><i class="ldot v"></i>進站手機　<i class="ldot c"></i>兌換手機</span></h3>
+        <h3 class="statsSub">每日趨勢<span class="lgd" id="dayLgd"><i class="ldot v"></i>進站手機　<i class="ldot c"></i>兌換手機</span></h3>
         <div class="chart" id="chartDay"></div>
         <!-- 時段分布 -->
         <h3 class="statsSub">時段分布（台灣時間，看哪個時段人最多）<span class="lgd"><i class="ldot v"></i>進站　<i class="ldot c"></i>兌換</span></h3>
@@ -570,9 +631,21 @@ a{color:inherit}
 
             <div class="card">
               <div class="cardHd"><h3>前台連結</h3></div>
-              <div class="linkRow"><span>主網站</span><span class="sp"></span><a href="https://onelife-mini.github.io/sunmoonlake-expo/" target="_blank" rel="noopener">onelife-mini.github.io/sunmoonlake-expo</a></div>
-              <div class="linkRow"><span>旅展入口頁</span><span class="sp"></span><a href="portal.html" target="_blank" rel="noopener">portal.html</a></div>
-              <p class="hint" style="margin-top:10px">可將以上連結貼到線上 QR Code 產生器製作看板用 QR Code。</p>
+              <div class="linkRow" data-url="https://onelife-mini.github.io/sunmoonlake-expo/" data-label="主網站">
+                <span>主網站</span><span class="sp"></span>
+                <a href="https://onelife-mini.github.io/sunmoonlake-expo/" target="_blank" rel="noopener">onelife-mini.github.io/sunmoonlake-expo</a>
+                <button class="btn btn-ghost btn-sm qrBtn">產生 QR</button>
+              </div>
+              <div class="linkRow" data-url="portal.html" data-label="旅展入口頁">
+                <span>旅展入口頁</span><span class="sp"></span>
+                <a href="portal.html" target="_blank" rel="noopener">portal.html</a>
+                <button class="btn btn-ghost btn-sm qrBtn">產生 QR</button>
+              </div>
+              <div id="qrResult" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);text-align:center">
+                <canvas id="qrCanvas"></canvas>
+                <div style="margin-top:10px"><a class="btn btn-gold btn-sm" id="qrDownload" download="qr.png">⬇ 下載 PNG</a></div>
+              </div>
+              <p class="hint" id="qrHint" style="margin-top:10px"></p>
             </div>
 
             <div class="card">
@@ -587,6 +660,26 @@ a{color:inherit}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- ══════════ 通用 Modal（差異檢視 / 發佈確認）══════════ -->
+<div class="modalOverlay" id="modalOverlay">
+  <div class="modalCard">
+    <div class="modalHd" id="modalTitle">—</div>
+    <div class="modalBody" id="modalBody"></div>
+    <div class="modalFt" id="modalFooter"></div>
+  </div>
+</div>
+
+<!-- ══════════ 現場即時看板 Kiosk ══════════ -->
+<div class="kioskOverlay" id="kioskOverlay">
+  <button class="kioskClose" id="kioskClose" title="離開看板（Esc）">✕</button>
+  <div class="kioskGrid">
+    <div class="kioskItem"><div class="kv" id="kTodayVisit">—</div><div class="kl">今日進站手機</div></div>
+    <div class="kioskItem"><div class="kv" id="kTodayClaim">—</div><div class="kl">今日兌換手機</div></div>
+    <div class="kioskItem"><div class="kv" id="kRate">—</div><div class="kl">兌換轉換率</div></div>
+  </div>
+  <div class="kioskUpdated" id="kioskUpdated">—</div>
+</div>
 
 <script>
 (function(){
@@ -606,6 +699,13 @@ let statsKey="";
 let statsRange={from:null,to:null};
 let lastStatsData=null;
 let curView="overview";
+let dirty=false;
+let publishedAt=null;
+let autoTimer=null;
+let autoRefreshUserPref=false;
+let kioskOpen=false;
+let chartMetric="devices";
+const AUTH_EXPIRE_MS=7*24*60*60*1000;
 
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),1700);}
 function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
@@ -627,6 +727,10 @@ function showApp(){
   $("#loginWrap").style.display="none";
   $("#app").classList.add("show");
   boot();
+  // 帶入線上版最後發佈時間（非關鍵，失敗靜默）
+  fetch(ANALYTICS_URL+"/shops",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+    if(d&&d.publishedAt){ publishedAt=+d.publishedAt; $("#publishedAtHint").textContent="上次發佈："+new Date(publishedAt).toLocaleString("zh-TW"); }
+  }).catch(()=>{});
 }
 function showLogin(){
   $("#app").classList.remove("show");
@@ -659,13 +763,25 @@ $("#loginForm").addEventListener("submit", async (e)=>{
 });
 
 $("#btnLogout").onclick=()=>{
-  if(!confirm("確定要登出嗎？"))return;
-  clearAuth(); statsKey=""; lastStatsData=null;
+  if(dirty && !confirm("有未儲存的修改，確定要登出嗎？")) return;
+  if(!dirty && !confirm("確定要登出嗎？"))return;
+  clearInterval(autoTimer); autoTimer=null;
+  kioskOpen=false; $("#kioskOverlay").classList.remove("show");
+  document.removeEventListener("keydown", kioskEscHandler);
+  clearAuth(); statsKey=""; lastStatsData=null; dirty=false;
   showLogin();
 };
 
+window.addEventListener("beforeunload", e=>{
+  if(dirty){ e.preventDefault(); e.returnValue=""; }
+});
+
 /* ══════════════ Sidebar / 路由 ══════════════ */
 function switchView(name){
+  if(name!==curView && curView==="shops" && dirty){
+    if(!confirm("有未儲存的修改，確定離開？"))return;
+    markClean();
+  }
   curView=name;
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("on"));
   const v=$("#view-"+name); if(v)v.classList.add("on");
@@ -694,10 +810,12 @@ function boot(){
 
 (function init(){
   const a=getAuth();
-  if(a && a.statsKey!==undefined){
+  const expired = !a || !a.ts || (Date.now()-a.ts) > AUTH_EXPIRE_MS;
+  if(a && a.statsKey!==undefined && !expired){
     statsKey=a.statsKey||"";
     showApp();
   }else{
+    if(a) clearAuth();
     showLogin();
   }
 })();
@@ -758,7 +876,19 @@ function ensureMap(){
   map.on("click",e=>setLatLng(e.latlng.lat,e.latlng.lng,true));
 }
 const SUNMOONLAKE_CENTER=[23.864,120.915];
+
+/* ── 未儲存變更防呆 ── */
+function markDirty(){ dirty=true; }
+function markClean(){ dirty=false; }
+function confirmDiscard(){ return !dirty || confirm("有未儲存的修改，確定離開？"); }
+document.querySelectorAll("#editorBody input,#editorBody select,#editorBody textarea").forEach(el=>{
+  el.addEventListener("input", markDirty);
+  el.addEventListener("change", markDirty);
+});
+
 function select(i){
+  if(cur>=0 && cur!==i && !confirmDiscard())return;
+  markClean();
   cur=i; const s=SHOPS[i];
   $("#empty").style.display="none";
   $("#editorBody").style.display="block";
@@ -768,6 +898,7 @@ function select(i){
   $("#eMeta").innerHTML=`${CATNAME[s.group]||""}${s.area?' ‧ '+esc(s.area):''}　目前：<b style="color:${s.geo==='manual'?'#c2703a':s.geo==='precise'?'#1a6b4a':'#999'}">${geoLabel(s.geo)}</b>${noGeoHint}`;
   const lat0 = hasLL ? +s.lat : SUNMOONLAKE_CENTER[0];
   const lng0 = hasLL ? +s.lng : SUNMOONLAKE_CENTER[1];
+  $("#fname").value=s.name||"";
   $("#lat").value=hasLL?s.lat:""; $("#lng").value=hasLL?s.lng:""; $("#addr").value=s.addr||"";
   $("#group").value=s.group||"sup"; $("#area").value=s.area||""; $("#offer").value=s.offer||"";
   $("#inquiry").checked=!!s.inquiry;
@@ -790,6 +921,7 @@ function setLatLng(lat,lng,pan){
   lat=+(+lat).toFixed(6); lng=+(+lng).toFixed(6);
   $("#lat").value=lat; $("#lng").value=lng;
   placeMarker(lat,lng,pan);
+  markDirty();
 }
 $("#applyLL").onclick=()=>{
   const lat=parseFloat($("#lat").value), lng=parseFloat($("#lng").value);
@@ -842,20 +974,47 @@ function parseLatLng(text){
 /* 儲存 */
 $("#saveBtn").onclick=()=>{
   if(cur<0)return;
+  const nameVal=$("#fname").value.trim();
+  if(!nameVal){toast("店名不可空白");return;}
   const lat=parseFloat($("#lat").value), lng=parseFloat($("#lng").value);
   if(isNaN(lat)||isNaN(lng)){toast("座標無效");return;}
   if(lat<21.5||lat>25.5||lng<119||lng>122.5){
     if(!confirm("這個座標看起來不在台灣範圍內，確定要儲存嗎？"))return;
   }
   const s=SHOPS[cur];
+  s.name=nameVal;
   s.lat=+lat.toFixed(6); s.lng=+lng.toFixed(6); s.addr=$("#addr").value.trim(); s.geo="manual";
   s.group=$("#group").value; s.area=$("#area").value.trim(); s.offer=$("#offer").value.trim();
   s.inquiry=$("#inquiry").checked;
   persist(); renderRows();
   $("#eName").textContent=s.name;
   $("#eMeta").innerHTML=`${CATNAME[s.group]||""}${s.area?' ‧ '+esc(s.area):''}　目前：<b style="color:#c2703a">已設定</b>`;
-  $("#saveMsg").textContent="✓ 已儲存（記得最後匯出 shops.json）";
+  $("#saveMsg").textContent="✓ 已儲存（記得最後發佈上線）";
+  markClean();
   toast("已儲存 "+s.name);
+};
+
+/* 新增 / 刪除店家 */
+$("#btnAddShop").onclick=()=>{
+  if(!confirmDiscard())return;
+  markClean();
+  const maxId=SHOPS.reduce((m,s)=>Math.max(m,+s.id||0),0);
+  const ns={id:maxId+1,name:"新店家",group:"sup",area:"",offer:"",inquiry:true,
+    lat:SUNMOONLAKE_CENTER[0],lng:SUNMOONLAKE_CENTER[1],geo:"area",addr:""};
+  SHOPS.push(ns);
+  persist(); renderRows();
+  select(SHOPS.length-1);
+  toast("已新增店家，請編輯內容後儲存");
+};
+$("#btnDeleteShop").onclick=()=>{
+  if(cur<0)return;
+  const s=SHOPS[cur];
+  if(!confirm(`確定要刪除「${s.name}」嗎？此動作無法復原（除非重新匯入或從線上版還原）。`))return;
+  SHOPS.splice(cur,1);
+  cur=-1; markClean();
+  persist(); renderRows();
+  $("#empty").style.display="grid"; $("#editorBody").style.display="none";
+  toast("已刪除店家");
 };
 
 /* 匯出 / 匯入 / 重載 */
@@ -874,7 +1033,7 @@ $("#fileInput").onchange=e=>{
     try{
       const parsed=JSON.parse(rd.result);
       if(!Array.isArray(parsed)){ alert("檔案格式錯誤：內容必須是店家陣列（JSON array）。"); return; }
-      SHOPS=parsed; persist(); cur=-1;
+      SHOPS=parsed; persist(); cur=-1; markClean();
       $("#empty").style.display="grid";$("#editorBody").style.display="none";
       renderRows(); toast("已匯入");
     }catch(err){ alert("檔案格式錯誤"); }
@@ -884,11 +1043,121 @@ $("#fileInput").onchange=e=>{
 };
 $("#btnReload").onclick=async()=>{
   if(!confirm("這會捨棄本機尚未匯出的修改，重新從 data/shops.json 載入。確定？"))return;
-  localStorage.removeItem(LS); SHOPS=[]; cur=-1;
+  localStorage.removeItem(LS); SHOPS=[]; cur=-1; markClean();
   $("#empty").style.display="grid";$("#editorBody").style.display="none";
   await loadShopsData(); renderCats(); renderRows(); renderProg();
   toast("已重載");
 };
+
+/* ══════════════ 通用 Modal ══════════════ */
+function openModal(title, bodyHtml, footerHtml){
+  $("#modalTitle").textContent=title;
+  $("#modalBody").innerHTML=bodyHtml;
+  $("#modalFooter").innerHTML = footerHtml || `<button class="btn btn-ghost" id="modalCloseBtn">關閉</button>`;
+  $("#modalOverlay").classList.add("show");
+  const closeBtn=$("#modalCloseBtn"); if(closeBtn) closeBtn.onclick=closeModal;
+}
+function closeModal(){ $("#modalOverlay").classList.remove("show"); }
+$("#modalOverlay").addEventListener("click", e=>{ if(e.target.id==="modalOverlay") closeModal(); });
+
+/* ══════════════ 草稿 vs 線上差異 ══════════════ */
+const PAGE_NAME={lake:"日月潭‧逐路船騎", taomi:"桃米", toushe:"頭社"};
+const DIFF_FIELD_LABELS={name:"店名",group:"類別",area:"區域",offer:"優惠內容",inquiry:"洽詢中",lat:"緯度",lng:"經度",geo:"定位狀態",addr:"地址備註"};
+async function fetchRemoteShops(){
+  try{
+    const r=await fetch(ANALYTICS_URL+"/shops",{cache:"no-store"});
+    if(r.status===404) return await fetchLocalShopsJson();
+    if(!r.ok) return await fetchLocalShopsJson();
+    const d=await r.json();
+    return Array.isArray(d.shops) ? d.shops : await fetchLocalShopsJson();
+  }catch(e){
+    return await fetchLocalShopsJson();
+  }
+}
+async function fetchLocalShopsJson(){
+  try{ const r=await fetch("data/shops.json",{cache:"no-store"}); if(!r.ok)return null; return await r.json(); }
+  catch(e){ return null; }
+}
+function computeDiff(remote){
+  const remoteById={}; (remote||[]).forEach(s=>remoteById[String(s.id)]=s);
+  const localById={}; SHOPS.forEach(s=>localById[String(s.id)]=s);
+  const added=[], removed=[], changed=[];
+  SHOPS.forEach(s=>{ if(!remoteById[String(s.id)]) added.push(s); });
+  (remote||[]).forEach(s=>{ if(!localById[String(s.id)]) removed.push(s); });
+  const fields=["name","group","area","offer","inquiry","lat","lng","geo","addr"];
+  SHOPS.forEach(s=>{
+    const r=remoteById[String(s.id)]; if(!r)return;
+    const diffFields=[];
+    fields.forEach(f=>{
+      let a=s[f], b=r[f];
+      if(f==="lat"||f==="lng"){ a=(a==null||a==="")?null:(+a).toFixed(6); b=(b==null||b==="")?null:(+b).toFixed(6); }
+      if(f==="inquiry"){ a=!!a; b=!!b; }
+      if(String(a??"")!==String(b??"")) diffFields.push(DIFF_FIELD_LABELS[f]);
+    });
+    if(diffFields.length) changed.push({name:s.name, fields:diffFields});
+  });
+  const localOrder=SHOPS.map(s=>String(s.id)).filter(id=>remoteById[id]);
+  const remoteOrder=(remote||[]).map(s=>String(s.id)).filter(id=>localById[id]);
+  const reordered = JSON.stringify(localOrder)!==JSON.stringify(remoteOrder);
+  return {added,removed,changed,reordered};
+}
+function diffSummaryHtml(diff){
+  if(!diff.added.length && !diff.removed.length && !diff.changed.length && !diff.reordered){
+    return `<p style="color:var(--ok);font-weight:700">與線上版一致 ✓</p>`;
+  }
+  let html="";
+  if(diff.added.length) html+=`<p><b>新增了 ${diff.added.length} 家：</b>${diff.added.map(s=>esc(s.name)).join("、")}</p>`;
+  if(diff.removed.length) html+=`<p><b>刪除了 ${diff.removed.length} 家：</b>${diff.removed.map(s=>esc(s.name)).join("、")}</p>`;
+  if(diff.changed.length) html+=`<p><b>修改了 ${diff.changed.length} 家：</b></p><ul style="margin:4px 0 8px;padding-left:20px">${diff.changed.map(c=>`<li>${esc(c.name)}：${c.fields.map(esc).join("、")}</li>`).join("")}</ul>`;
+  if(diff.reordered) html+=`<p><b>排序已變動</b></p>`;
+  return html;
+}
+$("#btnDiff").onclick=async()=>{
+  const btn=$("#btnDiff"); const old=btn.textContent;
+  btn.disabled=true; btn.textContent="比對中…";
+  const remote=await fetchRemoteShops();
+  btn.disabled=false; btn.textContent=old;
+  if(remote===null){ openModal("草稿 vs 線上版 差異", "<p>目前尚無可比對的線上版本（尚未發佈過，或讀取失敗）。</p>"); return; }
+  const diff=computeDiff(remote);
+  openModal("草稿 vs 線上版 差異", diffSummaryHtml(diff));
+};
+
+/* ══════════════ 發佈上線 ══════════════ */
+$("#btnPublish").onclick=async()=>{
+  if(!statsKey){ toast("尚無金鑰，請重新登入"); return; }
+  if(dirty && !confirm("編輯器有尚未儲存的修改，發佈只會送出「已儲存」的內容。\n建議先按「儲存這家」。仍要以目前已儲存版本發佈嗎？")) return;
+  const btn=$("#btnPublish"); const old=btn.textContent;
+  btn.disabled=true; btn.textContent="比對中…";
+  const remote=await fetchRemoteShops();
+  const diff = computeDiff(remote);
+  btn.disabled=false; btn.textContent=old;
+  const summary=diffSummaryHtml(diff);
+  const confirmHtml=`<p>目前草稿共 <b>${SHOPS.length}</b> 家店。</p>${summary}<p style="margin-top:10px">確定要發佈到線上嗎？前台會立即套用此版本。</p>`;
+  openModal("發佈上線前確認", confirmHtml, `
+    <button class="btn btn-ghost" id="modalCancelBtn">取消</button>
+    <button class="btn btn-gold" id="modalConfirmPublishBtn">確認發佈</button>`);
+  $("#modalCancelBtn").onclick=closeModal;
+  $("#modalConfirmPublishBtn").onclick=doPublish;
+};
+async function doPublish(){
+  closeModal();
+  toast("發佈中…");
+  try{
+    const clean=SHOPS.map(s=>({id:s.id,name:s.name,group:s.group,area:s.area,offer:s.offer,
+      inquiry:s.inquiry,lat:s.lat,lng:s.lng,geo:s.geo,addr:s.addr||""}));
+    const res=await apiPost("/shops",{key:statsKey, shops:clean});
+    if(res.status===401){ handleAuthFailure(); return; }
+    if(res.ok && res.data && res.data.ok){
+      publishedAt=res.data.publishedAt||Date.now();
+      $("#publishedAtHint").textContent="上次發佈："+new Date(publishedAt).toLocaleString("zh-TW");
+      toast("已發佈，前台立即生效");
+    }else{
+      toast("發佈失敗，請稍後再試");
+    }
+  }catch(e){
+    toast("連線失敗，發佈失敗");
+  }
+}
 
 /* ══════════════ 總覽 ══════════════ */
 function ymd(dt){ const p=n=>String(n).padStart(2,"0"); return dt.getFullYear()+"-"+p(dt.getMonth()+1)+"-"+p(dt.getDate()); }
@@ -935,6 +1204,7 @@ async function loadOverview(){
     }).join("") : `<li class="hint" style="padding:10px 0">尚無兌換資料</li>`;
     // fix rankNo numbering (CSS uses nth-child so leave blank text, insert number)
     $("#ovRank").querySelectorAll(".rankNo").forEach((el,i)=>el.textContent=i+1);
+    renderOvPages(all.byPage);
   }catch(ex){
     $("#ovTodayVisit").textContent="—"; $("#ovTodayClaim").textContent="—";
     $("#ovAllVisit").textContent="—"; $("#ovAllClaim").textContent="—"; $("#ovRate").textContent="—";
@@ -956,6 +1226,22 @@ function renderOverviewGeoAndShops(){
   $("#progManualText").textContent=`其中手動修正 ${man} 家　‧　完成度 ${pct}%`;
 }
 function renderShopStuffOnly(){ renderOverviewGeoAndShops(); }
+function renderOvPages(byPage){
+  const list=byPage||[];
+  if(!list.length){ $("#ovPages").innerHTML='<p class="hint" style="padding:6px 0">尚無資料</p>'; return; }
+  const max=Math.max(1,...list.map(p=>p.visitors||0));
+  $("#ovPages").innerHTML=list.map(p=>{
+    const nm=PAGE_NAME[p.pg]||p.pg;
+    const pct=Math.round((p.visitors||0)/max*100);
+    return `<div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+        <span style="font-weight:700;color:var(--ink)">${esc(nm)}</span>
+        <span class="hint">${(p.visitors||0).toLocaleString()} 台進站 ‧ ${(p.visits||0).toLocaleString()} 次</span>
+      </div>
+      <div class="progBar" style="margin:0"><i style="width:${pct}%"></i></div>
+    </div>`;
+  }).join("");
+}
 $("#ovRefresh").onclick=loadOverview;
 
 /* ══════════════ 數據分析 ══════════════ */
@@ -981,11 +1267,7 @@ async function loadStats(){
     if(peakHour) chips.push(`<div class="peakChip">尖峰時段 <b>${String(peakHour.h).padStart(2,"0")}:00</b>（${peakHour.visits} 次進站）</div>`);
     chips.push(`<div class="peakChip">每台平均領 <b>${avgCoupon}</b> 張券</div>`);
     $("#statsPeak").innerHTML=chips.join("");
-    const maxDayV=Math.max(1,...byDay.map(x=>Math.max(x.visitors,x.claimers)));
-    $("#chartDay").innerHTML=byDay.length?byDay.map(x=>{
-      const hv=Math.round(x.visitors/maxDayV*100), hc=Math.round(x.claimers/maxDayV*100);
-      return `<div class="bar"><div class="cols"><div class="col v" style="height:${hv}%" title="進站 ${x.visitors}"></div><div class="col c" style="height:${hc}%" title="兌換 ${x.claimers}"></div></div><div class="bval">${x.visitors}</div><div class="blab">${x.d.slice(5)}</div></div>`;
-    }).join(""):`<div style="color:#999;margin:auto">此區間沒有資料</div>`;
+    renderDayChart(d);
     const hourMap={}; byHour.forEach(x=>hourMap[x.h]=x);
     const maxHourV=Math.max(1,...byHour.map(x=>Math.max(x.visits,x.claims)));
     let hoursHtml="";
@@ -1024,6 +1306,74 @@ $("#dApply").onclick=()=>{
   loadStats();
 };
 
+/* ── ⑧ 指標切換：每日趨勢 不重複手機 / 次數 ── */
+function renderDayChart(d){
+  const byDay=d.byDay||[];
+  const vField = chartMetric==="count" ? "visits" : "visitors";
+  const cField = chartMetric==="count" ? "claims" : "claimers";
+  const maxDayV=Math.max(1,...byDay.map(x=>Math.max(x[vField]||0,x[cField]||0)));
+  $("#chartDay").innerHTML=byDay.length?byDay.map(x=>{
+    const hv=Math.round((x[vField]||0)/maxDayV*100), hc=Math.round((x[cField]||0)/maxDayV*100);
+    return `<div class="bar"><div class="cols"><div class="col v" style="height:${hv}%" title="進站 ${x[vField]||0}"></div><div class="col c" style="height:${hc}%" title="兌換 ${x[cField]||0}"></div></div><div class="bval">${x[vField]||0}</div><div class="blab">${x.d.slice(5)}</div></div>`;
+  }).join(""):`<div style="color:#999;margin:auto">此區間沒有資料</div>`;
+}
+function updateDayLegend(){
+  $("#dayLgd").innerHTML = chartMetric==="count"
+    ? '<i class="ldot v"></i>進站次數　<i class="ldot c"></i>兌換次數'
+    : '<i class="ldot v"></i>進站手機　<i class="ldot c"></i>兌換手機';
+}
+document.querySelectorAll("#metricToggleWrap [data-metric]").forEach(b=>{
+  b.onclick=()=>{
+    chartMetric=b.dataset.metric;
+    document.querySelectorAll("#metricToggleWrap [data-metric]").forEach(x=>x.classList.toggle("on",x===b));
+    updateDayLegend();
+    if(lastStatsData) renderDayChart(lastStatsData);
+  };
+});
+
+/* ── ③ 自動更新 / 現場看板 ── */
+function setAutoRefresh(on){
+  $("#autoRefreshChk").checked=on;
+  clearInterval(autoTimer); autoTimer=null;
+  if(on){
+    autoTimer=setInterval(()=>{
+      if(kioskOpen) refreshKiosk();
+      else if(curView==="stats") loadStats();
+    },60000);
+  }
+}
+$("#autoRefreshChk").onchange=e=>{ autoRefreshUserPref=e.target.checked; setAutoRefresh(autoRefreshUserPref); };
+async function refreshKiosk(){
+  if(!statsKey)return;
+  try{
+    const t=todayTaipei();
+    const today=await fetchStats(t,t);
+    $("#kTodayVisit").textContent=(today.visitors||0).toLocaleString();
+    $("#kTodayClaim").textContent=(today.claimers||0).toLocaleString();
+    $("#kRate").textContent=today.visitors?((today.claimers/today.visitors*100).toFixed(1)+"%"):"—";
+    $("#kioskUpdated").textContent="更新於 "+new Date().toLocaleTimeString("zh-TW");
+  }catch(e){
+    if(e.message==="UNAUTHORIZED"){ closeKiosk(); handleAuthFailure(); return; }
+  }
+}
+function kioskEscHandler(e){ if(e.key==="Escape") closeKiosk(); }
+function openKiosk(){
+  if(!statsKey){ toast("尚無金鑰，請重新登入"); return; }
+  kioskOpen=true;
+  $("#kioskOverlay").classList.add("show");
+  refreshKiosk();
+  setAutoRefresh(true);
+  document.addEventListener("keydown", kioskEscHandler);
+}
+function closeKiosk(){
+  kioskOpen=false;
+  $("#kioskOverlay").classList.remove("show");
+  document.removeEventListener("keydown", kioskEscHandler);
+  setAutoRefresh(autoRefreshUserPref);
+}
+$("#btnKiosk").onclick=openKiosk;
+$("#kioskClose").onclick=closeKiosk;
+
 /* CSV 匯出 */
 function csvCell(v){
   const s=String(v==null?"":v);
@@ -1053,6 +1403,47 @@ $("#btnExportCsv").onclick=()=>{
 };
 
 /* ══════════════ 設定 ══════════════ */
+/* ⑤ QR Code 產生器 */
+function generateQr(url,label){
+  const box=$("#qrResult"), canvas=$("#qrCanvas"), dl=$("#qrDownload"), hint=$("#qrHint");
+  hint.textContent="";
+  if(typeof qrcode!=="function"){
+    hint.textContent="QR Code 元件載入失敗，請檢查網路連線後重新整理頁面再試。";
+    box.style.display="none";
+    return;
+  }
+  try{
+    const qr=qrcode(0,"M");
+    qr.addData(url);
+    qr.make();
+    const cellSize=6, margin=4;
+    const n=qr.getModuleCount();
+    const size=(n+margin*2)*cellSize;
+    canvas.width=size; canvas.height=size;
+    const ctx=canvas.getContext("2d");
+    ctx.fillStyle="#fff"; ctx.fillRect(0,0,size,size);
+    ctx.fillStyle="#1a1a2e";
+    for(let r=0;r<n;r++){
+      for(let c=0;c<n;c++){
+        if(qr.isDark(r,c)) ctx.fillRect((c+margin)*cellSize,(r+margin)*cellSize,cellSize,cellSize);
+      }
+    }
+    dl.href=canvas.toDataURL("image/png");
+    dl.download="qr-"+label+".png";
+    box.style.display="block";
+  }catch(e){
+    hint.textContent="QR Code 產生失敗，請稍後再試。";
+    box.style.display="none";
+  }
+}
+document.querySelectorAll(".qrBtn").forEach(btn=>{
+  btn.onclick=()=>{
+    const row=btn.closest(".linkRow");
+    const url=new URL(row.dataset.url, location.href).toString();
+    const label=row.dataset.label||"連結";
+    generateQr(url,label);
+  };
+});
 $("#btnCopyKey").onclick=async()=>{
   if(!statsKey){ toast("尚無金鑰"); return; }
   try{ await navigator.clipboard.writeText(statsKey); toast("已複製金鑰"); }

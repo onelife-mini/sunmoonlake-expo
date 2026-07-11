@@ -2281,19 +2281,31 @@ function deviceId(){
 function track(t,shopId){
   if(!ANALYTICS_URL) return;
   try{
-    const body=JSON.stringify({t,d:deviceId(),s:(shopId==null?null:String(shopId))});
+    const body=JSON.stringify({t,d:deviceId(),s:(shopId==null?null:String(shopId)),p:"lake"});
     // text/plain 屬「簡單請求」，不觸發 CORS 預檢；fire-and-forget，後端掛了也不影響使用者
     if(navigator.sendBeacon){ navigator.sendBeacon(ANALYTICS_URL+"/e",new Blob([body],{type:"text/plain"})); }
     else{ fetch(ANALYTICS_URL+"/e",{method:"POST",body,keepalive:true,headers:{"Content-Type":"text/plain"},mode:"cors"}).catch(()=>{}); }
   }catch(e){}
 }
 
+// 店家資料：優先讀雲端已發佈版（後台按「發佈」即時生效），讀不到 2.5 秒內退回站內 shops.json
+async function loadShops(){
+  if(ANALYTICS_URL){
+    try{
+      const c=new AbortController(); const t=setTimeout(()=>c.abort(),2500);
+      const r=await fetch(ANALYTICS_URL+"/shops",{signal:c.signal,cache:"no-store"});
+      clearTimeout(t);
+      if(r.ok){ const j=await r.json(); if(j&&Array.isArray(j.shops)&&j.shops.length) return j.shops; }
+    }catch(e){}
+  }
+  const res=await fetch("data/shops.json",{cache:"no-store"});
+  if(!res.ok) throw new Error(res.status);
+  return res.json();
+}
 async function boot(){
   track("visit"); // 進站（含 QR/連結進來）— 後端用 deviceId 去重
   try{
-    const res=await fetch("data/shops.json",{cache:"no-store"});
-    if(!res.ok) throw new Error(res.status);
-    SHOPS=await res.json();
+    SHOPS=await loadShops();
   }catch(e){
     $("#grid").innerHTML=`<p style="color:#888;text-align:center;padding:20px">店家資料載入失敗（請透過伺服器或部署後的網址開啟，勿用 file:// 直接雙擊）。</p>`;
     $("#total").textContent="0"; return;

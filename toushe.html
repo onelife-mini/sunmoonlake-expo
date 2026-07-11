@@ -738,6 +738,18 @@ function renderFood(){
 
 renderExperiences();
 renderFood();
+
+/* 匿名進站統計（與主站同一 worker；只送隨機裝置ID，無個資）*/
+(function(){
+  const U="https://sunmoonlake-expo-stats.onelifemini.workers.dev";
+  try{
+    let d=localStorage.getItem("lcq:did");
+    if(!d){ d=(self.crypto&&crypto.randomUUID)?crypto.randomUUID():(Date.now().toString(36)+Math.random().toString(36).slice(2,10)); localStorage.setItem("lcq:did",d); }
+    const body=JSON.stringify({t:"visit",d:d,p:"toushe"});
+    if(navigator.sendBeacon){ navigator.sendBeacon(U+"/e",new Blob([body],{type:"text/plain"})); }
+    else{ fetch(U+"/e",{method:"POST",body:body,keepalive:true,headers:{"Content-Type":"text/plain"},mode:"cors"}).catch(function(){}); }
+  }catch(e){}
+})();
 </script>
 
 </body>

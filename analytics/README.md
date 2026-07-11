@@ -21,6 +21,10 @@ wrangler d1 create sunmoonlake-expo-stats
 # 3) 建表
 wrangler d1 execute sunmoonlake-expo-stats --remote --file schema.sql
 
+# 3b)【既有資料庫升級用】schema.sql 的 CREATE TABLE IF NOT EXISTS 不會幫「已存在的表」補新欄位。
+#     若資料庫是 2026-07-11 前建立的，部署新版 worker 前務必先跑（先 migrate、再 deploy）：
+wrangler d1 execute sunmoonlake-expo-stats --remote --command "ALTER TABLE events ADD COLUMN page TEXT;"
+
 # 4) 設定數據金鑰 STATS_KEY（統計 API 用；與登入密碼不同）
 wrangler secret put STATS_KEY
 #    → 貼上你的金鑰後 Enter
