@@ -2065,9 +2065,11 @@ function renderFilter(){
 }
 
 function mapUrl(s){
-  // 有地址 → 用「店名＋地址」搜尋，直接命中 Google Maps 店家頁（含評論/營業時間/導航）
+  // 業主提供的 Google 商家頁短連結（maps.app.goo.gl / share.google）→ 最優先，直接開商家頁
+  if(s&&typeof s==="object"&&s.gmap) return s.gmap;
+  // 有地址 → 用「登錄店名＋地址」搜尋，直接命中 Google Maps 店家頁（含評論/營業時間/導航）
   if(s&&typeof s==="object"&&s.addr){
-    const nm=(s.name||"").replace(/（.*?）|\(.*?\)/g,"").trim();
+    const nm=(s.navq||(s.name||"").replace(/（.*?）|\(.*?\)/g,"")).trim();
     return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(nm+" "+s.addr);
   }
   // 已定位（精準/手動）→ 用座標，導航到你標的確切位置；未定位 → 用店名搜尋
