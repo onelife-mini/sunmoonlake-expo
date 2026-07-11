@@ -1323,7 +1323,7 @@ section { padding: 72px 0; }
   inset: 0;
   background: rgba(25,55,67,.7);
   backdrop-filter: blur(6px);
-  z-index: 100;
+  z-index: 500; /* 高於固定選單(200)與 LINE 浮鈕，領券畫面截圖不被擋 */
   display: none;
   align-items: center;
   justify-content: center;
@@ -2065,6 +2065,11 @@ function renderFilter(){
 }
 
 function mapUrl(s){
+  // 有地址 → 用「店名＋地址」搜尋，直接命中 Google Maps 店家頁（含評論/營業時間/導航）
+  if(s&&typeof s==="object"&&s.addr){
+    const nm=(s.name||"").replace(/（.*?）|\(.*?\)/g,"").trim();
+    return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(nm+" "+s.addr);
+  }
   // 已定位（精準/手動）→ 用座標，導航到你標的確切位置；未定位 → 用店名搜尋
   if(s&&typeof s==="object"&&(s.geo==="precise"||s.geo==="manual")&&typeof s.lat==="number")
     return "https://www.google.com/maps/search/?api=1&query="+s.lat+","+s.lng;
