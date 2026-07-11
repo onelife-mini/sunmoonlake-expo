@@ -122,11 +122,11 @@ ul,ol{margin:0;padding:0;list-style:none}
 .nav-brand b{color:var(--clay-dk)}
 .nav-cta{
   flex:0 0 auto; display:inline-flex; align-items:center; gap:7px;
-  background:#06C755; color:#fff; font-family:var(--fb); font-weight:700;
+  background:var(--clay); color:#fff; font-family:var(--fb); font-weight:700;
   font-size:13.5px; padding:9px 18px; border-radius:999px; white-space:nowrap;
-  transition:var(--tr); box-shadow:0 4px 14px rgba(6,199,85,.35);
+  transition:var(--tr); box-shadow:0 4px 14px rgba(184,83,46,.35);
 }
-.nav-cta:hover{background:#05b34c; transform:translateY(-1px)}
+.nav-cta:hover{background:var(--clay-dk); transform:translateY(-1px)}
 .nav-cta svg{width:16px;height:16px;flex:0 0 auto}
 @media(max-width:560px){
   .site-nav{padding:12px 14px}
@@ -214,10 +214,10 @@ h1 .sub-en{
   border:2px solid transparent; transition:var(--tr);
 }
 .btn-line{
-  background:#06C755; color:#fff;
-  box-shadow:0 8px 26px rgba(6,199,85,.42), 4px 4px 0 #04a040;
+  background:var(--clay); color:#fff;
+  box-shadow:0 8px 26px rgba(184,83,46,.42), 4px 4px 0 #6e2d17;
 }
-.btn-line:hover{background:#05b34c; transform:translateY(-3px)}
+.btn-line:hover{background:var(--clay-dk); transform:translateY(-3px)}
 .btn-line svg{width:20px;height:20px;flex:0 0 auto}
 .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
 .btn-ghost:hover{background:rgba(255,255,255,.1);border-color:#fff}
@@ -486,17 +486,17 @@ footer .disc{
 footer a.footer-back{color:var(--wood-lt); font-weight:700}
 
 /* ════════════════════════════════════════
-   LINE 浮鈕
+   國旅專案浮鈕（class 名稱沿用 .line-fab，僅改連結/文案/顏色/圖示）
 ════════════════════════════════════════ */
 .line-fab{
   position:fixed; right:18px; bottom:20px; z-index:90;
   display:inline-flex; align-items:center; gap:9px;
-  background:#06C755; color:#fff; padding:14px 22px; border-radius:999px;
+  background:var(--clay); color:#fff; padding:14px 22px; border-radius:999px;
   font-family:var(--fb); font-weight:700; font-size:15px;
-  box-shadow:0 8px 24px rgba(6,199,85,.45), 3px 3px 0 #04a040;
+  box-shadow:0 8px 24px rgba(184,83,46,.45), 3px 3px 0 #6e2d17;
   transition:var(--tr);
 }
-.line-fab:hover{background:#05b34c; transform:translate(-2px,-2px); box-shadow:0 12px 30px rgba(6,199,85,.5), 5px 5px 0 #04a040}
+.line-fab:hover{background:var(--clay-dk); transform:translate(-2px,-2px); box-shadow:0 12px 30px rgba(184,83,46,.5), 5px 5px 0 #6e2d17}
 .line-fab svg{width:23px;height:23px;flex:0 0 auto}
 @media(max-width:600px){
   .line-fab{padding:13px 18px; font-size:14px; right:14px; bottom:16px}
@@ -533,9 +533,9 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--clay); outline-off
 <nav class="site-nav" role="navigation" aria-label="主選單">
   <a class="nav-back" href="portal.html"><span aria-hidden="true">←</span><span class="lbl">四大軸線</span></a>
   <div class="nav-brand">水里車埕<b>集集</b></div>
-  <a class="nav-cta" href="https://lin.ee/xRsYj2OM" target="_blank" rel="noopener">
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3z"/></svg>
-    加 LINE 洽詢
+  <a class="nav-cta" href="https://shuili.mindnodeair.com/%E6%97%A5%E6%9C%88%E6%BD%AD%E5%9C%8B%E6%97%85%E5%B0%88%E6%A1%88" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    查看水里國旅專案
   </a>
 </nav>
 
@@ -555,9 +555,9 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--clay); outline-off
     <p class="lead">陶輪轉出水里蛇窯半世紀的手拉坯溫度，貯木池映著車埕林業盛世的倒影，集集支線鐵道與綠色隧道則載著旅人慢慢駛進山城日常。三個聚落沿著鐵道串成一條低碳慢遊的路線，用五感貼近陶土、木業與山蕉土地的故事。</p>
     <p class="tagline">低碳鐵馬讀小鎮，五感體驗山蕉文化。</p>
     <div class="cta-row">
-      <a class="btn btn-line" href="https://lin.ee/xRsYj2OM" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3zM8.13 13.32H6.18a.51.51 0 0 1-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.26h1.43c.29 0 .52.23.52.51s-.23.51-.52.51zm2.02-.51c0 .28-.23.51-.51.51s-.51-.23-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm4.56 0a.51.51 0 0 1-.35.49.5.5 0 0 1-.58-.18l-1.95-2.66v2.35c0 .28-.23.51-.52.51a.51.51 0 0 1-.51-.51V9.04c0-.22.14-.42.35-.49a.51.51 0 0 1 .58.19l1.96 2.66V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm3.06-2.39c.28 0 .51.23.51.52s-.23.51-.51.51h-1.43v.85h1.43c.28 0 .51.23.51.51s-.23.52-.51.52h-1.95a.51.51 0 0 1-.51-.52V9.04c0-.28.23-.51.51-.51h1.95c.28 0 .51.23.51.51s-.23.52-.51.52h-1.43v.85h1.43z"/></svg>
-        想安排行程？加 LINE 洽詢
+      <a class="btn btn-line" href="https://shuili.mindnodeair.com/%E6%97%A5%E6%9C%88%E6%BD%AD%E5%9C%8B%E6%97%85%E5%B0%88%E6%A1%88" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        想安排行程？查看水里國旅專案
       </a>
       <a class="btn btn-ghost" href="#route">看遊程動線 ↓</a>
     </div>
@@ -630,7 +630,7 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--clay); outline-off
       <span class="kicker g">Shops ‧ 參與店家</span>
       <h2>12 家在地店家，陶藝、木業與山城好味道</h2>
       <div class="sec-rule center"></div>
-      <p>部分店家提供旅展限定優惠，出示旅展資訊或加官方 LINE 洽詢即可；其餘店家詳情請於現場或展位詢問。</p>
+      <p>部分店家提供旅展限定優惠，出示旅展資訊或查看官方國旅專案頁即可；其餘店家詳情請於現場或展位詢問。</p>
     </div>
     <div id="shopsList"></div>
   </div>
@@ -640,11 +640,11 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--clay); outline-off
 <section class="gentle-cta" id="joinline">
   <div class="wrap gentle-inner">
     <span class="kicker">Plan Your Trip ‧ 安排行程</span>
-    <h2>想安排水里車埕集集行程？<br>加 LINE 洽詢最快</h2>
-    <p>單車動線、手作場次與店家優惠細節，都可以直接加官方 LINE 詢問，不需要特別加入才能參觀。</p>
-    <a class="btn btn-line" href="https://lin.ee/xRsYj2OM" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3z"/></svg>
-      加 LINE 洽詢水里車埕集集行程
+    <h2>想安排水里車埕集集行程？<br>看官方國旅專案</h2>
+    <p>單車動線、手作場次與店家優惠細節，都可以直接查看官方國旅專案頁確認，不需要特別加入才能參觀。</p>
+    <a class="btn btn-line" href="https://shuili.mindnodeair.com/%E6%97%A5%E6%9C%88%E6%BD%AD%E5%9C%8B%E6%97%85%E5%B0%88%E6%A1%88" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      前往水里國旅專案
     </a>
   </div>
 </section>
@@ -658,15 +658,15 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--clay); outline-off
     <p>地點：南投水里、車埕、集集（集集支線鐵道沿線）</p>
     <p>2026 台北國際夏季旅展 ‧ 7/17–7/20 ‧ 台北世貿一館</p>
     <p>回到 <a class="footer-back" href="portal.html">日月潭旅展 ‧ 四大軸線</a></p>
-    <p class="disc">店家優惠內容以現場公告或官方 LINE 說明為準，如集元果觀光工廠／休閒農場現場另有更優惠折扣，則二者擇一適用，不併用。本頁店家清單、遊程動線與優惠資訊如有異動，以店家與主辦單位現場實際提供為準，恕不負保證與兌換責任。</p>
+    <p class="disc">店家優惠內容以現場公告或官方國旅專案頁說明為準，如集元果觀光工廠／休閒農場現場另有更優惠折扣，則二者擇一適用，不併用。本頁店家清單、遊程動線與優惠資訊如有異動，以店家與主辦單位現場實際提供為準，恕不負保證與兌換責任。</p>
     <p>2026 台北國際旅展現場專用導覽 ‧ 網站製作：<b>OneLife 玩生活</b></p>
   </div>
 </footer>
 
-<!-- ===== LINE 聯絡浮鈕 ===== -->
-<a class="line-fab" href="https://lin.ee/xRsYj2OM" target="_blank" rel="noopener" aria-label="加官方 LINE 好友洽詢水里車埕集集行程">
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3zM8.13 13.32H6.18a.51.51 0 0 1-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.26h1.43c.29 0 .52.23.52.51s-.23.51-.52.51zm2.02-.51c0 .28-.23.51-.51.51s-.51-.23-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm4.56 0a.51.51 0 0 1-.35.49.5.5 0 0 1-.58-.18l-1.95-2.66v2.35c0 .28-.23.51-.52.51a.51.51 0 0 1-.51-.51V9.04c0-.22.14-.42.35-.49a.51.51 0 0 1 .58.19l1.96 2.66V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm3.06-2.39c.28 0 .51.23.51.52s-.23.51-.51.51h-1.43v.85h1.43c.28 0 .51.23.51.51s-.23.52-.51.52h-1.95a.51.51 0 0 1-.51-.52V9.04c0-.28.23-.51.51-.51h1.95c.28 0 .51.23.51.51s-.23.52-.51.52h-1.43v.85h1.43z"/></svg>
-  加 LINE 好友
+<!-- ===== 官方國旅專案聯絡浮鈕 ===== -->
+<a class="line-fab" href="https://shuili.mindnodeair.com/%E6%97%A5%E6%9C%88%E6%BD%AD%E5%9C%8B%E6%97%85%E5%B0%88%E6%A1%88" target="_blank" rel="noopener" aria-label="查看水里國旅專案頁（水里車埕集集行程）">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+  水里國旅專案
 </a>
 
 <script>

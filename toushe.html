@@ -114,11 +114,11 @@ ul{margin:0;padding:0;list-style:none}
 .nav-brand b{color:var(--gold-dk)}
 .nav-cta{
   flex:0 0 auto; display:inline-flex; align-items:center; gap:7px;
-  background:#06C755; color:#fff; font-family:var(--fb); font-weight:700;
+  background:#1877F2; color:#fff; font-family:var(--fb); font-weight:700;
   font-size:13.5px; padding:9px 18px; border-radius:999px; white-space:nowrap;
-  transition:var(--tr); box-shadow:0 4px 14px rgba(6,199,85,.35);
+  transition:var(--tr); box-shadow:0 4px 14px rgba(24,119,242,.35);
 }
-.nav-cta:hover{background:#05b34c; transform:translateY(-1px)}
+.nav-cta:hover{background:#0e63d3; transform:translateY(-1px)}
 .nav-cta svg{width:16px;height:16px;flex:0 0 auto}
 @media(max-width:560px){
   .site-nav{padding:12px 16px}
@@ -211,10 +211,10 @@ h1 .sub-en{
   border:2px solid transparent; transition:var(--tr);
 }
 .btn-line{
-  background:#06C755; color:#fff;
-  box-shadow:0 8px 26px rgba(6,199,85,.42), 4px 4px 0 #04a040;
+  background:#1877F2; color:#fff;
+  box-shadow:0 8px 26px rgba(24,119,242,.42), 4px 4px 0 #0a3d91;
 }
-.btn-line:hover{background:#05b34c; transform:translateY(-3px)}
+.btn-line:hover{background:#0e63d3; transform:translateY(-3px)}
 .btn-line svg{width:20px;height:20px;flex:0 0 auto}
 .btn-ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
 .btn-ghost:hover{background:rgba(255,255,255,.1);border-color:#fff}
@@ -453,7 +453,7 @@ section{padding:68px 0}
 }
 
 /* ════════════════════════════════════════
-   溫和 CTA 區（非強制加 LINE，僅提示可洽詢）
+   溫和 CTA 區（非強制加臉書，僅提示可洽詢）
 ════════════════════════════════════════ */
 .gentle-cta{
   background:var(--paddy);
@@ -500,17 +500,17 @@ footer .disc{
 footer a.footer-back{color:var(--gold-lt); font-weight:700}
 
 /* ════════════════════════════════════════
-   LINE 浮鈕
+   臉書粉專浮鈕（class 名稱沿用 .line-fab，僅改連結/文案/顏色/圖示）
 ════════════════════════════════════════ */
 .line-fab{
   position:fixed; right:18px; bottom:20px; z-index:90;
   display:inline-flex; align-items:center; gap:9px;
-  background:#06C755; color:#fff; padding:14px 22px; border-radius:999px;
+  background:#1877F2; color:#fff; padding:14px 22px; border-radius:999px;
   font-family:var(--fb); font-weight:700; font-size:15px;
-  box-shadow:0 8px 24px rgba(6,199,85,.45), 3px 3px 0 #04a040;
+  box-shadow:0 8px 24px rgba(24,119,242,.45), 3px 3px 0 #0a3d91;
   transition:var(--tr);
 }
-.line-fab:hover{background:#05b34c; transform:translate(-2px,-2px); box-shadow:0 12px 30px rgba(6,199,85,.5), 5px 5px 0 #04a040}
+.line-fab:hover{background:#0e63d3; transform:translate(-2px,-2px); box-shadow:0 12px 30px rgba(24,119,242,.5), 5px 5px 0 #0a3d91}
 .line-fab svg{width:23px;height:23px;flex:0 0 auto}
 @media(max-width:600px){
   .line-fab{padding:13px 18px; font-size:14px; right:14px; bottom:16px}
@@ -545,9 +545,9 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--gold); outline-off
 <nav class="site-nav" role="navigation" aria-label="主選單">
   <a class="nav-back" href="portal.html"><span aria-hidden="true">←</span><span class="lbl">四大軸線</span></a>
   <div class="nav-brand">頭社<b>活盆地</b></div>
-  <a class="nav-cta" href="https://lin.ee/xRsYj2OM" target="_blank" rel="noopener">
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3z"/></svg>
-    加 LINE 洽詢
+  <a class="nav-cta" href="https://www.facebook.com/profile.php?id=61585531176016" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.9 3.77-3.9 1.09 0 2.23.2 2.23.2v2.45h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.76 8.44-4.92 8.44-9.94z"/></svg>
+    臉書粉專洽詢
   </a>
 </nav>
 
@@ -569,9 +569,9 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--gold); outline-off
     </h1>
     <p class="lead">日月潭旁一片罕見的泥炭土活盆地——腳踩下去，土地會微微晃動，像整片大地都在呼吸。夏季一片金針花海染黃山谷，純樸田園間，農遊體驗、單車小徑與在地小吃，構成頭社最不慌不忙的旅行步調。</p>
     <div class="cta-row">
-      <a class="btn btn-line" href="https://lin.ee/xRsYj2OM" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3zM8.13 13.32H6.18a.51.51 0 0 1-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.26h1.43c.29 0 .52.23.52.51s-.23.51-.52.51zm2.02-.51c0 .28-.23.51-.51.51s-.51-.23-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm4.56 0a.51.51 0 0 1-.35.49.5.5 0 0 1-.58-.18l-1.95-2.66v2.35c0 .28-.23.51-.52.51a.51.51 0 0 1-.51-.51V9.04c0-.22.14-.42.35-.49a.51.51 0 0 1 .58.19l1.96 2.66V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm3.06-2.39c.28 0 .51.23.51.52s-.23.51-.51.51h-1.43v.85h1.43c.28 0 .51.23.51.51s-.23.52-.51.52h-1.95a.51.51 0 0 1-.51-.52V9.04c0-.28.23-.51.51-.51h1.95c.28 0 .51.23.51.51s-.23.52-.51.52h-1.43v.85h1.43z"/></svg>
-        想安排頭社行程？加 LINE 洽詢
+      <a class="btn btn-line" href="https://www.facebook.com/profile.php?id=61585531176016" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.9 3.77-3.9 1.09 0 2.23.2 2.23.2v2.45h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.76 8.44-4.92 8.44-9.94z"/></svg>
+        想安排頭社行程？到臉書粉專洽詢
       </a>
       <a class="btn btn-ghost" href="#stay-food">看在地美食 ↓</a>
     </div>
@@ -679,11 +679,11 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--gold); outline-off
 <section class="gentle-cta" id="joinline">
   <div class="wrap gentle-inner">
     <span class="kicker">Plan Your Trip ‧ 安排行程</span>
-    <h2>想安排頭社行程？<br>加 LINE 洽詢最快</h2>
-    <p>頭社的金針花期、農遊體驗與廚娘手作場次都需要提前掌握，加官方 LINE 直接詢問即可，不需要特別加入才能參觀。</p>
-    <a class="btn btn-line" href="https://lin.ee/xRsYj2OM" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3z"/></svg>
-      加 LINE 洽詢頭社行程
+    <h2>想安排頭社行程？<br>到臉書粉專洽詢</h2>
+    <p>頭社的金針花期、農遊體驗與廚娘手作場次都需要提前掌握，至官方臉書粉專直接詢問即可，不需要特別加入才能參觀。</p>
+    <a class="btn btn-line" href="https://www.facebook.com/profile.php?id=61585531176016" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.9 3.77-3.9 1.09 0 2.23.2 2.23.2v2.45h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.76 8.44-4.92 8.44-9.94z"/></svg>
+      前往臉書粉專洽詢頭社行程
     </a>
   </div>
 </section>
@@ -697,15 +697,15 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--gold); outline-off
     <p>地點：南投魚池頭社（日月潭旁）</p>
     <p>2026 台北國際夏季旅展 ‧ 7/17–7/20 ‧ 台北世貿一館</p>
     <p>回到 <a class="footer-back" href="portal.html">日月潭旅展 ‧ 四大軸線</a></p>
-    <p class="disc">廚娘手作套裝優惠 760 元（含基礎絲瓜導覽 & 絲瓜絡提燈 DIY、盆地夜間青蛙生態探索）及各項單獨優惠 400 元，使用期限與詳細場次請以現場或官方 LINE 公告為準。本頁店家清單與體驗資訊如有異動，以店家實際提供為準，恕不負保證與兌換責任。</p>
+    <p class="disc">廚娘手作套裝優惠 760 元（含基礎絲瓜導覽 & 絲瓜絡提燈 DIY、盆地夜間青蛙生態探索）及各項單獨優惠 400 元，使用期限與詳細場次請以現場或官方臉書粉專公告為準。本頁店家清單與體驗資訊如有異動，以店家實際提供為準，恕不負保證與兌換責任。</p>
     <p>2026 台北國際旅展現場專用導覽 ‧ 網站製作：<b>OneLife 玩生活</b></p>
   </div>
 </footer>
 
-<!-- ===== LINE 聯絡浮鈕 ===== -->
-<a class="line-fab" href="https://lin.ee/xRsYj2OM" target="_blank" rel="noopener" aria-label="加官方 LINE 好友洽詢頭社行程">
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3C6.48 3 2 6.66 2 11.18c0 4.05 3.55 7.44 8.35 8.08.32.07.77.21.88.49.1.25.07.64.03.9 0 0-.12.7-.14.85-.04.25-.2.98.86.53s5.7-3.36 7.78-5.75C21.27 14.7 22 13.04 22 11.18 22 6.66 17.52 3 12 3zM8.13 13.32H6.18a.51.51 0 0 1-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.26h1.43c.29 0 .52.23.52.51s-.23.51-.52.51zm2.02-.51c0 .28-.23.51-.51.51s-.51-.23-.51-.51V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm4.56 0a.51.51 0 0 1-.35.49.5.5 0 0 1-.58-.18l-1.95-2.66v2.35c0 .28-.23.51-.52.51a.51.51 0 0 1-.51-.51V9.04c0-.22.14-.42.35-.49a.51.51 0 0 1 .58.19l1.96 2.66V9.04c0-.28.23-.51.51-.51s.51.23.51.51v3.77zm3.06-2.39c.28 0 .51.23.51.52s-.23.51-.51.51h-1.43v.85h1.43c.28 0 .51.23.51.51s-.23.52-.51.52h-1.95a.51.51 0 0 1-.51-.52V9.04c0-.28.23-.51.51-.51h1.95c.28 0 .51.23.51.51s-.23.52-.51.52h-1.43v.85h1.43z"/></svg>
-  加 LINE 好友
+<!-- ===== 臉書粉專聯絡浮鈕 ===== -->
+<a class="line-fab" href="https://www.facebook.com/profile.php?id=61585531176016" target="_blank" rel="noopener" aria-label="前往官方臉書粉專洽詢頭社行程">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.9 3.77-3.9 1.09 0 2.23.2 2.23.2v2.45h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.76 8.44-4.92 8.44-9.94z"/></svg>
+  臉書粉專
 </a>
 
 <script>
@@ -741,7 +741,7 @@ const EXPERIENCES = [
         {label:"盆地夜間青蛙生態探索（外語場，約 90 分鐘）",price:"單獨 400 元"}
       ],
       total:{label:"兩場都約，套裝優惠",price:"760 元"},
-      note:"套裝優惠 760 元為「中文絲瓜導覽+DIY」與「外語夜間青蛙生態探索」合併預約之價格；若僅單獨參加白天絲瓜活動或夜間外語夜觀，則各別為 400 元。每場約 90 分鐘，實際場次請洽官方 LINE 或現場確認。"
+      note:"套裝優惠 760 元為「中文絲瓜導覽+DIY」與「外語夜間青蛙生態探索」合併預約之價格；若僅單獨參加白天絲瓜活動或夜間外語夜觀，則各別為 400 元。每場約 90 分鐘，實際場次請洽官方臉書粉專或現場確認。"
     }
   },
   {
