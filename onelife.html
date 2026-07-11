@@ -276,6 +276,12 @@ body.pg-inner #route { margin-top: 4px; }
   0%,100% { opacity: 1; }
   50%      { opacity: .35; }
 }
+/* 減少動態偏好：關閉閃爍與平滑捲動（自動輪播由 JS 端停用） */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .eyebrow-dot { animation: none; }
+  .hero-slide { transition: none; }
+}
 
 /* 主標題 */
 .hero h1 {
@@ -979,7 +985,7 @@ section { padding: 72px 0; }
 /* 篩選 Chips */
 .filter {
   position: sticky;
-  top: 0;
+  top: 76px; /* 固定導覽藥丸(top:14px+高度)下方，避免被蓋住 */
   z-index: 30;
   background: rgba(241,240,234,.95);
   backdrop-filter: blur(10px);
@@ -988,6 +994,9 @@ section { padding: 72px 0; }
   margin: 32px -24px 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+}
+@media (max-width: 620px) {
+  .filter { top: 120px; } /* 手機導覽列換行後較高 */
 }
 .filter .row {
   display: flex;
@@ -1556,8 +1565,8 @@ footer .disc {
   <!-- 背景輪播 -->
   <div class="hero-slider" id="heroSlider">
     <div class="hero-slide active" style="background-image:url('images/hero.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('images/hero2.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('images/hero3.jpg')"></div>
+    <div class="hero-slide" data-bg="images/hero2.jpg"></div>
+    <div class="hero-slide" data-bg="images/hero3.jpg"></div>
   </div>
 
   <!-- 遮罩 -->
@@ -2093,17 +2102,17 @@ function card(s,idx){
       <div class="cpn-acts">
         ${action}
         <a class="cpn-link" href="${mapUrl(s)}" target="_blank" rel="noopener">🧭 導航</a>
-        <button class="cpn-link" data-copy="${idx}" title="複製">📋</button>
+        <button class="cpn-link" data-copy="${idx}" title="複製" aria-label="複製店家資訊">📋</button>
       </div>
     </div>
   </div>`;
 }
 function renderGrid(){
-  const q=(query||"").trim();
+  const q=(query||"").trim().toLowerCase();
   const groups = current==="all" ? GROUPS.filter(g=>g.key!=="all") : GROUPS.filter(g=>g.key===current);
   let html="";
   groups.forEach(g=>{
-    const items=SHOPS.map((s,i)=>({s,i})).filter(o=>o.s.group===g.key && (!q || o.s.name.includes(q)));
+    const items=SHOPS.map((s,i)=>({s,i})).filter(o=>o.s.group===g.key && (!q || o.s.name.toLowerCase().includes(q)));
     if(!items.length) return;
     html += `<div class="cpn-group">
       <div class="cpn-grouphd"><span class="rdot" style="background:${GCOLOR[g.key]}"></span>${g.label}<span class="cnt">${items.length}</span></div>
@@ -2220,10 +2229,14 @@ document.querySelectorAll(".site-nav [data-page]").forEach(a=>{
 window.addEventListener("hashchange",()=>showPage((location.hash||"").replace("#","")||"home"));
 showPage((location.hash||"").replace("#","")||"home");
 
-/* Hero 多照輪播（跨淡） */
+/* Hero 多照輪播（跨淡）：2、3 張圖延到頁面載完才抓（省首屏流量）；減少動態偏好時停用自動輪播 */
 (function(){
   const slides=document.querySelectorAll("#heroSlider .hero-slide");
   if(slides.length<2)return;
+  const lazyLoad=()=>slides.forEach(s=>{ if(s.dataset.bg){ s.style.backgroundImage="url('"+s.dataset.bg+"')"; delete s.dataset.bg; } });
+  if(document.readyState==="complete") lazyLoad();
+  else window.addEventListener("load",lazyLoad,{once:true});
+  if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
   let i=0;
   setInterval(()=>{ slides[i].classList.remove("active"); i=(i+1)%slides.length; slides[i].classList.add("active"); },5000);
 })();
