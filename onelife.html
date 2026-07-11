@@ -2084,6 +2084,7 @@ function mapUrl(s){
 /* 從優惠文字抓出折扣徽章 */
 function deal(s){
   if(s.inquiry) return {big:"洽詢",unit:"",cls:"d-inq"};
+  if(s.nooffer) return {big:"參考",unit:"",cls:"d-inq"};
   const o=(s.offer||"").replace(/[,，]/g,"");
   let m;
   if(m=o.match(/(\d+(?:\.\d+)?)\s*折/)) return {big:m[1],unit:"折",cls:"d-pct"};
@@ -2099,15 +2100,17 @@ function card(s,idx){
   const claimed=localStorage.getItem(claimKey(s.id));
   const action = s.inquiry
     ? `<span class="cpn-inq">優惠洽詢現場</span>`
-    : (claimed
-        ? `<button class="cpn-claim done" data-i="${idx}">✓ 已領取</button>`
-        : `<button class="cpn-claim" data-i="${idx}">領取</button>`);
-  return `<div class="coupon ${s.inquiry?'dim':''}">
+    : s.nooffer
+      ? ``
+      : (claimed
+          ? `<button class="cpn-claim done" data-i="${idx}">✓ 已領取</button>`
+          : `<button class="cpn-claim" data-i="${idx}">領取</button>`);
+  return `<div class="coupon ${(s.inquiry||s.nooffer)?'dim':''}">
     <div class="cpn-stub ${d.cls}"><span class="cs-big">${d.big}</span>${d.unit?`<span class="cs-unit">${d.unit}</span>`:""}</div>
     <div class="cpn-body">
       <div class="cpn-top"><h4 class="cpn-name">${esc(s.name)}</h4><span class="cpn-cat">${CATNAME[s.group]||""}</span></div>
       <div class="cpn-area">📍 ${esc(s.area||"日月潭周邊")}</div>
-      <div class="cpn-offer">${s.inquiry?"店家優惠洽談中，請洽旅展攤位或店家現場":offerHtml(s.offer).replaceAll("<br>"," ")}</div>
+      <div class="cpn-offer">${s.inquiry?"店家優惠洽談中，請洽旅展攤位或店家現場":(s.nooffer?"尚未提供優惠，請詢問現場工作人員":offerHtml(s.offer).replaceAll("<br>"," "))}</div>
       <div class="cpn-acts">
         ${action}
         <a class="cpn-link" href="${mapUrl(s)}" target="_blank" rel="noopener">🧭 導航</a>

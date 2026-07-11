@@ -546,6 +546,10 @@ a{color:inherit}
                   <label class="chkRow"><input type="checkbox" id="inquiry"> 優惠洽詢中（前台顯示「優惠洽談中」，暫不顯示 offer 內容）</label>
                 </div>
 
+                <div class="fld">
+                  <label class="chkRow"><input type="checkbox" id="snooffer"> 無優惠（僅列出參考）（前台顯示「尚未提供優惠，請詢問現場工作人員」，不顯示領取鈕，改用連結導引到店家）</label>
+                </div>
+
                 <div class="saveRow">
                   <button class="btn btn-gold" id="saveBtn">💾 儲存這家</button>
                   <span class="saveMsg" id="saveMsg"></span>
@@ -911,7 +915,7 @@ function select(i){
   $("#fname").value=s.name||"";
   $("#lat").value=hasLL?s.lat:""; $("#lng").value=hasLL?s.lng:""; $("#addr").value=s.addr||"";
   $("#group").value=s.group||"sup"; $("#area").value=s.area||""; $("#offer").value=s.offer||""; $("#slink").value=s.link||""; $("#sgmap").value=s.gmap||"";
-  $("#inquiry").checked=!!s.inquiry;
+  $("#inquiry").checked=!!s.inquiry; $("#snooffer").checked=!!s.nooffer;
   $("#geoq").value=""; $("#gmap").value=""; $("#geores").classList.remove("show"); $("#saveMsg").textContent="";
   ensureMap();
   setTimeout(()=>map.invalidateSize(),60);
@@ -995,7 +999,7 @@ $("#saveBtn").onclick=()=>{
   s.name=nameVal;
   s.lat=+lat.toFixed(6); s.lng=+lng.toFixed(6); s.addr=$("#addr").value.trim(); s.geo="manual";
   s.group=$("#group").value; s.area=$("#area").value.trim(); s.offer=$("#offer").value.trim(); s.link=$("#slink").value.trim(); s.gmap=$("#sgmap").value.trim();
-  s.inquiry=$("#inquiry").checked;
+  s.inquiry=$("#inquiry").checked; s.nooffer=$("#snooffer").checked;
   persist(); renderRows();
   $("#eName").textContent=s.name;
   $("#eMeta").innerHTML=`${CATNAME[s.group]||""}${s.area?' ‧ '+esc(s.area):''}　目前：<b style="color:#c2703a">已設定</b>`;
@@ -1030,7 +1034,7 @@ $("#btnDeleteShop").onclick=()=>{
 /* 匯出 / 匯入 / 重載 */
 $("#btnExport").onclick=()=>{
   const clean=SHOPS.map(s=>({id:s.id,name:s.name,group:s.group,area:s.area,offer:s.offer,
-    inquiry:s.inquiry,lat:s.lat,lng:s.lng,geo:s.geo,addr:s.addr||""}));
+    inquiry:s.inquiry,nooffer:s.nooffer,lat:s.lat,lng:s.lng,geo:s.geo,addr:s.addr||""}));
   const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="shops.json"; a.click();
   toast("已匯出 shops.json");
@@ -1072,7 +1076,7 @@ $("#modalOverlay").addEventListener("click", e=>{ if(e.target.id==="modalOverlay
 
 /* ══════════════ 草稿 vs 線上差異 ══════════════ */
 const PAGE_NAME={lake:"日月潭‧逐路船騎", taomi:"桃米", toushe:"頭社"};
-const DIFF_FIELD_LABELS={name:"店名",group:"類別",area:"區域",offer:"優惠內容",link:"店家連結",gmap:"商家頁短連結",navq:"Google登錄名",inquiry:"洽詢中",lat:"緯度",lng:"經度",geo:"定位狀態",addr:"地址備註"};
+const DIFF_FIELD_LABELS={name:"店名",group:"類別",area:"區域",offer:"優惠內容",link:"店家連結",gmap:"商家頁短連結",navq:"Google登錄名",inquiry:"洽詢中",nooffer:"無優惠參考",lat:"緯度",lng:"經度",geo:"定位狀態",addr:"地址備註"};
 async function fetchRemoteShops(){
   try{
     const r=await fetch(ANALYTICS_URL+"/shops",{cache:"no-store"});
@@ -1094,7 +1098,7 @@ function computeDiff(remote){
   const added=[], removed=[], changed=[];
   SHOPS.forEach(s=>{ if(!remoteById[String(s.id)]) added.push(s); });
   (remote||[]).forEach(s=>{ if(!localById[String(s.id)]) removed.push(s); });
-  const fields=["name","group","area","offer","link","gmap","navq","inquiry","lat","lng","geo","addr"];
+  const fields=["name","group","area","offer","link","gmap","navq","inquiry","nooffer","lat","lng","geo","addr"];
   SHOPS.forEach(s=>{
     const r=remoteById[String(s.id)]; if(!r)return;
     const diffFields=[];
@@ -1154,7 +1158,7 @@ async function doPublish(){
   toast("發佈中…");
   try{
     const clean=SHOPS.map(s=>({id:s.id,name:s.name,group:s.group,area:s.area,offer:s.offer,
-      inquiry:s.inquiry,lat:s.lat,lng:s.lng,geo:s.geo,addr:s.addr||""}));
+      inquiry:s.inquiry,nooffer:s.nooffer,lat:s.lat,lng:s.lng,geo:s.geo,addr:s.addr||""}));
     const res=await apiPost("/shops",{key:statsKey, shops:clean});
     if(res.status===401){ handleAuthFailure(); return; }
     if(res.ok && res.data && res.data.ok){
