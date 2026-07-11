@@ -19,6 +19,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
+.nb{white-space:nowrap}
+h1,h2,h3{text-wrap:balance}
 /* ════════════════════════════════════════
    DESIGN TOKENS — 桃米：森林濕地生態誌
 ════════════════════════════════════════ */
@@ -666,7 +668,7 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--clay); outline-off
   <div class="wrap">
     <div class="sec-head center">
       <span class="kicker g">Eat ‧ 在地美食</span>
-      <h2>10 家在地美食，加 LINE 享優惠</h2>
+      <h2>10 家<span class="nb">在地美食</span>，<span class="nb">加 LINE 享優惠</span></h2>
       <div class="sec-rule center"></div>
       <p>優惠內容以現場出示官方 LINE 好友畫面為準，各店家優惠詳情請於加入後於 LINE 官方帳號查詢或現場詢問。</p>
     </div>
@@ -691,7 +693,7 @@ a:focus-visible, button:focus-visible{outline:3px solid var(--clay); outline-off
 <section class="line-section" id="joinline">
   <div class="wrap line-inner">
     <span class="kicker">Join Us ‧ 立即行動</span>
-    <h2>加入桃米休閒農業區官方 LINE<br>解鎖全區旅展優惠</h2>
+    <h2>加入<span class="nb">桃米休閒農業區</span>官方 LINE<br>解鎖<span class="nb">全區旅展優惠</span></h2>
     <p>民宿 9.5 折、甜蜜城堡折扣、在地美食優惠，通通只要加 LINE 就能享有。優惠期限至 2026/12/31。</p>
     <div class="line-idcard">
       <div>
@@ -748,15 +750,15 @@ const FOOD = [
 ];
 
 const TOURS = [
-  { name:"最佳筍友‧生態步道健行", month:"6–10月", steps:["麻竹筍農事體驗(挖筍/DIY/品嘗)","麻竹筍DIY餐＋竹筒飯","桃米→澀水(經水上瀑布)健行"] },
-  { name:"桃米百香美人腿‧一日農夫", month:"7–9月", steps:["百香果採果(現吃＋帶走1公斤)","百香果鳳梨果醬DIY","黑豆園用餐","茭白筍田體驗(帶走1台斤)","桃米親水公園玩水"] },
+  { name:"最⁠佳⁠筍⁠友‧生⁠態⁠步⁠道⁠健⁠行", month:"6–10月", steps:["麻竹筍農事體驗(挖筍/DIY/品嘗)","麻竹筍DIY⁠餐＋竹筒飯","桃米→澀水(經水上瀑布)健⁠行"] },
+  { name:"桃⁠米⁠百⁠香⁠美⁠人⁠腿‧一⁠日⁠農⁠夫", month:"7–9月", steps:["百香果採果(現吃＋帶走1公斤)","百香果鳳⁠梨⁠果⁠醬DIY","黑豆園用餐","茭白筍田體驗(帶⁠走⁠1⁠台⁠斤)","桃米親水公園玩水"] },
   { name:"溪流與生態池生態教育", month:"全年", steps:["生態互動遊戲","蝴蝶食草復育","驅除外來種觀察","蝴蝶食草便當(紙教堂)","中路坑濕地環境教育"] },
-  { name:"桃米生態探索‧蛙鳴蝶舞", month:"全年", steps:["黃金青蛙粿DIY","紙教堂賞蝶＆藝文導覽","魚蝦生態探索","秀卿ㄟ灶腳特色餐","中路坑溪夜間溯溪賞蛙"] },
-  { name:"桃米遠足‧走進巧克力夢想城堡", month:"全年", steps:["遠足餐盒食材DIY","桃米生態村導覽","遠足野餐","妮娜巧克力城堡導覽","巧克力DIY"] },
-  { name:"百香農夫農事體驗", month:"7–12月", steps:["百香果採果(現吃＋帶走1公斤)","百香果鳳梨果醬DIY"] },
+  { name:"桃⁠米⁠生⁠態⁠探⁠索‧蛙⁠鳴⁠蝶⁠舞", month:"全年", steps:["黃金青蛙粿DIY","紙教堂賞蝶＆藝文導覽","魚蝦生態探索","秀卿ㄟ灶腳特色餐","中⁠路⁠坑⁠溪夜間溯溪賞蛙"] },
+  { name:"桃⁠米⁠遠⁠足‧走⁠進巧克力夢⁠想⁠城⁠堡", month:"全年", steps:["遠足餐盒食材DIY","桃米生態村導覽","遠足野餐","妮娜巧克力城堡導覽","巧克力DIY"] },
+  { name:"百香農夫農事體驗", month:"7–12月", steps:["百香果採果(現吃＋帶走1公斤)","百香果鳳⁠梨⁠果⁠醬DIY"] },
   { name:"桃米遠足體驗", month:"全年", steps:["遠足餐盒食材DIY(2食材＋1餐盒)","生態村導覽","遠足野餐"] },
-  { name:"桃米巧克力手作", month:"全年", steps:["可可青蛙粿DIY(現場食用)","妮娜巧克力夢想城堡導覽"] },
-  { name:"桃米遊戲書‧蛙ㄟ保衛戰", month:"全年", steps:["遊戲書講故事","桃源國小闖關","桃米小徑解說闖關","成就分享"] }
+  { name:"桃米巧克力手作", month:"全年", steps:["可可青蛙粿DIY(現場食用)","妮娜巧克力夢⁠想⁠城⁠堡導覽"] },
+  { name:"桃⁠米⁠遊⁠戲⁠書‧蛙ㄟ保⁠衛⁠戰", month:"全年", steps:["遊戲書講故事","桃源國小闖關","桃米小徑解⁠說⁠闖⁠關","成就分享"] }
 ];
 
 const ICON_LEAF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-4 3-7 9-11 6 4 9 7 9 11a7 7 0 0 1-7 7c-1 0-2-.5-2-.5"/><path d="M12 12c-2 2-3 5-3 8"/></svg>';
