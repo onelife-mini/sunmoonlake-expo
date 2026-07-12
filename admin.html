@@ -1034,7 +1034,8 @@ $("#btnDeleteShop").onclick=()=>{
 /* 匯出 / 匯入 / 重載 */
 $("#btnExport").onclick=()=>{
   const clean=SHOPS.map(s=>({id:s.id,name:s.name,group:s.group,area:s.area,offer:s.offer,
-    inquiry:s.inquiry,nooffer:s.nooffer,lat:s.lat,lng:s.lng,geo:s.geo,addr:s.addr||""}));
+    inquiry:s.inquiry,nooffer:s.nooffer,lat:s.lat,lng:s.lng,geo:s.geo,addr:s.addr||"",
+    link:s.link||"",gmap:s.gmap||"",navq:s.navq||""}));
   const blob=new Blob([JSON.stringify(clean,null,2)],{type:"application/json"});
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="shops.json"; a.click();
   toast("已匯出 shops.json");
@@ -1158,7 +1159,8 @@ async function doPublish(){
   toast("發佈中…");
   try{
     const clean=SHOPS.map(s=>({id:s.id,name:s.name,group:s.group,area:s.area,offer:s.offer,
-      inquiry:s.inquiry,nooffer:s.nooffer,lat:s.lat,lng:s.lng,geo:s.geo,addr:s.addr||""}));
+      inquiry:s.inquiry,nooffer:s.nooffer,lat:s.lat,lng:s.lng,geo:s.geo,addr:s.addr||"",
+      link:s.link||"",gmap:s.gmap||"",navq:s.navq||""}));
     const res=await apiPost("/shops",{key:statsKey, shops:clean});
     if(res.status===401){ handleAuthFailure(); return; }
     if(res.ok && res.data && res.data.ok){
