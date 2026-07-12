@@ -55,7 +55,7 @@
     "lng": 120.905056,
     "geo": "manual",
     "addr": "南投縣魚池鄉日月潭月牙灣",
-    "link": "https://www.happysunny.club/",
+    "link": "https://www.facebook.com/happysunnySUP/",
     "gmap": "",
     "navq": "樂晴SUP俱樂部"
   },
@@ -101,7 +101,7 @@
     "geo": "manual",
     "addr": "南投縣魚池鄉月牙灣",
     "link": "https://gosup.tw/",
-    "gmap": "",
+    "gmap": "https://www.google.com/maps/place/%E6%97%A5%E6%9C%88%E6%BD%ADSUP%EF%BD%9C%E9%AD%9A%E4%BA%BA%E7%AB%8B%E6%A7%B3%EF%BD%9C%E5%90%88%E6%B3%95%E6%8E%A8%E8%96%A6SUP%E9%AB%94%E9%A9%97/@23.8429107,120.9023632,17z/data=!4m14!1m7!3m6!1s0x3468d7abd5847ebf:0x4bdc754adfeea451!2z5pel5pyI5r2tU1VQ772c6a2a5Lq656uL5qez772c5ZCI5rOV5o6o6JamU1VQ6auU6amH!8m2!3d23.8429107!4d120.9049381!16s%2Fg%2F11f2sm3421",
     "navq": "日月潭SUP｜魚人立槳"
   },
   {
@@ -236,7 +236,7 @@
     "geo": "precise",
     "addr": "南投縣魚池鄉月牙灣",
     "link": "https://www.whatsup.one/",
-    "gmap": "",
+    "gmap": "https://goo.gl/maps/UPnovgHXYrVwbbLZA",
     "navq": "WhatSUP Instructor 划涉立槳運動"
   },
   {
@@ -297,7 +297,7 @@
     "addr": "南投縣埔里鎮中山路四段106號",
     "link": "https://onelifeeats.com/puli/",
     "gmap": "",
-    "navq": "魚光窯烤 埔里店"
+    "navq": "魚光窯烤麵包"
   },
   {
     "id": 21,
@@ -311,7 +311,7 @@
     "geo": "manual",
     "addr": "南投縣魚池鄉魚池村魚池街435號",
     "link": "https://www.skyfishcheese.com/",
-    "gmap": "",
+    "gmap": "https://goo.gl/maps/fFDvdvPTPLNDAYe86",
     "navq": "空中的魚乳酪蛋糕"
   },
   {
@@ -355,7 +355,7 @@
     "lng": 120.910249,
     "geo": "precise",
     "addr": "南投縣魚池鄉中山路180號",
-    "link": "https://nomad-day-cafe.business.site/",
+    "link": "https://www.facebook.com/nomadday.180/",
     "gmap": "",
     "navq": "日月潭遊牧咖啡 Nomad Day Café"
   },
@@ -400,7 +400,7 @@
     "lng": 120.926981,
     "geo": "precise",
     "addr": "南投縣魚池鄉大林村永川巷12-8號",
-    "link": "http://www.coffeeshen.com/",
+    "link": "https://www.facebook.com/p/山豬衝吧coffee-100063624831744/",
     "gmap": "",
     "navq": "山豬衝吧咖啡館"
   },
@@ -446,8 +446,8 @@
     "geo": "precise",
     "addr": "南投縣魚池鄉瓊文巷45號",
     "link": "https://xuan-ting.3rd-evo.com/",
-    "gmap": "",
-    "navq": "玄町本二家日式旅宿"
+    "gmap": "https://goo.gl/maps/U8rJNfw6FJq",
+    "navq": "玄町本二家民宿"
   },
   {
     "id": 31,
@@ -476,8 +476,8 @@
     "geo": "precise",
     "addr": "南投縣魚池鄉瓊文巷39-11號",
     "link": "http://www.sunmoonlake-villa.com/",
-    "gmap": "",
-    "navq": "日月潭秘密花園設計villa"
+    "gmap": "https://maps.app.goo.gl/5TfvXeA6vDGMK2Di6",
+    "navq": "秘密花園設計villa"
   },
   {
     "id": 33,
@@ -536,8 +536,8 @@
     "geo": "precise",
     "addr": "南投縣魚池鄉水秀街71號",
     "link": "https://sunmoonlake-moon.lealeahotel.com/",
-    "gmap": "",
-    "navq": "力麗哲園飯店-月潭館"
+    "gmap": "https://goo.gl/maps/2Vywy3u7MQEWbNKr9",
+    "navq": "力麗哲園月潭館"
   },
   {
     "id": 37,
@@ -581,7 +581,7 @@
     "geo": "precise",
     "addr": "南投縣魚池鄉瓊文巷36-36號",
     "link": "https://www.3jdhome2.tw/",
-    "gmap": "",
+    "gmap": "https://maps.app.goo.gl/BmhhcWjgSLDnJtC49",
     "navq": "3JD HOME 二館"
   },
   {
@@ -594,7 +594,7 @@
     "lat": 23.9191909,
     "lng": 120.9177167,
     "geo": "precise",
-    "addr": "南投縣魚池鄉大雁巷47-30號",
+    "addr": "南投縣魚池鄉大雁村大雁巷47-30號",
     "link": "https://www.theadagio.com.tw/",
     "gmap": "",
     "navq": "雁寓 BY 尋路（魚池雁寓）"
@@ -641,7 +641,7 @@
     "geo": "precise",
     "addr": "南投縣魚池鄉水社村中山路163號3樓",
     "link": "https://www.facebook.com/openbikesunmoon/",
-    "gmap": "",
+    "gmap": "https://g.page/openbike?share",
     "navq": "OPENBIKE自行車出租站"
   },
   {
@@ -702,7 +702,7 @@
     "addr": "南投縣魚池鄉水社村中山路163號1樓",
     "link": "https://www.facebook.com/giantsunmoonlake/",
     "gmap": "",
-    "navq": "捷安特日月潭站"
+    "navq": "捷安特日月潭單車休閒服務站"
   },
   {
     "id": 47,
@@ -746,7 +746,7 @@
     "geo": "manual",
     "addr": "南投縣魚池鄉中明村有水巷38號",
     "link": "https://www.assamteafarm.com.tw/",
-    "gmap": "",
+    "gmap": "https://goo.gl/maps/hJc3HespKJgeaXWd6",
     "navq": "日月老茶廠"
   },
   {
