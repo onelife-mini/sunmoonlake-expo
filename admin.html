@@ -1400,11 +1400,9 @@ function renderFunnel(byPage, perShop, byId, CAT){
   let html=`<h4 style="font-size:12.5px;color:var(--muted);margin:0 0 8px;font-weight:700">依軸線</h4>`;
   const pageRows=byPage.slice().sort((a,b)=>b.visitors-a.visitors);
   html+=pageRows.map(p=>{
-    const pct=p.visitors?(p.claimers/p.visitors*100):0;
+    const pct=p.visitors?((p.claimers||0)/p.visitors*100):0;
     return `<div class="funnelRow"><div class="funnelHd"><span>${esc(PAGE_NAME[p.pg]||p.pg)}</span><span class="pct">${pct.toFixed(1)}%</span></div><div class="progBar" style="margin:0"><i style="width:${Math.min(100,pct)}%"></i></div></div>`;
   }).join("")||`<p class="hint">尚無資料</p>`;
-  const catVisitors={}, catClaimers=new Map();
-  SHOPS.forEach(s=>{ catVisitors[s.group]=(catVisitors[s.group]||0); });
   const catDevices={};
   perShop.forEach(p=>{ const s=byId[String(p.shop_id)]; if(!s) return; catDevices[s.group]=(catDevices[s.group]||0)+p.devices; });
   html+=`<h4 style="font-size:12.5px;color:var(--muted);margin:16px 0 8px;font-weight:700">依店家類別（兌換手機數，非轉換率──跨軸共用同一批店家，無法拆分進站分母）</h4>`;
