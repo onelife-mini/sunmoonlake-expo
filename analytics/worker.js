@@ -124,14 +124,32 @@ async function handle(req, env, h) {
         "FROM events WHERE type='claim' AND ts BETWEEN ?1 AND ?2 GROUP BY shop_id ORDER BY devices DESC, claims DESC"
       ).bind(L, H).all();
 
-      // 各頁面/軸線分流（區間內；歷史無 page 的視為日月潭頁）
+      // 各頁面/軸線分流（區間內；歷史無 page 的視為日月潭頁）── 含兌換，供黏著度/轉換漏斗使用
       const byPage = await env.DB.prepare(
         "SELECT COALESCE(NULLIF(page,''),'lake') pg, " +
         "COUNT(DISTINCT CASE WHEN type='visit' THEN device_id END) visitors, " +
-        "SUM(CASE WHEN type='visit' THEN 1 ELSE 0 END) visits " +
+        "SUM(CASE WHEN type='visit' THEN 1 ELSE 0 END) visits, " +
+        "COUNT(DISTINCT CASE WHEN type='claim' THEN device_id END) claimers, " +
+        "SUM(CASE WHEN type='claim' THEN 1 ELSE 0 END) claims " +
         "FROM events WHERE ts BETWEEN ?1 AND ?2 GROUP BY pg " +
         "HAVING SUM(CASE WHEN type='visit' THEN 1 ELSE 0 END) > 0 ORDER BY visitors DESC"
       ).bind(L, H).all();
+
+      // 星期 × 時段熱力圖（0=週日...6=週六，台灣時區）
+      const byDowHour = await env.DB.prepare(
+        "SELECT CAST(strftime('%w', ts/1000,'unixepoch',?3) AS INTEGER) dow, " +
+        "CAST(strftime('%H', ts/1000,'unixepoch',?3) AS INTEGER) h, " +
+        "SUM(CASE WHEN type='visit' THEN 1 ELSE 0 END) visits " +
+        "FROM events WHERE ts BETWEEN ?1 AND ?2 GROUP BY dow, h"
+      ).bind(L, H, TZ).all();
+
+      // 各軸線 × 每日（供旅展檔期對比：前/中/後三段加總）
+      const byPageDay = await env.DB.prepare(
+        "SELECT COALESCE(NULLIF(page,''),'lake') pg, date(ts/1000,'unixepoch',?3) d, " +
+        "COUNT(DISTINCT CASE WHEN type='visit' THEN device_id END) visitors, " +
+        "COUNT(DISTINCT CASE WHEN type='claim' THEN device_id END) claimers " +
+        "FROM events WHERE ts BETWEEN ?1 AND ?2 GROUP BY pg, d ORDER BY d"
+      ).bind(L, H, TZ).all();
 
       return json({
         ok: true,
@@ -148,6 +166,8 @@ async function handle(req, env, h) {
         byHour: (byHour && byHour.results) || [],
         perShop: (perShop && perShop.results) || [],
         byPage: (byPage && byPage.results) || [],
+        byDowHour: (byDowHour && byDowHour.results) || [],
+        byPageDay: (byPageDay && byPageDay.results) || [],
       }, 200, h);
     }
 

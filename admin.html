@@ -293,6 +293,21 @@ a{color:inherit}
 .skel{background:linear-gradient(90deg,#eee,#f5f5f5,#eee);background-size:200% 100%;animation:shimmer 1.3s infinite;border-radius:8px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 
+/* ── 新增6視圖：熱力圖／黏著度／全店排行／轉換漏斗／檔期對比／折線圖 ── */
+.heatWrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+.heatGrid{display:grid;grid-template-columns:34px repeat(24,minmax(22px,1fr));gap:2px;min-width:640px}
+.heatCell{aspect-ratio:1;border-radius:3px;background:#eceee9}
+.heatHd{font-size:9.5px;color:var(--muted);text-align:center;align-self:end;padding-bottom:2px}
+.heatRowLab{font-size:11px;color:var(--muted);display:flex;align-items:center}
+.rankList{display:flex;flex-direction:column;gap:10px}
+.rankItem{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.rankItem b{color:var(--ink)}
+.funnelRow{margin-bottom:14px}
+.funnelHd{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.funnelHd .pct{font-weight:800;color:var(--green-d)}
+.compareTbl th:not(:first-child),.compareTbl td:not(:first-child){text-align:right}
+.lineChart{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;overflow-x:auto}
+
 /* ───────── 設定 ───────── */
 .settingsGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 @media(max-width:900px){.settingsGrid{grid-template-columns:1fr}}
@@ -602,15 +617,24 @@ a{color:inherit}
           <button class="qbtn on" data-metric="devices">不重複手機</button>
           <button class="qbtn" data-metric="count">次數</button>
         </div>
-        <!-- 每日趨勢 -->
+        <!-- 每日趨勢（折線） -->
         <h3 class="statsSub">每日趨勢<span class="lgd" id="dayLgd"><i class="ldot v"></i>進站手機　<i class="ldot c"></i>兌換手機</span></h3>
-        <div class="chart" id="chartDay"></div>
-        <!-- 時段分布 -->
-        <h3 class="statsSub">時段分布（台灣時間，看哪個時段人最多）<span class="lgd"><i class="ldot v"></i>進站　<i class="ldot c"></i>兌換</span></h3>
-        <div class="chart hours" id="chartHour"></div>
-        <!-- 各店家 -->
-        <h3 class="statsSub">各店家兌換排行</h3>
+        <div class="lineChart" id="chartDayLine"></div>
+        <!-- 時段熱力圖 -->
+        <h3 class="statsSub">時段熱力圖（星期 × 小時，顏色愈深人愈多，方便排班）</h3>
+        <div class="heatWrap"><div class="heatGrid" id="heatGrid"></div></div>
+        <!-- 軸線黏著度排行 -->
+        <h3 class="statsSub">軸線黏著度排行（每台手機平均回來看幾次，愈高代表愈猶豫／愈想比較）</h3>
+        <div class="rankList" id="stickList"></div>
+        <!-- 全店熱門/冷門總覽 -->
+        <h3 class="statsSub">全店熱門／冷門總覽（含 0 兌換的店，找出乏人問津的）</h3>
         <table class="statsTbl"><thead><tr><th>#</th><th>店家</th><th>類別</th><th style="text-align:right">兌換手機數</th><th style="text-align:right">領取次數</th></tr></thead><tbody id="statsRows"></tbody></table>
+        <!-- 轉換漏斗 -->
+        <h3 class="statsSub">轉換漏斗（進站後有多少比例按過優惠）</h3>
+        <div id="funnelWrap"></div>
+        <!-- 旅展檔期對比 -->
+        <h3 class="statsSub">旅展檔期對比（展前／展中 7/17–20／展後，各軸線進站手機數）</h3>
+        <table class="statsTbl compareTbl" id="compareTbl"></table>
       </div>
     </section>
 
@@ -1076,7 +1100,7 @@ function closeModal(){ $("#modalOverlay").classList.remove("show"); }
 $("#modalOverlay").addEventListener("click", e=>{ if(e.target.id==="modalOverlay") closeModal(); });
 
 /* ══════════════ 草稿 vs 線上差異 ══════════════ */
-const PAGE_NAME={lake:"日月潭‧逐路船騎", taomi:"桃米", toushe:"頭社"};
+const PAGE_NAME={lake:"日月潭‧逐路船騎", taomi:"桃米", toushe:"頭社", shuili:"水里‧集集‧車埕"};
 const DIFF_FIELD_LABELS={name:"店名",group:"類別",area:"區域",offer:"優惠內容",link:"店家連結",gmap:"商家頁短連結",navq:"Google登錄名",inquiry:"洽詢中",nooffer:"無優惠參考",lat:"緯度",lng:"經度",geo:"定位狀態",addr:"地址備註"};
 async function fetchRemoteShops(){
   try{
@@ -1284,21 +1308,21 @@ async function loadStats(){
     chips.push(`<div class="peakChip">每台平均領 <b>${avgCoupon}</b> 張券</div>`);
     $("#statsPeak").innerHTML=chips.join("");
     renderDayChart(d);
-    const hourMap={}; byHour.forEach(x=>hourMap[x.h]=x);
-    const maxHourV=Math.max(1,...byHour.map(x=>Math.max(x.visits,x.claims)));
-    let hoursHtml="";
-    for(let h=0;h<24;h++){ const x=hourMap[h]||{visits:0,claims:0};
-      const hv=Math.round(x.visits/maxHourV*100), hc=Math.round(x.claims/maxHourV*100);
-      hoursHtml+=`<div class="bar"><div class="cols"><div class="col v" style="height:${hv}%" title="${h}時 進站 ${x.visits}"></div><div class="col c" style="height:${hc}%" title="${h}時 兌換 ${x.claims}"></div></div><div class="blab">${h}</div></div>`;
-    }
-    $("#chartHour").innerHTML=hoursHtml;
+    renderHeatmap(d.byDowHour||[]);
     const byId={}; SHOPS.forEach(s=>byId[String(s.id)]=s);
     const CAT={sup:"SUP",eat:"食",stay:"住",bike:"單車",play:"樂/手作"};
-    const rows=(d.perShop||[]).map((p,i)=>{
-      const s=byId[String(p.shop_id)];
-      return `<tr><td>${i+1}</td><td>${s?esc(s.name):("（id "+esc(p.shop_id)+"）")}</td><td>${s?(CAT[s.group]||s.group):"—"}</td><td style="text-align:right">${p.devices}</td><td style="text-align:right">${p.claims}</td></tr>`;
-    }).join("");
-    $("#statsRows").innerHTML=rows||`<tr><td colspan="5" style="color:#999;padding:14px">此區間還沒有兌換記錄</td></tr>`;
+    const claimById={}; (d.perShop||[]).forEach(p=>claimById[String(p.shop_id)]=p);
+    const allShopRows=SHOPS.map(s=>{
+      const p=claimById[String(s.id)]||{devices:0,claims:0};
+      return {s, devices:p.devices||0, claims:p.claims||0};
+    }).sort((a,b)=>b.devices-a.devices||b.claims-a.claims);
+    const rows=allShopRows.map((r,i)=>
+      `<tr><td>${i+1}</td><td>${esc(r.s.name)}</td><td>${CAT[r.s.group]||r.s.group||"—"}</td><td style="text-align:right">${r.devices}</td><td style="text-align:right">${r.claims}</td></tr>`
+    ).join("");
+    $("#statsRows").innerHTML=rows||`<tr><td colspan="5" style="color:#999;padding:14px">尚無店家資料</td></tr>`;
+    renderStickiness(d.byPage||[]);
+    renderFunnel(d.byPage||[], d.perShop||[], byId, CAT);
+    renderExpoCompare(d.byPageDay||[]);
     $("#statsUpdated").textContent="更新於 "+new Date(d.generatedAt||Date.now()).toLocaleString("zh-TW")+(d.range&&(d.range.from||d.range.to)?`　區間 ${d.range.from||"最早"}～${d.range.to||"最新"}`:"　區間：全部");
   }catch(e){
     if(e.message==="UNAUTHORIZED"){ handleAuthFailure(); return; }
@@ -1322,16 +1346,91 @@ $("#dApply").onclick=()=>{
   loadStats();
 };
 
-/* ── ⑧ 指標切換：每日趨勢 不重複手機 / 次數 ── */
+/* ── ⑧ 指標切換：每日趨勢 不重複手機 / 次數（折線圖） ── */
 function renderDayChart(d){
   const byDay=d.byDay||[];
   const vField = chartMetric==="count" ? "visits" : "visitors";
   const cField = chartMetric==="count" ? "claims" : "claimers";
-  const maxDayV=Math.max(1,...byDay.map(x=>Math.max(x[vField]||0,x[cField]||0)));
-  $("#chartDay").innerHTML=byDay.length?byDay.map(x=>{
-    const hv=Math.round((x[vField]||0)/maxDayV*100), hc=Math.round((x[cField]||0)/maxDayV*100);
-    return `<div class="bar"><div class="cols"><div class="col v" style="height:${hv}%" title="進站 ${x[vField]||0}"></div><div class="col c" style="height:${hc}%" title="兌換 ${x[cField]||0}"></div></div><div class="bval">${x[vField]||0}</div><div class="blab">${x.d.slice(5)}</div></div>`;
-  }).join(""):`<div style="color:#999;margin:auto">此區間沒有資料</div>`;
+  if(!byDay.length){ $("#chartDayLine").innerHTML=`<div style="color:#999">此區間沒有資料</div>`; return; }
+  const W=Math.max(360,byDay.length*46), H=180, padL=8, padR=8, padT=10, padB=22;
+  const maxV=Math.max(1,...byDay.map(x=>Math.max(x[vField]||0,x[cField]||0)));
+  const stepX=byDay.length>1?(W-padL-padR)/(byDay.length-1):0;
+  const yOf=v=>H-padB-(v/maxV)*(H-padT-padB);
+  const xOf=i=>padL+i*stepX;
+  const lineOf=field=>byDay.map((x,i)=>`${xOf(i)},${yOf(x[field]||0)}`).join(" ");
+  const dotsOf=(field,cls)=>byDay.map((x,i)=>`<circle class="${cls}" cx="${xOf(i)}" cy="${yOf(x[field]||0)}" r="3"><title>${esc(x.d)}：${x[field]||0}</title></circle>`).join("");
+  const showEvery=Math.max(1,Math.ceil(byDay.length/10));
+  const labels=byDay.map((x,i)=>i%showEvery===0?`<text class="t" x="${xOf(i)}" y="${H-6}" text-anchor="middle">${esc(x.d.slice(5))}</text>`:"").join("");
+  $("#chartDayLine").innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;min-width:${W}px;height:${H}px;display:block">
+    <polyline points="${lineOf(vField)}" fill="none" stroke="var(--gold)" stroke-width="2"/>
+    <polyline points="${lineOf(cField)}" fill="none" stroke="var(--green)" stroke-width="2"/>
+    ${dotsOf(vField,"col v")} ${dotsOf(cField,"col c")}
+    <g style="fill:var(--muted);font-size:9.5px">${labels}</g>
+  </svg>`;
+}
+/* ── 時段熱力圖：星期 × 小時 ── */
+function renderHeatmap(byDowHour){
+  const DOWN=["日","一","二","三","四","五","六"];
+  const map={}; byDowHour.forEach(x=>map[x.dow+"_"+x.h]=x.visits||0);
+  const max=Math.max(1,...byDowHour.map(x=>x.visits||0));
+  let html=`<div class="heatHd"></div>`;
+  for(let h=0;h<24;h++) html+=`<div class="heatHd">${h%3===0?h:""}</div>`;
+  for(let dow=0;dow<7;dow++){
+    html+=`<div class="heatRowLab">週${DOWN[dow]}</div>`;
+    for(let h=0;h<24;h++){
+      const v=map[dow+"_"+h]||0;
+      const op=v>0?Math.max(.18,v/max):1;
+      const bg=v>0?"var(--green)":"#eceee9";
+      html+=`<div class="heatCell" style="background:${bg};opacity:${op}" title="週${DOWN[dow]} ${h}時：${v} 次進站"></div>`;
+    }
+  }
+  $("#heatGrid").innerHTML=html;
+}
+/* ── 軸線黏著度排行：次數/台數 倍數 ── */
+function renderStickiness(byPage){
+  if(!byPage.length){ $("#stickList").innerHTML=`<p class="hint">尚無資料</p>`; return; }
+  const rows=byPage.map(p=>({...p, ratio:(p.visitors?p.visits/p.visitors:0)})).sort((a,b)=>b.ratio-a.ratio);
+  $("#stickList").innerHTML=rows.map(p=>{
+    const nm=PAGE_NAME[p.pg]||p.pg;
+    return `<div class="rankItem"><span>${esc(nm)}</span><span><b>${p.ratio.toFixed(1)}</b> 倍　<span class="hint">（${p.visitors} 台 ‧ ${p.visits} 次）</span></span></div>`;
+  }).join("");
+}
+/* ── 轉換漏斗：進站→兌換，依軸線 + 依類別 ── */
+function renderFunnel(byPage, perShop, byId, CAT){
+  let html=`<h4 style="font-size:12.5px;color:var(--muted);margin:0 0 8px;font-weight:700">依軸線</h4>`;
+  const pageRows=byPage.slice().sort((a,b)=>b.visitors-a.visitors);
+  html+=pageRows.map(p=>{
+    const pct=p.visitors?(p.claimers/p.visitors*100):0;
+    return `<div class="funnelRow"><div class="funnelHd"><span>${esc(PAGE_NAME[p.pg]||p.pg)}</span><span class="pct">${pct.toFixed(1)}%</span></div><div class="progBar" style="margin:0"><i style="width:${Math.min(100,pct)}%"></i></div></div>`;
+  }).join("")||`<p class="hint">尚無資料</p>`;
+  const catVisitors={}, catClaimers=new Map();
+  SHOPS.forEach(s=>{ catVisitors[s.group]=(catVisitors[s.group]||0); });
+  const catDevices={};
+  perShop.forEach(p=>{ const s=byId[String(p.shop_id)]; if(!s) return; catDevices[s.group]=(catDevices[s.group]||0)+p.devices; });
+  html+=`<h4 style="font-size:12.5px;color:var(--muted);margin:16px 0 8px;font-weight:700">依店家類別（兌換手機數，非轉換率──跨軸共用同一批店家，無法拆分進站分母）</h4>`;
+  const catEntries=Object.entries(catDevices).sort((a,b)=>b[1]-a[1]);
+  const maxCat=Math.max(1,...catEntries.map(x=>x[1]));
+  html+=catEntries.map(([g,v])=>`<div class="funnelRow"><div class="funnelHd"><span>${CAT[g]||g}</span><span class="pct">${v} 台</span></div><div class="progBar" style="margin:0"><i style="width:${Math.round(v/maxCat*100)}%"></i></div></div>`).join("")||`<p class="hint">尚無資料</p>`;
+  $("#funnelWrap").innerHTML=html;
+}
+/* ── 旅展檔期對比：展前／展中(7/17–20)／展後 ── */
+function renderExpoCompare(byPageDay){
+  const EXPO_FROM="2026-07-17", EXPO_TO="2026-07-20";
+  const buckets={};
+  byPageDay.forEach(r=>{
+    const pg=r.pg, seg = r.d<EXPO_FROM?"before" : r.d<=EXPO_TO?"during" : "after";
+    buckets[pg]=buckets[pg]||{before:0,during:0,after:0};
+    buckets[pg][seg]+=r.visitors||0;
+  });
+  const pages=Object.keys(buckets);
+  if(!pages.length){ $("#compareTbl").innerHTML=`<tr><td style="padding:14px;color:#999">此區間沒有資料</td></tr>`; return; }
+  let html=`<thead><tr><th>軸線</th><th>展前</th><th>展中 7/17–20</th><th>展後</th></tr></thead><tbody>`;
+  pages.forEach(pg=>{
+    const b=buckets[pg];
+    html+=`<tr><td style="text-align:left">${esc(PAGE_NAME[pg]||pg)}</td><td>${b.before}</td><td>${b.during}</td><td>${b.after}</td></tr>`;
+  });
+  html+="</tbody>";
+  $("#compareTbl").innerHTML=html;
 }
 function updateDayLegend(){
   $("#dayLgd").innerHTML = chartMetric==="count"
