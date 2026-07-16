@@ -334,8 +334,8 @@
     "name": "樹德園有機茶",
     "group": "eat",
     "area": "",
-    "offer": "優惠洽詢中",
-    "inquiry": true,
+    "offer": "消費滿1000元9折優惠",
+    "inquiry": false,
     "lat": 23.8899591,
     "lng": 120.9393487,
     "geo": "precise",
@@ -546,8 +546,8 @@
     "name": "山久蒔 x 勺光",
     "group": "stay",
     "area": "",
-    "offer": "",
-    "inquiry": true,
+    "offer": "住宿享85折優惠！官網預訂時輸入折扣碼：SML3910TP\n・折扣碼使用期間｜2026/07/17－2026/07/24\n・適用入住日期｜2026/07/17－2026/12/31\n・國定假日及特殊連續假期不適用\n・限於官網預訂時輸入折扣碼使用，實際房況與價格以官網顯示為準",
+    "inquiry": false,
     "lat": 23.9024104,
     "lng": 120.9341888,
     "geo": "precise",
@@ -765,5 +765,21 @@
     "link": "https://www.lavenderforest-nantou99.com.tw/",
     "gmap": "",
     "navq": "薰衣草森林南投九九峰園區"
+  },
+  {
+    "id": 52,
+    "name": "好客時事処 Hao Ke Kitchen",
+    "group": "eat",
+    "area": "",
+    "offer": "消費滿1000元折100元\n滿一千折一百，買兩千折兩百，如：消費2300元折200元",
+    "inquiry": false,
+    "nooffer": false,
+    "lat": 23.9026532,
+    "lng": 120.9344356,
+    "geo": "manual",
+    "addr": "南投縣魚池鄉瓊文巷39-10號一樓",
+    "link": "https://www.3910sg.com/",
+    "gmap": "https://www.google.com/maps/place/%E5%A5%BD%E5%AE%A2%E6%99%82%E4%BA%8B%E5%87%A6+Hao+Ke+Kitchen%EF%BD%9C%E4%BA%AC%E9%83%BD%E7%B3%BB%E6%8B%89%E9%BA%B5%E3%83%BB%E8%81%B7%E4%BA%BA%E7%86%9F%E6%88%90%E5%92%96%E5%93%A9%EF%BC%8E%E6%97%A5%E6%9C%88%E6%BD%AD/@23.9026532,120.9344356,17z/data=!4m6!3m5!1s0x3468d74d3bbebc0b:0x6ee05b25a81b26b1!8m2!3d23.9026532!4d120.9344356!16s%2Fg%2F11gxjw2xcb",
+    "navq": "好客時事処 Hao Ke Kitchen"
   }
 ]
